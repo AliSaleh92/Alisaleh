@@ -28,27 +28,22 @@
         .section.active {display:block; animation:fadeIn .4s;}
         @keyframes fadeIn {from{opacity:0;} to{opacity:1;}}
         .add-btn { padding:9px 18px; font-size:1em; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:#fff; border:none; border-radius:18px; cursor:pointer; margin-bottom:15px;}
-        /* Dashboard Stats */
         .stats {display: flex; gap: 20px; flex-wrap: wrap; margin-bottom:32px;}
         .stat { background:#fff; border-radius:14px; padding:18px; box-shadow:0 3px 15px #667eea11; width:170px; text-align:center;}
         .stat-val { font-size:2em; margin:8px 0; color:#764ba2;}
-        /* Projects */
         .proj-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:19px;}
         .proj-card { background:#fff; border-radius:14px; padding:18px 14px; box-shadow:0 3px 15px #667eea12;}
         .proj-title { font-size:1.12em; font-weight:bold; margin-bottom:8px; }
         .proj-actions { display:flex; gap:9px; }
-        /* Tasks */
         .task-grid { background:#fff; border-radius:14px; padding:16px; box-shadow:0 3px 15px #667eea14;}
         .task-head {display:flex;align-items:center; justify-content:space-between;}
         .task-list {margin-top:12px;}
         .task-item {background:#f7f7fc; margin-bottom:8px;padding:12px; border-radius:10px; display:flex;align-items:center; justify-content:space-between;}
         .task-done { text-decoration:line-through; color:#888;}
-        /* Calendar */
         .calendar-nav {display:flex;align-items:center;gap:8px;margin-bottom:8px;}
         .calendar-days {display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
         .day-cell {text-align:center;padding:9px 3px;background:#fff;border-radius:7px;border:1px solid #eee;}
         .day-cell.today { background:#667eea;color:#fff;font-weight:bold;}
-        /* Notes */
         .notes-head {display:flex;align-items:center;justify-content:space-between;}
         .note-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:18px;}
         .note-card {background:#fff;border-radius:13px;padding:15px;box-shadow:0 3px 15px #667eea12;}
@@ -247,7 +242,7 @@
             let year=d.getFullYear();
             document.getElementById("calendarMonthYear").textContent = `${year} - ${month+1}`;
             let days=[];
-            for(let i=0;i<d.getDay();i++) days.push(""); // الفراغات بداية الشهر
+            for(let i=0;i<d.getDay();i++) days.push("");
             let lastDay=new Date(year,month+1,0).getDate();
             for(let i=1;i<=lastDay;i++) days.push(i);
             let today=new Date(); let tDay=today.getDate(),tMonth=today.getMonth(),tYear=today.getFullYear();
@@ -289,12 +284,4 @@
         function delNote(id){
             if(!confirm("حذف الملاحظة؟"))return;
             notes=notes.filter(n=>n.id!=id);
-            localStorage.setItem("aw_notes",JSON.stringify(notes));
-            renderNotes();
-        }
-// تحميل أولي للأقسام بعد فتح الصفحة
-renderDashboard();
-renderProjects();
-renderTasks();
-renderCalendar();
-renderNotes();
+            localStorage.setItem("aw_notes
