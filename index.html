@@ -32,10 +32,11 @@
         .stats {display: flex; gap: 20px; flex-wrap: wrap; margin-bottom:32px;}
         .stat { background:#fff; border-radius:14px; padding:18px; box-shadow:0 3px 15px #667eea11; width:170px; text-align:center;}
         .stat-val { font-size:2em; margin:8px 0; color:#764ba2;}
-        .proj-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:19px;}
-        .proj-card { background:#fff; border-radius:14px; padding:18px 14px; box-shadow:0 3px 15px #667eea12;}
-        .proj-title { font-size:1.12em; font-weight:bold; margin-bottom:8px; }
-        .proj-actions { display:flex; gap:9px; }
+        .proj-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:22px;}
+        .proj-card { background:#fff; border-radius:14px; padding:18px 14px 8px 14px; box-shadow:0 3px 15px #667eea12; position:relative; margin-bottom:17px; border-right: 10px solid #764ba2;}
+        .proj-color-box { width:22px;height:22px;border-radius:50%;display:inline-block;margin-left:5px;vertical-align:middle;border:2px solid #fff;box-shadow:0 0 0 2px #eee;}
+        .proj-title { font-size:1.13em; font-weight:bold; margin-bottom:8px; }
+        .proj-actions { display:flex; gap:9px; margin-bottom:6px;}
         .task-grid { background:#fff; border-radius:14px; padding:16px; box-shadow:0 3px 15px #667eea14;}
         .task-head {display:flex;align-items:center; justify-content:space-between;}
         .task-list {margin-top:12px;}
@@ -49,6 +50,21 @@
         .note-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:18px;}
         .note-card {background:#fff;border-radius:13px;padding:15px;box-shadow:0 3px 15px #667eea12;}
         .note-title {font-weight:bold;margin-bottom:7px;}
+
+        /* Modal styles */
+        .modal-bg {
+            position:fixed;top:0;right:0;left:0;bottom:0;
+            background:rgba(0,0,0,.18);z-index:900;
+        }
+        .modal-box {
+            position:fixed;top:50%;right:50%;transform:translate(50%,-50%);
+            background:#fff;padding:26px 22px;border-radius:18px;box-shadow:0 8px 24px #0002;z-index:999;width:340px;max-width:93vw;
+        }
+        .ideas-table {width:96%;margin-top:10px;background:#fbfafb;border-radius:12px;border-collapse:collapse}
+        .ideas-table th, .ideas-table td{padding:8px 7px;border-bottom:1px solid #eee;}
+        .ideas-table th {background:#764ba2;color:#fff;}
+        .ideas-table tr:last-child td{border-bottom:0;}
+        .ideas-section {background:#f9f8ff;padding:13px 10px 18px 10px;margin-top:8px;border-radius:14px;}
     </style>
 </head>
 <body>
@@ -73,6 +89,7 @@
             </div>
             <canvas id="chartTasks" height="85"></canvas>
         </div>
+
         <!-- Projects Section -->
         <div id="projects" class="section">
             <div class="header">
@@ -81,6 +98,7 @@
             </div>
             <div class="proj-grid" id="projGrid"></div>
         </div>
+
         <!-- Tasks Section -->
         <div id="tasks" class="section">
             <div class="header">
@@ -95,6 +113,7 @@
                 <div class="task-list" id="taskList"></div>
             </div>
         </div>
+
         <!-- Calendar Section -->
         <div id="calendar" class="section">
             <div class="header">
@@ -110,6 +129,7 @@
                 <ul id="calendarDayTasks"></ul>
             </div>
         </div>
+
         <!-- Notes Section -->
         <div id="notes" class="section">
             <div class="header notes-head">
@@ -119,10 +139,14 @@
             <div class="note-grid" id="noteGrid"></div>
         </div>
     </div>
+
+    <!-- modal bg & box dynamically injected -->
+
     <script>
         let projects = JSON.parse(localStorage.getItem("aw_projects")||"[]");
         let tasks = JSON.parse(localStorage.getItem("aw_tasks")||"[]");
         let notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
+
         function showSection(sec) {
             document.querySelectorAll('.menu-item').forEach(e=>e.classList.remove('active'));
             document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));
@@ -134,38 +158,128 @@
             if(sec==="calendar") renderCalendar();
             if(sec==="notes") renderNotes();
         }
+
+        // ==== MODAL for Project Add ====
+
         function addProjectPrompt() {
-            let name=prompt("اسم المشروع؟"); if(!name) return;
-            let desc=prompt("وصف/ملاحظات للمشروع (اختياري)");
-            let id=Date.now(); projects.push({id,name,desc});
-            localStorage.setItem("aw_projects",JSON.stringify(projects));
-            renderProjects(); renderDashboard();
-            alert("تم إضافة المشروع✅");
+            let bg = document.createElement('div');
+            bg.className = 'modal-bg';
+            let modal = document.createElement('div');
+            modal.className = 'modal-box';
+            modal.innerHTML = `
+                <div style="font-size:1.2em;margin-bottom:12px">إضافة مشروع جديد</div>
+                <input id="pName" type="text" placeholder="اسم المشروع" style="width:100%;margin-bottom:11px;padding:6px" /><br>
+                <input id="pDesc" type="text" placeholder="وصف المشروع (اختياري)" style="width:100%;margin-bottom:14px;padding:6px" /><br>
+                <label>اختر لون للمشروع: <input id="pColor" type="color" value="#667eea" style="margin-right:9px" /></label>
+                <br><br>
+                <button onclick="saveProject()">حفظ</button>
+                <button onclick="closeModal()">إلغاء</button>
+            `;
+            document.body.appendChild(bg);
+            document.body.appendChild(modal);
+
+            window.saveProject = function () {
+                let name = document.getElementById("pName").value.trim();
+                if (!name) return alert("ادخل اسم المشروع");
+                let desc = document.getElementById("pDesc").value.trim();
+                let color = document.getElementById("pColor").value;
+                let id = Date.now();
+                projects.push({id, name, desc, color});
+                localStorage.setItem("aw_projects", JSON.stringify(projects));
+                renderProjects(); renderDashboard();
+                closeModal();
+                alert("تم إضافة المشروع✅");
+            }
+            window.closeModal = function () {
+                document.body.removeChild(modal);
+                document.body.removeChild(bg);
+            }
         }
+
+        // دفتر أفكار ومهام
+        function getProjectIdeas(projId) {
+            return JSON.parse(localStorage.getItem('aw_ideas_'+projId)||"[]");
+        }
+        function setProjectIdeas(projId, ideas) {
+            localStorage.setItem('aw_ideas_'+projId, JSON.stringify(ideas));
+        }
+
         function renderProjects() {
-            let container=document.getElementById("projGrid");
+            let container = document.getElementById("projGrid");
             if(!projects.length) { container.innerHTML = "<p>لا يوجد مشاريع بعد.</p>"; return; }
-            container.innerHTML = projects.map(proj =>
-                `<div class="proj-card">
-                    <div class="proj-title">${proj.name}</div>
+            container.innerHTML = projects.map(proj => {
+                let color = proj.color || "#667eea";
+                let taskCount = tasks.filter(t=>t.projectId==proj.id).length;
+                // فكرة: كل مشروع يوجد تحته دفتر أفكار/مهام
+                return `
+                <div class="proj-card" style="border-right:10px solid ${color}">
+                    <div>
+                        <span class="proj-color-box" style="background:${color}"></span>
+                        <span class="proj-title">${proj.name}</span>
+                    </div>
                     <div style="color:#888;margin-bottom:8px">${proj.desc||""}</div>
-                    <div style="font-size:.9em;color:#555;margin-bottom:4px">
-                        ${tasks.filter(t=>t.projectId==proj.id).length} مهام
+                    <div style="font-size:.93em;color:#555;margin-bottom:3px">
+                        ${taskCount} مهام
                     </div>
                     <div class="proj-actions">
                         <button onclick="delProject(${proj.id})" style="color:#d66">حذف</button>
                     </div>
-                </div>`
-            ).join("");
+                    <div class="ideas-section">
+                      <div style="font-weight:bold;margin-bottom:7px;font-size:1.02em">دفتر تتبع المهام والأفكار</div>
+                      <input id="idea-${proj.id}" type="text" placeholder="أضف فكرة/مهمة" style="width:60%;margin-bottom:7px" />
+                      <button onclick="addIdea(${proj.id})">إضافة</button>
+                      <table class="ideas-table">
+                        <tr>
+                          <th>الفكرة</th><th>تاريخ الإضافة</th><th>تحويل لمهمة</th>
+                        </tr>
+                        ${getProjectIdeas(proj.id).map((i,idx)=>`
+                        <tr>
+                          <td>${i.text}</td>
+                          <td>${i.date}</td>
+                          <td>
+                            <button onclick="moveIdeaToTask(${proj.id},${idx})">حول لمهمة</button>
+                          </td>
+                        </tr>
+                        `).join("")}
+                      </table>
+                    </div>
+                </div>`;
+            }).join("");
+        }
+
+        function addIdea(projId) {
+            let input = document.getElementById(`idea-${projId}`);
+            let txt = input.value.trim();
+            if(!txt) return alert("اكتب الفكرة أولاً");
+            let ideas = getProjectIdeas(projId);
+            ideas.push({text: txt, date: new Date().toISOString().slice(0, 16)});
+            setProjectIdeas(projId, ideas);
+            input.value = "";
+            renderProjects();
+        }
+        function moveIdeaToTask(projId, idx) {
+            let ideas = getProjectIdeas(projId);
+            let idea = ideas[idx];
+            let id = Date.now();
+            tasks.push({id,projectId:projId,text:idea.text,date:"",done:false});
+            localStorage.setItem("aw_tasks", JSON.stringify(tasks));
+            ideas.splice(idx,1);
+            setProjectIdeas(projId, ideas);
+            renderProjects();
+            renderTasks();
+            alert("تم تحويل الفكرة إلى مهمة");
         }
         function delProject(id) {
-            if(!confirm("متأكد من حذف المشروع وكل مهامه؟")) return;
+            if(!confirm("متأكد من حذف المشروع وكل مهامه وأفكاره؟")) return;
             projects=projects.filter(p=>p.id!=id);
             tasks=tasks.filter(t=>t.projectId!=id);
+            localStorage.removeItem('aw_ideas_'+id);
             localStorage.setItem("aw_projects",JSON.stringify(projects));
             localStorage.setItem("aw_tasks",JSON.stringify(tasks));
             renderProjects(); renderTasks(); renderDashboard();
         }
+
+        // المهام كما هي
         function addTaskPrompt() {
             if(!projects.length) return alert("أضف مشروع أولاً!");
             let pId=+prompt("رقم المشروع لأضافة المهمة:\n"+projects.map(p=>`${p.id}: ${p.name}`).join("\n"));
