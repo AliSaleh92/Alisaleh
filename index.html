@@ -8,109 +8,137 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Tajawal', Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-            background: #fafbfd;
+            margin:0; padding:0; min-height:100vh;
+            font-family:'Tajawal',sans-serif; background:
+                linear-gradient(135deg, #ddd6f3 0%, #faaca8 100%) fixed;
+            background-size:cover;
         }
-        .sidebar, .bottom-nav {
-            position: fixed; right: 0; top: 0; width: 70px; height: 100vh;
-            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-            color: #fff; padding: 25px 6px 18px 6px; box-shadow: -2px 0 15px #667eea21;
-            z-index: 300; display: flex; flex-direction: column; gap: 28px; align-items: center; transition: width 0.18s;
+        .glass {
+            background: rgba(255,255,255,0.62);
+            box-shadow:0 8px 48px #764ba233, 0 0 1px #fff;
+            border-radius: 22px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1.5px solid rgba(163,126,241, .09);
         }
-        .logo { text-align: center; margin-bottom: 32px; font-size: 1.28em; font-weight: 900; letter-spacing:1px;}
-        .menu { list-style: none; padding: 0; width: 100%; margin:0;}
-        .menu-item { padding: 17px 9px 17px 10px; border-radius: 11px; margin-bottom: 9px; cursor: pointer; font-size: 1.19em;  transition: background 0.15s,color .15s;}
-        .menu-item.active, .menu-item:hover { background:rgba(255,255,255,.21); color: #fff; }
-        .menu-item span { margin-right: 7px;}
-        .main-content { margin-right: 70px; padding: 32px 10px 72px 10px; min-height: 100vh; transition: margin-right .18s;}
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;}
-        .header h2 {margin: 0; font-size:2.09em;color:#667eea;font-weight:800;}
-        .section {display:none;}
-        .section.active {display:block; animation:fadeIn .41s;}
-        @keyframes fadeIn {from{opacity:0;} to{opacity:1;}}
-        .add-btn { padding:9px 21px; font-size:1.07em; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:#fff; border:none; border-radius:21px; cursor:pointer; margin-bottom:16px; font-weight:700; box-shadow:0 3px 14px #764ba248;}
-        .stats {display: flex; gap: 20px; flex-wrap: wrap; margin-bottom:32px;}
-        .stat { background:#fff; border-radius:18px; padding:22px; box-shadow:0 6px 28px #667eea13; width:168px; text-align:center;}
-        .stat-val { font-size:2em; margin:8px 0 0 0; color:#764ba2;}
-        .proj-tabs {display: flex; gap: 14px; overflow-x: auto; margin-bottom: 25px;}
-        .proj-tab {padding:13px 37px; background:linear-gradient(135deg,#fff 30%,#eef1fb 100%);
-            border-radius:21px 21px 0 0; cursor:pointer; font-weight:800; font-size:1.08em;
-            box-shadow:0 9px 22px #671be94c; transition:background .2s, box-shadow .2s, color .15s;
-            border: 2.2px solid transparent; border-bottom: none;
-            color:#554; position:relative; text-align:center}
+        .sidebar {
+            position:fixed;right:0;top:0;width:70px;height:100vh;z-index:250;
+            display:flex;flex-direction:column;align-items:center;gap:15px;
+            background:rgba(255,255,255,0.13);backdrop-filter:blur(8px);
+            box-shadow:-4px 0 24px #9d78e91a;
+            transition:width .2s;
+        }
+        .logo {font-size:1.4em;font-weight:900;letter-spacing:2px;margin-bottom:31px;margin-top:20px; color:#7239f7;}
+        .menu {list-style:none;margin:0;padding:0;width:100%;}
+        .menu-item {
+            width:96%;margin:2px auto 0;display:flex;align-items:center;justify-content:center;
+            padding:17px 4px;border-radius:14px;font-size:1.3em;cursor:pointer;
+            transition:background .15s,color .09s;
+            color:#6a628c;
+        }
+        .menu-item.active, .menu-item:hover {
+            background:linear-gradient(90deg, #ae81ff11 30%,#e3d0ff11 100%);color:#7239f7;
+        }
+        .main-content {margin-right:80px;padding:35px 7vw 65px 10vw; min-height:100vh;}
+        .header {display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+        .header h2 {margin:0; font-size:2.2em; color:#6a628c; font-weight:800; letter-spacing:.5px;}
+        /* Glass Card Modern Grid */
+        .dashboard-glass {padding:38px 18px;margin-top:3vw;}
+        .stats {display:flex;gap:3.7vw;flex-wrap:wrap;margin-bottom:29px;justify-content:center;}
+        .stat {background:#fff7f9aa;border-radius:23px;padding:23px 0 19px 0;box-shadow:0 4px 18px #996aec09;width:170px;text-align:center; font-weight:600;}
+        .stat-val {font-size:2.3em;margin:13px 0 7px 0;color:#8626D5;font-weight:900;}
+        /* Projects */
+        .proj-tabs {display:flex;gap:17px;margin-bottom:26px;overflow-x:auto;}
+        .proj-tab {padding:13px 38px;background:linear-gradient(145deg,#fbf9ff 65%,#efeafd 100%);
+            border-radius:23px 23px 0 0;cursor:pointer;font-weight:800;font-size:1.13em;box-shadow:0 18px 36px #f0eafd38;
+            border:2.2px solid #af77ff18;border-bottom:none;color:#58487c;position:relative;letter-spacing:.5px;}
         .proj-tab.selected {
-            background: #fff; color:#764ba2; border-color: #a892ef #a892ef #fff #a892ef;
-            box-shadow:0 19px 38px #9980fa2a, 0 1px 0 #fff;
+            background: #fff; color:#a877e1; box-shadow:0 40px 64px #9e6afd21,0 1px 0 #fff;
         }
-        .proj-state { display:inline-block; padding:3px 13px; border-radius:9px; font-size:.98em; margin-left:11px;margin-right:7px;font-weight:700;}
-        .proj-state.active { background:#48bb78; color:#fff;}
-        .proj-state.done { background:#ccd; color:#444;}
-        .proj-state.paused { background:#faed5c; color:#555;}
-        .proj-color-dot { width:21px;height:21px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:middle;box-shadow:0 0 0 2px #eee;}
-        .proj-edit-btn { padding:0 11px; background:#fdedfa; color:#764ba2; font-weight:700; border-radius:8px; border:none; margin-right:6px;cursor:pointer;font-size:0.97em;}
-        /* دفاتر وأفكار */
-        .ideas-section {background:#fcfdff;padding:17px 15px 24px 17px;margin-top:17px;border-radius:21px; box-shadow:0 8px 32px #667eea2f;}
-        .ideas-table {width:100%;margin-top:11px;background:#f7f9fd;border-radius:18px;border-collapse:collapse; font-size:1.12em;}
-        .ideas-table th, .ideas-table td{padding:11px 7px;border-bottom:1px solid #e5e5e5;text-align:center;}
-        .ideas-table th {background: #764ba2; color:#fff; font-weight:700;}
-        .ideas-table td { vertical-align:middle; }
-        .empty-txt {text-align:center;color:#bbb;font-size:1.07em;padding:7px;}
-        .idea-state {display:inline-block;padding:4px 15px;border-radius:10px;font-weight:600;font-size:.97em;}
-        .idea-status.todo { background:#fec; color:#924;}
-        .idea-status.inprogress { background:#d7f5bf;color:#1b7b23;}
-        .idea-status.done { background:#c9eaff;color:#33b3af;}
-        /* Modal styles */
-        .modal-bg { position:fixed;top:0;right:0;left:0;bottom:0; background:rgba(137,112,226,.12);z-index:900;}
-        .modal-box {position:fixed;top:50%;right:50%;transform:translate(50%,-50%);
-            background:#fff;padding:34px 24px;border-radius:22px;box-shadow:0 14px 38px #0002;z-index:999;width:367px;max-width:97vw;}
-        .modal-box input, .modal-box select {font-size:1em;padding:7px;border-radius:9px;border:1.2px solid #ece1fa;margin-bottom:13px;width:98%;}
-        .modal-btn-bar{display:flex;justify-content:space-between;gap:10px;margin-top:20px;}
-        @media (max-width: 840px){
-            .main-content {margin-right:0;padding:17px 5px 78px 5px;}
-            .sidebar { top:auto; bottom: 0; right:0; left:0; width:100vw; height:70px; flex-direction:row; gap:9px; padding:11px 0; background:linear-gradient(90deg,#667eea,#764ba2);}
-            .logo {display:none;}
-            .menu {display:flex;flex-direction:row;gap:18px;width:auto;}
-            .menu-item {padding:11px 8px 11px 6px;margin:0;border-radius:15px; font-size:1.06em;}
-            .menu-item span {margin:0;}
+        .proj-state {display:inline-block; padding:3px 15px; border-radius:9px; font-size:0.95em; margin-right:7px;font-weight:700;}
+        .proj-state.active {background:#75e13d;color:#fff;}  .proj-state.done {background:#ddf;color:#444;}
+        .proj-state.paused {background:#ffe962;color:#6d570c;}
+        .proj-color-dot {width:21px;height:21px;border-radius:50%;display:inline-block;margin-left:9px;vertical-align:middle;box-shadow:0 0 0 2px #ececec;}
+        .proj-edit-btn {margin-right:9px;padding:4px 13px;border-radius:8px;background:#ececff;font-weight:700;border:none;cursor:pointer;}
+        /* Ideas Table and filter */
+        .ideas-filterbar{display:flex;gap:7px;align-items:center;margin-bottom:14px;color:#8d77bc;}
+        .ideas-section {margin-top:13px;padding:25px 18px 18px 16px;}
+        .ideas-table {width:100%;margin-top:5px;background:#f7fafc;border-radius:17px;border-collapse:collapse;font-size:1.15em;}
+        .ideas-table th, .ideas-table td{padding:13px 7px;border-bottom:1px solid #ececec;text-align:center;}
+        .ideas-table th {background: #6a62df; color:#fff; font-weight:800;}
+        .empty-txt{text-align:center;color:#b9b1da;font-size:1.13em;padding:4px;}
+        .idea-status {border-radius:12px;padding:5px 15px;font-weight:700;font-size:1em;border:none;}
+        .idea-status.جديد{background:#f2dcff;color:#af3ab3;}
+        .idea-status.قيد\ الانجاز{background:#cdedfc;color:#1c6a83;}
+        .idea-status.تم\ الانجاز{background:#cdfbe8;color:#248a3e;}
+        .idea-status.معلق{background:#fff5be;color:#947a13;}
+        .idea-status.ملغي{background:#ffe1e1;color:#d36666;}
+        /* MODAL */
+        .modal-bg {position:fixed;top:0;right:0;left:0;bottom:0;background:rgba(70,40,90,.15);z-index:999;}
+        .modal-box {position:fixed;top:50%;right:50%;transform:translate(50%,-50%);background:#fffefeb2;padding:36px 22px 28px 22px;border-radius:26px;box-shadow:0 16px 64px #ae7fff3e;z-index:1200;width:375px;max-width:96vw;
+            border:2px solid #ece1fa;text-align:right;backdrop-filter:blur(8px);}
+        .modal-box label {font-weight:700;margin:7px 0 0 0;display:inline-block;}
+        .modal-box input, .modal-box textarea,
+        .modal-box select {font-size:1em;padding:8px 7px;margin:8px 0 14px 0;
+            border-radius:11px; border:1.4px solid #ece1fa;width:97.5%;}
+        .modal-btn-bar{display:flex;justify-content:right;gap:11px;margin-top:13px;}
+        .add-fab {
+            position:fixed;bottom:29px;left:7vw;width:67px;height:67px;
+            background:linear-gradient(135deg,#a877e1 0%,#50e3c2 100%);
+            color:#fff;display:flex;align-items:center;justify-content:center;font-size:2.36em;
+            border:none;border-radius:50%;box-shadow:0 8px 30px #8f56cf50;cursor:pointer;z-index:990;
+            transition:box-shadow .2s;
+        }
+        .add-fab:hover {box-shadow:0 14px 42px #8f56cf92;}
+        @media (max-width: 968px){
+            .main-content{padding:24px 7px 70px 7px;}
+        }
+        @media (max-width: 700px){
+            .main-content{margin:0;padding:10px 2vw 66px 2vw;}
+            .sidebar {top:auto;bottom:0;right:0;left:0;width:100vw;height: 69px;flex-direction:row;gap:12px;padding:13px 0;background:rgba(255,255,255,.24);}
+            .logo{display:none}
+            .menu {display:flex;flex-direction:row;gap:0;width:100%;justify-content:space-around;}
+            .menu-item {width:100%;text-align:center;padding:14px 2px;border-radius:15px;font-size:1.1em;}
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar glass">
         <div class="logo">Ali Workspace</div>
         <ul class="menu">
-            <li class="menu-item active" onclick="showSection('dashboard')"><span>📊</span>الصفحة الرئيسية</li>
-            <li class="menu-item" onclick="showSection('projects')"><span>📁</span>المشاريع</li>
-            <li class="menu-item" onclick="showSection('tasks')"><span>✅</span>المهام</li>
-            <li class="menu-item" onclick="showSection('calendar')"><span>📅</span>التقويم</li>
-            <li class="menu-item" onclick="showSection('notes')"><span>📝</span>الملاحظات</li>
+            <li class="menu-item active" onclick="showSection('dashboard')"><span>📊</span></li>
+            <li class="menu-item" onclick="showSection('projects')"><span>📁</span></li>
+            <li class="menu-item" onclick="showSection('tasks')"><span>✅</span></li>
+            <li class="menu-item" onclick="showSection('calendar')"><span>📅</span></li>
+            <li class="menu-item" onclick="showSection('notes')"><span>📝</span></li>
         </ul>
     </div>
     <div class="main-content">
+        <!-- Dashboard Section -->
         <div id="dashboard" class="section active">
-            <div class="header"><h2>📊 لوحة الإحصاءات</h2></div>
-            <div class="stats">
-                <div class="stat"><div>المشاريع</div><div class="stat-val" id="statProjects">0</div></div>
-                <div class="stat"><div>المهام</div><div class="stat-val" id="statTasks">0</div></div>
-                <div class="stat"><div>المكتملة</div><div class="stat-val" id="statDone">0</div></div>
+            <div class="dashboard-glass glass">
+                <div class="header"><h2>📊 لوحة الإحصاءات</h2></div>
+                <div class="stats">
+                    <div class="stat"><div>المشاريع</div><div class="stat-val" id="statProjects">0</div></div>
+                    <div class="stat"><div>المهام</div><div class="stat-val" id="statTasks">0</div></div>
+                    <div class="stat"><div>المكتملة</div><div class="stat-val" id="statDone">0</div></div>
+                </div>
+                <canvas id="chartTasks" height="82"></canvas>
             </div>
-            <canvas id="chartTasks" height="86"></canvas>
         </div>
+        <!-- Projects Section -->
         <div id="projects" class="section">
             <div class="header">
                 <h2>📁 المشاريع</h2>
-                <button class="add-btn" onclick="addProjectPrompt()">+ إضافة مشروع</button>
             </div>
             <div class="proj-tabs" id="projTabs"></div>
+            <div class="ideas-filterbar" id="ideasFilterBar"></div>
             <div id="projContent"></div>
         </div>
+        <!-- Tasks Section -->
         <div id="tasks" class="section">
-            <div class="header">
-                <h2>✅ المهام</h2>
-                <button class="add-btn" onclick="addTaskPrompt()">+ إضافة مهمة</button>
-            </div>
-            <div class="task-grid">
+            <div class="header"><h2>✅ المهام</h2></div>
+            <div class="task-grid glass" style="margin-top:20px;">
                 <div class="task-head">
                     <select id="tasksProjSelect" onchange="renderTasks()"></select>
                     <span><input type="checkbox" id="showDoneChk" onchange="renderTasks()"> عرض المكتملة</span>
@@ -118,10 +146,9 @@
                 <div class="task-list" id="taskList"></div>
             </div>
         </div>
+        <!-- Calendar Section -->
         <div id="calendar" class="section">
-            <div class="header">
-                <h2>📅 التقويم</h2>
-            </div>
+            <div class="header"><h2>📅 التقويم</h2></div>
             <div class="calendar-nav">
                 <button onclick="moveMonth(-1)">⟨</button>
                 <span id="calendarMonthYear"></span>
@@ -132,282 +159,349 @@
                 <ul id="calendarDayTasks"></ul>
             </div>
         </div>
+        <!-- Notes Section -->
         <div id="notes" class="section">
             <div class="header notes-head">
                 <h2>📝 دفتر الملاحظات</h2>
-                <button class="add-btn" onclick="addNotePrompt()">+ إضافة ملاحظة</button>
             </div>
             <div class="note-grid" id="noteGrid"></div>
         </div>
     </div>
+
+    <!-- زر الإضافة العائم -->
+    <button class="add-fab" id="addFab" title="إضافة جديد">＋</button>
+
     <script>
-        let projects = JSON.parse(localStorage.getItem("aw_projects")||"[]");
-        let tasks = JSON.parse(localStorage.getItem("aw_tasks")||"[]");
-        let notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
-        let selectedProj = projects.length ? projects[0].id : null;
-        const projStatusText = {active:"نشط",done:"منتهي",paused:"متوقف"};
-        const taskStatusText = {todo:"قيد الانتظار",inprogress:"قيد العمل",done:"منجزة"};
-        // بدفتر أفكار المهام الجديدة
-        function showSection(sec) {
-            document.querySelectorAll('.menu-item').forEach(e=>e.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));
-            document.querySelector('.menu-item[onclick*="' + sec + '"]').classList.add('active');
-            document.getElementById(sec).classList.add('active');
-            if(sec==="dashboard") renderDashboard();
-            if(sec==="projects") { renderProjTabs(); renderProjContent(); }
-            if(sec==="tasks") renderTasks();
-            if(sec==="calendar") renderCalendar();
-            if(sec==="notes") renderNotes();
-        }
-        function renderProjTabs() {
-            let tabs = document.getElementById("projTabs");
-            if(!projects.length) { tabs.innerHTML = "<span class='empty-txt'>لا يوجد مشاريع.</span>"; return; }
-            tabs.innerHTML = projects.map(proj =>
-                `<div class="proj-tab${selectedProj==proj.id?' selected':''}" onclick="selectProject(${proj.id})">
-                    <span class="proj-color-dot" style="background:${proj.color||'#6a59c2'}"></span>
-                    ${proj.name}
-                    <span class="proj-state ${proj.status}">${projStatusText[proj.status]}</span>
-                    <button class="proj-edit-btn" onclick="event.stopPropagation();editProjectPrompt(${proj.id})">تحرير</button>
-                </div>`
-            ).join("");
-        }
-        function selectProject(id) {
-            selectedProj = id;
-            renderProjTabs();
-            renderProjContent();
-        }
-        function getProjectIdeas(projId) {
-            return JSON.parse(localStorage.getItem('aw_ideas_'+projId)||"[]");
-        }
-        function setProjectIdeas(projId, ideas) {
-            localStorage.setItem('aw_ideas_'+projId, JSON.stringify(ideas));
-        }
-        function renderProjContent() {
-            let container = document.getElementById("projContent");
-            let proj = projects.find(p=>p.id==selectedProj);
-            if(!proj) { container.innerHTML="<span class='empty-txt'>اختر مشروعاً لعرض الدفتر.</span>"; return;}
-            let ideas = getProjectIdeas(proj.id);
-            container.innerHTML = `
-                <div class="ideas-section">
-                  <div style="font-weight:800;margin-bottom:8px;font-size:1.18em">دفتر تتبع المهام والأفكار لمشروع <span style="color:${proj.color};">${proj.name}</span></div>
-                  <input id="idea-${proj.id}" type="text" placeholder="أضف فكرة أو مهمة أو ملاحظة" style="width:59%;margin-bottom:9px" />
-                  <select id="ideastat-${proj.id}" style="padding:4px 9px">
-                    <option value="todo">قيد الانتظار</option>
-                    <option value="inprogress">قيد العمل</option>
-                    <option value="done">منجزة</option>
+    // ---[ البيانات والمتغيرات الرئيسية ]---
+    let projects = JSON.parse(localStorage.getItem("aw_projects")||"[]");
+    let tasks = JSON.parse(localStorage.getItem("aw_tasks")||"[]");
+    let notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
+    let selectedProj = projects.length?projects[0].id:null;
+    let ideaStatusArr = ["جديد","قيد الانجاز","تم الانجاز","معلق","ملغي"];
+    let ideaStatusColors = {
+      "جديد":"#af3ab3",
+      "قيد الانجاز":"#1c6a83",
+      "تم الانجاز":"#248a3e",
+      "معلق":"#947a13",
+      "ملغي":"#d36666"
+    };
+    let filterIdeaStat = "";
+
+    // ---[ النظام ]---
+    function showSection(sec) {
+        document.querySelectorAll('.menu-item').forEach((e,i)=>{e.classList.remove('active');if(i==["dashboard","projects","tasks","calendar","notes"].indexOf(sec))e.classList.add('active');});
+        document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));
+        document.getElementById(sec).classList.add('active');
+        if(sec==="dashboard") renderDashboard();
+        if(sec==="projects") { renderProjTabs(); renderIdeasFilterBar(); renderProjContent();}
+        if(sec==="tasks") renderTasks();
+        if(sec==="calendar") renderCalendar();
+        if(sec==="notes") renderNotes();
+        document.getElementById('addFab').style.display=(sec==="notes"||sec==="tasks"||sec==="projects")?"block":"none";
+    }
+
+    // ---[ المشاريع ]---
+    function renderProjTabs() {
+        let tabs = document.getElementById("projTabs");
+        if(!projects.length) { tabs.innerHTML = "<span class='empty-txt'>لا يوجد مشاريع.</span>"; return; }
+        tabs.innerHTML = projects.map(proj =>
+            `<div class="proj-tab glass${selectedProj==proj.id?' selected':''}" onclick="selectProject(${proj.id})">
+                <span class="proj-color-dot" style="background:${proj.color||'#ae84fa'}"></span>
+                ${proj.name}
+                <span class="proj-state ${proj.status}">${proj.statusTxt||"نشط"}</span>
+                <button class="proj-edit-btn" onclick="event.stopPropagation();editProjectPrompt(${proj.id})">تحرير</button>
+            </div>`
+        ).join("");
+    }
+    function selectProject(id) {
+        selectedProj = id;
+        renderProjTabs();
+        renderIdeasFilterBar();
+        renderProjContent();
+    }
+    function getProjectIdeas(projId) {
+        return JSON.parse(localStorage.getItem('aw_ideas_'+projId)||"[]");
+    }
+    function setProjectIdeas(projId, ideas) {
+        localStorage.setItem('aw_ideas_'+projId, JSON.stringify(ideas));
+    }
+    function renderIdeasFilterBar() {
+        let bar = document.getElementById("ideasFilterBar");
+        if(!selectedProj) {bar.innerHTML="";return;}
+        bar.innerHTML = 'فلتر الحالة:' +
+            `<select style="padding:6px 10px;font-size:1em;border-radius:10px;" onchange="filterIdeaStat=this.value;renderProjContent()">
+            <option value="">الكل</option>
+            ${ideaStatusArr.map(v=>`<option${filterIdeaStat==v?' selected':''}>${v}</option>`).join('')}
+            </select>`;
+    }
+    function renderProjContent() {
+        let container = document.getElementById("projContent");
+        let proj = projects.find(p=>p.id==selectedProj);
+        if(!proj) { container.innerHTML="<span class='empty-txt'>اختر مشروعاً لعرض الدفتر.</span>"; return;}
+        let ideas = getProjectIdeas(proj.id);
+        if(filterIdeaStat) ideas=ideas.filter(i=>i.status==filterIdeaStat);
+        container.innerHTML = `
+            <div class="ideas-section glass">
+              <div style="font-weight:900;margin-bottom:13px;font-size:1.25em;color:${proj.color||'#8926f7'}">دفتر تتبع الأفكار والمهام لمشروع <span>${proj.name}</span></div>
+              <table class="ideas-table">
+                <tr>
+                  <th>الفكرة</th>
+                  <th>الحالة</th>
+                  <th>تاريخ الإضافة</th>
+                </tr>
+                ${ideas.map((i,idx)=>
+                `<tr>
+                  <td>${i.text}</td>
+                  <td>
+                  <select class="idea-status ${i.status}" onchange="updateIdeaStatus(${proj.id},${idx},this.value)">
+                    ${ideaStatusArr.map(st=>`<option${i.status==st?' selected':''}>${st}</option>`).join('')}
                   </select>
-                  <button onclick="addIdea(${proj.id})">إضافة</button>
-                  <table class="ideas-table">
-                    <tr>
-                      <th>الفكرة</th><th>الحالة</th><th>تاريخ الإضافة</th>
-                    </tr>
-                    ${ideas.map((i)=>
-                    `<tr>
-                      <td>${i.text}</td>
-                      <td><span class="idea-state idea-status ${i.status||'todo'}">${taskStatusText[i.status||'todo']}</span></td>
-                      <td>${i.date||''}</td>
-                    </tr>`
-                    ).join("")}
-                  </table>
-                  ${ideas.length===0?'<div class="empty-txt">لا يوجد أفكار مسجلة للمشروع!</div>':''}
-                </div>
-            `;
-        }
-        function addIdea(projId) {
-            let input = document.getElementById(`idea-${projId}`);
-            let stat = document.getElementById(`ideastat-${projId}`).value;
-            let txt = input.value.trim();
-            if(!txt) return alert("اكتب الفكرة أولاً");
-            let ideas = getProjectIdeas(projId);
-            ideas.push({text: txt, status: stat, date: new Date().toISOString().slice(0, 16)});
-            setProjectIdeas(projId, ideas);
-            input.value = ""; document.getElementById(`ideastat-${projId}`).value="todo";
-            renderProjContent();
-        }
+                  </td>
+                  <td>${i.date||"-"}</td>
+                </tr>`
+                ).join("")}
+              </table>
+              ${ideas.length===0?'<div class="empty-txt">لا يوجد أفكار مسجلة للمشروع!</div>':''}
+            </div>
+        `;
+    }
+    function updateIdeaStatus(pid,idx,value){
+        let ideas=getProjectIdeas(pid);
+        ideas[idx].status=value;
+        setProjectIdeas(pid,ideas);
+        renderProjContent();
+    }
+    // ---[ إضافة + تحرير مشروع ]---
+    function openProjectModal(proj,edit=false){
+        let bg=document.createElement('div');
+        bg.className='modal-bg';
+        let modal=document.createElement('div');
+        modal.className='modal-box';
+        modal.innerHTML=`
+            <div style="font-size:1.26em;font-weight:800;margin-bottom:13px">${edit?'تعديل':'إضافة'} مشروع</div>
+            <label>اسم المشروع</label>
+            <input id="projName" value="${proj?.name||''}" placeholder="اسم المشروع" maxlength="24"/><br>
+            <label>الوصف</label>
+            <input id="projDesc" value="${proj?.desc||''}" placeholder="وصف (اختياري)"/><br>
+            <label>لون المشروع</label>
+            <input id="projColor" value="${proj?.color||'#ae84fa'}" type="color" style="width:70px"/><br>
+            <label>الحالة</label>
+            <select id="projStatus">
+              ${['active','paused','done'].map(s=>`<option value="${s}"${proj?.status==s?' selected':''}>${s=='active'?'نشط':s=='paused'?'معلق':'منتهي'}</option>`).join('')}
+            </select>
+            <div class="modal-btn-bar">
+              <button onclick="${edit?'saveProjectEdit('+proj.id+')':'saveProjectAdd()'}" class="add-btn">${edit?'حفظ':'إضافة'}</button>
+              <button onclick="closeModal()" style="background:#eee;color:#a877e1;border-radius:10px;">إلغاء</button>
+              ${edit?`<button onclick="delProject(${proj.id})" style="background:#fdeded;color:#d66;border-radius:10px;margin-right:auto;">حذف</button>`:""}
+            </div>
+        `;
+        document.body.append(bg,modal);
+        window.closeModal=()=>{modal.remove();bg.remove();}
+    }
+    function saveProjectAdd(){
+        let name=document.getElementById("projName").value.trim();
+        if(!name) return alert("ادخل اسم المشروع");
+        let desc=document.getElementById("projDesc").value.trim();
+        let color=document.getElementById("projColor").value;
+        let stat=document.getElementById("projStatus").value;
+        let statTxt = stat=="active"?"نشط":stat=="paused"?"معلق":"منتهي";
+        let id=Date.now();
+        projects.push({id,name,desc,color,status:stat,statusTxt:statTxt});
+        localStorage.setItem("aw_projects",JSON.stringify(projects));
+        selectedProj=id;
+        renderProjTabs(); renderIdeasFilterBar(); renderProjContent(); renderDashboard();
+        closeModal();
+    }
+    function editProjectPrompt(id){ openProjectModal(projects.find(p=>p.id==id),true);}
+    function saveProjectEdit(id){
+        let name=document.getElementById("projName").value.trim();
+        if(!name) return alert("ادخل اسم المشروع");
+        let desc=document.getElementById("projDesc").value.trim();
+        let color=document.getElementById("projColor").value;
+        let stat=document.getElementById("projStatus").value;
+        let statTxt = stat=="active"?"نشط":stat=="paused"?"معلق":"منتهي";
+        let i=projects.findIndex(p=>p.id==id);
+        projects[i]={...projects[i],name,desc,color,status:stat, statusTxt:statTxt};
+        localStorage.setItem("aw_projects",JSON.stringify(projects));
+        renderProjTabs(); renderIdeasFilterBar(); renderProjContent(); renderDashboard();
+        closeModal();
+    }
+    function delProject(id){
+        if(!confirm("هل تريد حذف المشروع وكل أفكاره؟"))return;
+        projects=projects.filter(p=>p.id!=id);
+        localStorage.setItem("aw_projects",JSON.stringify(projects));
+        localStorage.removeItem('aw_ideas_'+id);
+        if(selectedProj==id)selectedProj=projects.length?projects[0].id:null;
+        renderProjTabs(); renderIdeasFilterBar(); renderProjContent(); renderDashboard();
+        closeModal();
+    }
+    // ---[ إضافة عبر الزر العائم ]---
+    document.getElementById("addFab").onclick = function(){
+        let sec = document.querySelector('.section.active').id;
+        if(sec=="projects") openProjectModal();
+        if(sec=="tasks") openTaskModal();
+        if(sec=="notes") openNoteModal();
+    }
+    // ---[ المهام: إضافة + عرض ]---
+    function openTaskModal(){
+        let bg=document.createElement('div');
+        bg.className='modal-bg';
+        let modal=document.createElement('div');
+        modal.className='modal-box';
+        modal.innerHTML=`
+            <div style="font-size:1.19em;font-weight:800;margin-bottom:12px">إضافة مهمة</div>
+            <label>اختر المشروع</label><br>
+            <select id="taskProj">${projects.map(p=>`<option value="${p.id}">${p.name}</option>`)}</select><br>
+            <label>تفاصيل المهمة</label>
+            <textarea id="taskText" placeholder="وصف المهمة" rows="2"></textarea>
+            <label>تاريخ الإستحقاق</label><input id="taskDate" type="date"/><br>
+            <div class="modal-btn-bar">
+              <button onclick="saveTaskAdd()" class="add-btn">إضافة</button>
+              <button onclick="closeModal()" style="background:#eee;color:#a877e1;border-radius:10px;">إلغاء</button>
+            </div>
+        `;
+        document.body.append(bg,modal);
+        window.closeModal=()=>{modal.remove();bg.remove();}
+    }
+    function saveTaskAdd(){
+        let pId=+document.getElementById("taskProj").value;
+        let txt=document.getElementById("taskText").value.trim();
+        if(!txt)return alert("أدخل وصف المهمة");
+        let date=document.getElementById("taskDate").value;
+        let done=false;
+        let id=Date.now();
+        tasks.push({id,projectId:pId,text:txt,date,done});
+        localStorage.setItem("aw_tasks",JSON.stringify(tasks));
+        renderTasks(); renderDashboard();
+        closeModal();
+    }
+    function renderTasks() {
+        let select=document.getElementById("tasksProjSelect");
+        select.innerHTML=projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
+        let showDone=document.getElementById("showDoneChk").checked;
+        let currentProj=+select.value||(projects[0]?projects[0].id:0);
+        let list=document.getElementById("taskList");
+        let filtered=tasks.filter(t=>t.projectId==currentProj && (showDone||!t.done));
+        if(!filtered.length) { list.innerHTML="<p class='empty-txt'>لا يوجد مهام حالياً.</p>"; return;}
+        list.innerHTML=filtered.map(t=>
+            `<div class="task-item glass ${t.done?'task-done':''}">
+                <span style="flex:1">${t.text}${t.date?' - <span style="font-size:.99em;color:#764ba2">['+t.date+']</span>':''}</span>
+                <button onclick="toggleTask(${t.id})">${t.done?'❎':'✔️'}</button>
+                <button onclick="delTask(${t.id})" style="color:#d66;background:none;border:none;">حذف</button>
+            </div>`
+        ).join("");
+    }
+    function delTask(id){
+        if(!confirm("متأكد من حذف المهمة؟")) return;
+        tasks=tasks.filter(t=>t.id!=id);
+        localStorage.setItem("aw_tasks",JSON.stringify(tasks));
+        renderTasks(); renderDashboard();
+    }
+    function toggleTask(id){
+        let t=tasks.find(t=>t.id==id);
+        t.done=!t.done;
+        localStorage.setItem("aw_tasks",JSON.stringify(tasks));
+        renderTasks(); renderDashboard();
+    }
 
-        // تحرير المشروع
-        function editProjectPrompt(id) {
-            let proj = projects.find(p=>p.id==id);
-            let bg = document.createElement('div');
-            bg.className = 'modal-bg';
-            let modal = document.createElement('div');
-            modal.className = 'modal-box';
-            modal.innerHTML = `
-                <div style="font-size:1.22em;font-weight:800;margin-bottom:12px">تحرير المشروع</div>
-                <input id="pNameEdit" type="text" value="${proj.name}" placeholder="اسم المشروع" /><br>
-                <input id="pDescEdit" type="text" value="${proj.desc||""}" placeholder="وصف المشروع" /><br>
-                <label> اللون: <input id="pColorEdit" type="color" value="${proj.color||"#667eea"}" style="margin-right:8px"/></label>
-                <br>
-                <label> الحالة:
-                  <select id="pStatusEdit">
-                    <option value="active"${proj.status=="active"?' selected':''}>نشط</option>
-                    <option value="done"${proj.status=="done"?' selected':''}>منتهي</option>
-                    <option value="paused"${proj.status=="paused"?' selected':''}>متوقف</option>
-                  </select>
-                </label>
-                <div class="modal-btn-bar">
-                  <button onclick="saveEditedProject(${proj.id})" class="add-btn">حفظ</button>
-                  <button onclick="closeModal()" style="background:#eee;color:#764ba2;border-radius:10px;">إلغاء</button>
-                  <button onclick="delProject(${proj.id})" style="background:#fdeded;color:#d66;border-radius:10px;">حذف</button>
-                </div>
-            `;
-            document.body.appendChild(bg);
-            document.body.appendChild(modal);
+    // ---[ الملاحظات: إضافة + عرض ]---
+    function openNoteModal(){
+        let bg=document.createElement('div');
+        bg.className='modal-bg';
+        let modal=document.createElement('div');
+        modal.className='modal-box';
+        modal.innerHTML=`
+            <div style="font-size:1.19em;font-weight:800;margin-bottom:11px">إضافة ملاحظة</div>
+            <label>عنوان الملاحظة</label><input id="noteTitle"/><br>
+            <label>المحتوى</label><textarea id="noteText" rows="3"></textarea>
+            <div class="modal-btn-bar">
+              <button onclick="saveNoteAdd()" class="add-btn">إضافة</button>
+              <button onclick="closeModal()" style="background:#eee;color:#a877e1;border-radius:10px;">إلغاء</button>
+            </div>
+        `;
+        document.body.append(bg,modal);
+        window.closeModal=()=>{modal.remove();bg.remove();}
+    }
+    function saveNoteAdd(){
+        let title=document.getElementById("noteTitle").value.trim();
+        if(!title)return alert("ادخل عنوان الملاحظة");
+        let text=document.getElementById("noteText").value.trim();
+        let id=Date.now(); notes.push({id,title,text,date:new Date().toISOString().slice(0,16)});
+        localStorage.setItem("aw_notes",JSON.stringify(notes));
+        renderNotes();
+        closeModal();
+    }
+    function renderNotes(){
+        let grid=document.getElementById("noteGrid");
+        if(!notes.length){grid.innerHTML="<p class='empty-txt'>لا يوجد ملاحظات.</p>";return;}
+        grid.innerHTML=notes.map(n=>`
+            <div class="note-card glass" style="padding:17px;margin-bottom:13px;">
+              <div class="note-title" style="font-weight:700">${n.title}</div>
+              <div style="color:#635;font-size:1em;">${n.text}</div>
+              <div style="font-size:0.89em;color:#ae92bb;margin-top:6px">تاريخ: ${n.date}</div>
+              <button onclick="delNote(${n.id})" style="color:#c66;margin-top:7px;border:none;background:none;font-size:1em;">حذف</button>
+            </div>
+        `).join("");
+    }
+    function delNote(id){
+        if(!confirm("حذف الملاحظة؟"))return;
+        notes=notes.filter(n=>n.id!=id);
+        localStorage.setItem("aw_notes",JSON.stringify(notes));
+        renderNotes();
+    }
+    // ---[ Dashboard/Cal/Init ]---
+    function renderDashboard(){
+        document.getElementById("statProjects").textContent=projects.length;
+        document.getElementById("statTasks").textContent=tasks.length;
+        document.getElementById("statDone").textContent=tasks.filter(t=>t.done).length;
+        let ctx=document.getElementById("chartTasks").getContext('2d');
+        if(window.tasksChart) window.tasksChart.destroy();
+        window.tasksChart=new Chart(ctx,{
+            type:"doughnut",
+            data:{
+                labels:["غير مكتملة","مكتملة"],
+                datasets:[{
+                    data:[tasks.length-tasks.filter(t=>t.done).length,tasks.filter(t=>t.done).length],
+                    backgroundColor:["#fafafa","#50e3c2"]
+                }]
+            },
+            options:{responsive:true,plugins:{legend:{position:"bottom"}}}
+        });
+    }
+    let calDate=new Date();
+    function moveMonth(val){calDate.setMonth(calDate.getMonth()+val);renderCalendar();}
+    function renderCalendar(){
+        let d=new Date(calDate);
+        d.setDate(1);let month=d.getMonth(),year=d.getFullYear();
+        document.getElementById("calendarMonthYear").textContent = `${year} - ${month+1}`;
+        let days=[];for(let i=0;i<d.getDay();i++)days.push("");
+        let lastDay=new Date(year,month+1,0).getDate();
+        for(let i=1;i<=lastDay;i++)days.push(i);
+        let today=new Date();let tDay=today.getDate(),tMonth=today.getMonth(),tYear=today.getFullYear();
+        let html="";
+        days.forEach(val=>{
+            let isToday=val==tDay&&month==tMonth&&year==tYear;
+            let dayTasks=tasks.filter(t=>t.date==`${year}-${String(month+1).padStart(2,'0')}-${String(val).padStart(2,'0')}`);
+            html+=`<div class="day-cell${isToday?' today':''}" onclick="showTasksForDay('${year}-${String(month+1).padStart(2,'0')}-${String(val).padStart(2,'0')}')">${val}${dayTasks.length?' <span style="color:#f56565">●</span>':''}</div>`
+        });
+        document.getElementById("calendarDays").innerHTML=html;
+        document.getElementById("calendarDayTasks").innerHTML="";
+    }
+    function showTasksForDay(date){
+        let dayTasks=tasks.filter(t=>t.date==date);
+        let list=document.getElementById("calendarDayTasks");
+        if(!dayTasks.length) {list.innerHTML="<li class='empty-txt'>لا يوجد مهام في هذا اليوم.</li>";return;}
+        list.innerHTML=dayTasks.map(t=>`<li>${t.text} (${projects.find(p=>p.id==t.projectId)?.name||""})</li>`).join("");
+    }
 
-            window.saveEditedProject = function(pid) {
-                let name = document.getElementById("pNameEdit").value.trim();
-                if (!name) return alert("ادخل اسم المشروع");
-                let desc = document.getElementById("pDescEdit").value.trim();
-                let color = document.getElementById("pColorEdit").value;
-                let status = document.getElementById("pStatusEdit").value;
-                let projIdx = projects.findIndex(p=>p.id==pid);
-                projects[projIdx] = {...projects[projIdx], name, desc, color, status};
-                localStorage.setItem("aw_projects", JSON.stringify(projects));
-                renderProjTabs(); renderProjContent(); renderDashboard();
-                closeModal();
-                alert("تم حفظ التعديلات");
-            }
-            window.closeModal = function () {
-                document.body.removeChild(modal);
-                document.body.removeChild(bg);
-            }
-        }
-
-        // حذف المشروع
-        function delProject(id) {
-            if(!confirm("متأكد من حذف المشروع وكل مهامه وأفكاره؟")) return;
-            projects=projects.filter(p=>p.id!=id);
-            tasks=tasks.filter(t=>t.projectId!=id);
-            localStorage.removeItem('aw_ideas_'+id);
-            localStorage.setItem("aw_projects",JSON.stringify(projects));
-            localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-            if(selectedProj==id) selectedProj = projects.length ? projects[0].id : null;
-            renderProjTabs(); renderProjContent(); renderTasks(); renderDashboard();
-        }
-        // باقي المهام والدوال كما هي...
-        function addTaskPrompt() {
-            if(!projects.length) return alert("أضف مشروع أولاً!");
-            let pId=+prompt("رقم المشروع لأضافة المهمة:\n"+projects.map(p=>`${p.id}: ${p.name}`).join("\n"));
-            if(!projects.find(p=>p.id==pId)) return alert("معرف المشروع غير صحيح");
-            let txt=prompt("وصف المهمة؟"); if(!txt) return;
-            let date=prompt("تاريخ الاستحقاق؟ (yyyy-mm-dd) اختياري","");
-            let done=false;
-            let id=Date.now();
-            tasks.push({id,projectId:pId,text:txt,date,done});
-            localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-            renderTasks(); renderDashboard();
-            alert("تم إضافة المهمة✅");
-        }
-        function renderTasks() {
-            let select=document.getElementById("tasksProjSelect");
-            select.innerHTML=projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
-            let showDone=document.getElementById("showDoneChk").checked;
-            let currentProj=+select.value||(projects[0]?projects[0].id:0);
-            let list=document.getElementById("taskList");
-            let filtered=tasks.filter(t=>t.projectId==currentProj && (showDone||!t.done));
-            if(!filtered.length) { list.innerHTML="<p class='empty-txt'>لا يوجد مهام حالياً.</p>"; return;}
-            list.innerHTML=filtered.map(t=>
-                `<div class="task-item ${t.done?'task-done':''}">
-                    <span style="flex:1">${t.text}${t.date?' - <span style="font-size:.99em;color:#764ba2">['+t.date+']</span>':''}</span>
-                    <button onclick="toggleTask(${t.id})">${t.done?'❎':'✔️'}</button>
-                    <button onclick="delTask(${t.id})" style="color:#d66">حذف</button>
-                </div>`
-            ).join("");
-        }
-        function delTask(id) {
-            if(!confirm("متأكد من حذف المهمة؟")) return;
-            tasks=tasks.filter(t=>t.id!=id);
-            localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-            renderTasks(); renderDashboard();
-        }
-        function toggleTask(id) {
-            let t=tasks.find(t=>t.id==id);
-            t.done=!t.done;
-            localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-            renderTasks(); renderDashboard();
-        }
-        function renderDashboard() {
-            document.getElementById("statProjects").textContent=projects.length;
-            document.getElementById("statTasks").textContent=tasks.length;
-            document.getElementById("statDone").textContent=tasks.filter(t=>t.done).length;
-            let ctx=document.getElementById("chartTasks").getContext('2d');
-            if(window.tasksChart) window.tasksChart.destroy();
-            window.tasksChart=new Chart(ctx,{
-                type:"doughnut",
-                data:{
-                    labels:["غير مكتملة","مكتملة"],
-                    datasets:[{
-                        data:[tasks.length-tasks.filter(t=>t.done).length,tasks.filter(t=>t.done).length],
-                        backgroundColor:["#764ba2","#48bb78"]
-                    }]
-                },
-                options:{responsive:true,plugins:{legend:{position:"bottom"}}}
-            });
-        }
-        let calDate=new Date();
-        function moveMonth(val){
-            calDate.setMonth(calDate.getMonth()+val);
-            renderCalendar();
-        }
-        function renderCalendar(){
-            let d=new Date(calDate);
-            d.setDate(1);
-            let month=d.getMonth();
-            let year=d.getFullYear();
-            document.getElementById("calendarMonthYear").textContent = `${year} - ${month+1}`;
-            let days=[];
-            for(let i=0;i<d.getDay();i++) days.push("");
-            let lastDay=new Date(year,month+1,0).getDate();
-            for(let i=1;i<=lastDay;i++) days.push(i);
-            let today=new Date(); let tDay=today.getDate(),tMonth=today.getMonth(),tYear=today.getFullYear();
-            let html="";
-            days.forEach(val=>{
-                let isToday=val==tDay && month==tMonth && year==tYear;
-                let dayTasks=tasks.filter(t=>t.date==`${year}-${String(month+1).padStart(2,'0')}-${String(val).padStart(2,'0')}`);
-                html+=`<div class="day-cell${isToday?' today':''}" onclick="showTasksForDay('${year}-${String(month+1).padStart(2,'0')}-${String(val).padStart(2,'0')}')">${val}${dayTasks.length?' <span style="color:#f56565">●</span>':''}</div>`
-            });
-            document.getElementById("calendarDays").innerHTML=html;
-            document.getElementById("calendarDayTasks").innerHTML="";
-        }
-        function showTasksForDay(date){
-            let dayTasks=tasks.filter(t=>t.date==date);
-            let list=document.getElementById("calendarDayTasks");
-            if(!dayTasks.length) {list.innerHTML="<li class='empty-txt'>لا يوجد مهام في هذا اليوم.</li>"; return;}
-            list.innerHTML=dayTasks.map(t=>`<li>${t.text} (${projects.find(p=>p.id==t.projectId)?.name||""})</li>`).join("");
-        }
-        function addNotePrompt(){
-            let title=prompt("عنوان الملاحظة؟"); if(!title) return;
-            let text=prompt("المحتوى؟");
-            let id=Date.now(); notes.push({id,title,text,date:new Date().toISOString().slice(0,16)});
-            localStorage.setItem("aw_notes",JSON.stringify(notes));
-            renderNotes();
-        }
-        function renderNotes(){
-            let grid=document.getElementById("noteGrid");
-            if(!notes.length){grid.innerHTML="<p class='empty-txt'>لا يوجد ملاحظات.</p>";return;}
-            grid.innerHTML=notes.map(n=>`
-                <div class="note-card">
-                  <div class="note-title">${n.title}</div>
-                  <div style="color:#666">${n.text}</div>
-                  <div style="font-size:0.85em;color:#988;margin-top:7px">تاريخ: ${n.date}</div>
-                  <button onclick="delNote(${n.id})" style="color:#c66;margin-top:5px">حذف</button>
-                </div>
-            `).join("");
-        }
-        function delNote(id){
-            if(!confirm("حذف الملاحظة؟"))return;
-            notes=notes.filter(n=>n.id!=id);
-            localStorage.setItem("aw_notes",JSON.stringify(notes));
-            renderNotes();
-        }
-        window.onload = ()=>{
-          renderDashboard();
-          renderProjTabs();
-          renderProjContent();
-          renderTasks();
-          renderCalendar();
-          renderNotes();
-        };
+    window.onload=()=>{
+       renderDashboard();
+       renderProjTabs(); renderIdeasFilterBar(); renderProjContent();
+       renderTasks();
+       renderCalendar();
+       renderNotes();
+       document.getElementById('addFab').style.display='block';
+    };
     </script>
 </body>
 </html>
