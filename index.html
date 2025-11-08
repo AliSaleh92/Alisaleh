@@ -1,157 +1,213 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ali Workspace</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      background: linear-gradient(135deg, #0f1419 0%, #191e2e 100%); 
-      color: #f3f3f3; 
-      font-family: 'Tajawal', sans-serif; 
-      min-height: 100vh; 
-      padding: 20px;
-    }
-    .container { max-width: 900px; margin: 0 auto; }
-    .header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 30px; 
-      border-bottom: 3px solid #e94560; 
-      padding-bottom: 15px; 
-    }
-    h1 { color: #e94560; font-size: 28px; }
-    button { 
-      padding: 10px 20px; 
-      background: #e94560; 
-      color: white; 
-      border: none; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-weight: bold;
-      font-size: 14px;
-    }
-    button:hover { background: #d63650; }
-    .login { text-align: center; padding: 60px 20px; }
-    .login input { 
-      padding: 12px; 
-      width: 100%; 
-      max-width: 300px; 
-      border: 2px solid #e94560; 
-      border-radius: 8px; 
-      background: #252948; 
-      color: #fff; 
-      margin: 10px 0;
-      font-size: 16px;
-    }
-    .login button { width: 100%; max-width: 300px; padding: 12px; font-size: 16px; }
-    .msg { color: #e94560; margin-top: 10px; text-align: center; }
-    .tasks { display: grid; gap: 15px; }
-    .task { 
-      background: rgba(37,41,72,0.8); 
-      padding: 20px; 
-      border-radius: 10px; 
-      border-right: 5px solid #e94560;
-    }
-    .task-title { font-weight: bold; color: #fff; font-size: 16px; margin-bottom: 8px; }
-    .task-desc { color: #bbb; font-size: 14px; }
-    .empty { text-align: center; padding: 40px; color: #888; }
-    .loading { text-align: center; color: #e94560; padding: 40px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Workspace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tasks-container {
+            display: none;
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .task-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .task-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .success-message {
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div id="content"></div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-
-    const config = {
-      apiKey: "AIzaSyAHywDr437fWGExfOKMju_h4z2281Qw3jA",
-      authDomain: "ali-workspace09.firebaseapp.com",
-      projectId: "ali-workspace09",
-      storageBucket: "ali-workspace09.firebasestorage.app",
-      messagingSenderId: "1056831160511",
-      appId: "1:1056831160511:web:83802dca1435426541460a"
-    };
-
-    const app = initializeApp(config);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    async function showTasks() {
-      document.getElementById('content').innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
-      try {
-        const docs = await getDocs(collection(db, "tasks"));
-        let html = '<div class="header"><h1>📋 لوحة المهام</h1><button onclick="logout()">🚪 خروج</button></div>';
-
-        if (docs.empty) {
-          html += '<div class="empty">📭 لا توجد مهام</div>';
-        } else {
-          html += '<div class="tasks">';
-          docs.forEach(d => {
-            const t = d.data();
-            html += '<div class="task"><div class="task-title">✓ ' + (t.title || '---') + '</div>';
-            if (t.description) html += '<div class="task-desc">' + t.description + '</div>';
-            html += '</div>';
-          });
-          html += '</div>';
-        }
-        document.getElementById('content').innerHTML = html;
-      } catch(e) {
-        document.getElementById('content').innerHTML = '<div class="empty">❌ خطأ: ' + e.message + '</div>';
-      }
-    }
-
-    function showLogin() {
-      document.getElementById('content').innerHTML = `
-        <div class="login">
-          <h2 style="color: #e94560; margin-bottom: 20px;">📋 Ali Workspace</h2>
-          <input id="email" value="al2we09@gmail.com" placeholder="البريد الإلكتروني">
-          <button onclick="sendCode()">📧 إرسال كود الدخول</button>
-          <div class="msg" id="msg"></div>
+    <div class="container">
+        <div class="logo">
+            <h1>🚀 Ali Workspace</h1>
+            <p>مساحة عملك الشخصية</p>
         </div>
-      `;
-    }
 
-    window.sendCode = async () => {
-      const email = document.getElementById('email').value.trim().toLowerCase();
-      if (email !== 'al2we09@gmail.com') {
-        document.getElementById('msg').innerText = '❌ البريد غير صحيح!';
-        return;
-      }
-      try {
-        await sendSignInLinkToEmail(auth, email, {url: location.href, handleCodeInApp: true});
-        localStorage.setItem('emailForSignIn', email);
-        document.getElementById('msg').innerText = '✅ تم الإرسال - تحقق من بريدك';
-      } catch(e) {
-        document.getElementById('msg').innerText = '❌ خطأ: ' + e.message;
-      }
-    };
+        <div class="login-container" id="loginContainer">
+            <div class="success-message" id="successMessage"></div>
+            <button class="btn" onclick="enterDirectly()">🔓 الدخول للنظام</button>
+        </div>
 
-    window.logout = async () => {
-      await signOut(auth);
-      location.reload();
-    };
+        <div class="tasks-container" id="tasksContainer">
+            <h2 style="color: #667eea; margin-bottom: 20px;">📝 المهام</h2>
+            <input type="text" class="task-input" id="taskInput" placeholder="أضف مهمة جديدة...">
+            <button class="btn" onclick="addTask()">إضافة مهمة</button>
+            <ul class="task-list" id="taskList"></ul>
+            <button class="btn" style="margin-top: 20px; background: #ff4757;" onclick="logout()">تسجيل الخروج</button>
+        </div>
+    </div>
 
-    if (isSignInWithEmailLink(auth, location.href)) {
-      let email = localStorage.getItem('emailForSignIn') || prompt('البريد:');
-      if (email === 'al2we09@gmail.com') {
-        signInWithEmailLink(auth, email, location.href)
-          .then(() => { localStorage.removeItem('emailForSignIn'); location.reload(); })
-          .catch(() => showLogin());
-      }
-    }
+    <script>
+        // دخول مباشر بدون تحقق
+        function enterDirectly() {
+            showTasks();
+        }
 
-    onAuthStateChanged(auth, user => {
-      if (user && user.email === 'al2we09@gmail.com') showTasks();
-      else showLogin();
-    });
-  </script>
+        function showTasks() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('tasksContainer').style.display = 'block';
+            loadTasks();
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const taskText = input.value.trim();
+            
+            if (taskText === '') {
+                alert('الرجاء إدخال نص المهمة');
+                return;
+            }
+
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            tasks.push({
+                id: Date.now(),
+                text: taskText,
+                completed: false,
+                date: new Date().toISOString()
+            });
+            
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            input.value = '';
+            loadTasks();
+        }
+
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            const taskList = document.getElementById('taskList');
+            
+            taskList.innerHTML = tasks.map(task => `
+                <li class="task-item ${task.completed ? 'completed' : ''}">
+                    <span onclick="toggleTask(${task.id})" style="cursor: pointer;">${task.text}</span>
+                    <button class="delete-btn" onclick="deleteTask(${task.id})">حذف</button>
+                </li>
+            `).join('');
+        }
+
+        function toggleTask(id) {
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                loadTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            tasks = tasks.filter(t => t.id !== id);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            loadTasks();
+        }
+
+        function logout() {
+            document.getElementById('tasksContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
