@@ -1,440 +1,343 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ali Workspace - نظام إدارة شامل</title>
-    <link href="https://fonts.googleapis.com/css?family=Tajawal:500,700,900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {margin:0; padding:0; min-height:100vh; font-family:'Tajawal',sans-serif; background:#f8fafc;}
-        .sidebar {position:fixed;right:0;top:0;width:75px;height:100vh;background:#23395b;z-index:100;display:flex;flex-direction:column;align-items:center;}
-        .logo {margin:32px auto 28px auto;font-size:1.3em;font-weight:900;color:#fff;letter-spacing:.5px;}
-        .menu-item {width:99%;padding:25px 0;margin:7px 0;border-radius:17px;display:flex;justify-content:center;align-items:center;cursor:pointer;color:#cad6e8;font-size:1.45em;transition:.13s;}
-        .menu-item.active, .menu-item:hover{background:#132443;color:#fff;}
-        .main-content {margin-right:80px;padding:40px 7vw 70px 7vw;max-width:1100px;}
-        .section {display:none;}
-        .section.active{display:block;}
-        .header {font-size:2.05em; font-weight:900; color:#23395b;margin-bottom:33px;letter-spacing:.5px;}
-        .flat-card {background:#fff;border-radius:22px;box-shadow:0 2px 24px #23395b0f;}
-        .stat-row {display:flex;gap:2.5vw;}
-        .stat-card {flex:1; background:#fff; border-radius:22px; box-shadow:0 2px 24px #23395b0f; padding:32px 0; text-align:center; min-width:155px;}
-        .stat-title{font-size:1.09em;color:#8590a2;}
-        .stat-val {font-size:2.6em;color:#23395b;font-weight:900;}
-        /* مشروع */
-        .proj-list{display:flex;flex-wrap:wrap;gap:23px;}
-        .proj-card{position:relative;background:#fff;border-radius:19px;box-shadow:0 2px 16px #23395b13;padding:30px 34px 22px 20px;flex:1 1 290px; min-width:230px;}
-        .proj-label{position:absolute;top:-19px;left:22px;font-size:.93em; background:var(--projcolor,#23395b);color:#fff;padding:5px 18px;border-radius:17px;font-weight:700;}
-        .proj-title{font-weight:800;font-size:1.14em;color:#243b5e;margin-bottom:3px;}
-        .proj-info{color:#6d7790;font-size:.98em;margin-bottom:8px;}
-        .proj-actions{margin-top:7px;}
-        .btn{background:#23395b;padding:0 22px;height:34px;border-radius:11px;border:none;color:#fff;cursor:pointer;font-weight:700;letter-spacing:.1px;margin-left:7px;}
-        .btn.sec{background:#eaeef3;color:#23395b;}
-        /* دفتر تتبع أفكار */
-        .tracker-panel{margin-top:18px;padding:18px;background:#fafbff;border-radius:12px;box-shadow:0 1px 8px #23395b09;}
-        .tracker-title{font-weight:700;color:#19294b;margin-bottom:8px;}
-        .tracker-input{display:flex;gap:7px;}
-        .tracker-input input{padding:8px;font-size:1.01em;border-radius:9px;border:1.1px solid #23395b31;flex:1;}
-        .tracker-table{width:100%;margin-top:11px;}
-        .tracker-table th, .tracker-table td{padding:9px 6px;text-align:center;}
-        .tracker-table th{background:#23395b;color:#fff;border-radius:7px;}
-        .tracker-table tr:not(:last-child) td{border-bottom:1px solid #e2e5f1;}
-        /* مهام */
-        .task-list{display:flex;flex-direction:column;gap:23px;}
-        .task-card{background:#fff; border-radius:19px; box-shadow:0 2px 16px #23395b10; padding:25px 27px 12px 20px;}
-        .task-head{display:flex;align-items:center;justify-content:space-between}
-        .task-proj-label{background:#23395b;color:#fff;border-radius:9px;padding:4px 13px;font-size:.98em;}
-        .task-title{font-weight:800;font-size:1.14em;margin:5px 0 2px 0;}
-        .task-desc{color:#6d7690;margin-bottom:8px;}
-        .task-meta{font-size:.97em;color:#aab;}
-        .note-li{background:#f4f5f7;border-radius:11px;padding:5px 11px;margin:2px 0 4px 0;color:#625b69;font-size:.98em;}
-        .note-li small{color:#caa;margin-left:12px;}
-        /* Modal */
-        .modal-bg {position:fixed;top:0;right:0;left:0;bottom:0;background:rgba(70,40,90,.09);z-index:999;}
-        .modal-box {position:fixed;top:50%;right:50%;transform:translate(50%,-50%);background:#fff;padding:18px 15px 18px 15px;border-radius:15px;box-shadow:0 12px 22px #23395b14;z-index:1000;width:320px;max-width:98vw;}
-        .modal-box label {font-weight:700;margin:7px 0 0 0;display:inline-block;}
-        .modal-box input, .modal-box textarea, .modal-box select {font-size:1em;padding:7px 6px;margin:6px 0 11px 0;border-radius:8px;border:1.2px solid #e8eaf1;width:96.5%;}
-        .modal-btn-bar{display:flex;justify-content:right;gap:8px;margin-top:10px;}
-        .add-fab {position:fixed;bottom:28px;left:6vw;width:53px;height:53px;background:#23395b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:2em;
-            border:none;border-radius:50%;box-shadow:0 6px 22px #23395b44;cursor:pointer;z-index:700;}
-        .add-fab:hover {box-shadow:0 14px 42px #23395b77;}
-        /* ملاحظات */
-        .note-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:17px;}
-        .note-card{background:#fff;border-radius:16px;box-shadow:0 2px 8px #23395b17;padding:16px;}
-        .note-title{font-weight:800;margin-bottom:6px;color:#23395b;}
-        .empty-txt{text-align:center;color:#b9b1da;font-size:1.11em;padding:4px;}
-        /* تقويم */
-        .cal-wrap{background:#fff;border-radius:22px;box-shadow:0 2px 16px #23395b10;padding:22px;margin-bottom:25px;}
-        .calendar-grid {display: grid;grid-template-columns: repeat(7,1fr);gap:9px;}
-        .calendar-cell {background:#f9fafd;border-radius:9px;text-align:center;padding:12px 0;color:#23395b;box-shadow:0 1px 3px #23395b11;}
-        .calendar-cell.today {background:#23395b;color:#fff; font-weight:700;}
-        @media (max-width:900px){
-            .main-content{padding:20px 2vw 60px 2vw;}
-            .proj-list,.task-list{gap:11px;}
-        }
-        @media (max-width:650px){
-            .main-content{margin:0!important;padding:9px 0 45px 0;}
-            .sidebar{top:auto;bottom:0;right:0;left:0;width:100vw;height:65px;flex-direction:row;gap:15px;}
-            .logo{display:none;}
-            .menu-item{padding:10px 0;margin:0;border-radius:12px;font-size:1.06em;}
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام مهام بتصميم Google Calendar - داكن/فاتح</title>
+  <link href="https://fonts.googleapis.com/css?family=Tajawal:500,700,900&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg-main: #f6f7fb;
+  --bg-side: #fff;
+  --bg-card: #fff;
+  --txt-main: #191b1f;
+  --txt-sub: #676a7c;
+  --accent: #2563eb;
+  --kanban-back: #edf2fa;
+  --border-card: #e7eaf2;
+  --button-bg: #2563eb;
+  --button-txt: #fff;
+  --priority-high: #ef4444;
+  --priority-med: #f59e42;
+  --priority-low: #60a5fa;
+}
+
+[data-theme="dark"] {
+  --bg-main: #22232a;
+  --bg-side: #181a20;
+  --bg-card: #26272c;
+  --txt-main: #fff;
+  --txt-sub: #b4b6be;
+  --accent: #40a9ff;
+  --kanban-back: #282a36;
+  --border-card: #40424d;
+  --button-bg: #2563eb;
+  --button-txt: #fff;
+  --priority-high: #ef4444;
+  --priority-med: #fbbf24;
+  --priority-low: #60a5fa;
+}
+body {
+  background: var(--bg-main);
+  color: var(--txt-main);
+  font-family: "Tajawal", Arial, sans-serif;
+  margin: 0;
+  transition: background .2s;
+}
+.header-app {
+  background: var(--bg-side);
+  color: var(--txt-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 19px 30px 14px 30px;
+  border-bottom: 1.4px solid var(--border-card);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.header-app h1 {
+  font-weight: 900;
+  font-size: 1.54em;
+  margin: 0;
+  letter-spacing: 0.08em;
+}
+.theme-switch {
+  border: none;
+  border-radius: 8px;
+  background: var(--kanban-back);
+  font-size: 1.33em;
+  padding: 6px 17px;
+  color: var(--accent);
+  margin-right: 8px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 70px;
+  height: 100vh;
+  background: var(--bg-side);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: -2px 0 14px #0001;
+  z-index: 100;
+  transition: background .2s;
+}
+.sidebar .logo {
+  font-weight: bold;
+  color: var(--accent);
+  font-size: 1.9em;
+  margin: 19px auto 32px auto;
+}
+.menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  margin-top: 7vh;
+}
+.menu-item {
+  color: var(--txt-sub);
+  text-align: center;
+  padding: 16px 0;
+  border-radius: 13px;
+  font-size: 1.48em;
+  margin: 0 5px;
+  cursor: pointer;
+}
+.menu-item.active, .menu-item:hover {
+  background: var(--accent);
+  color: #fff;
+}
+.main-content {
+  margin-right: 90px;
+  padding:40px 4vw 70px 4vw;
+  min-height:90vh;
+  max-width:1200px;
+}
+.kanban-board {
+  display: flex;
+  gap: 2vw;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top:30px
+}
+.kanban-col {
+  flex: 1;
+  min-width: 210px;
+  background: var(--kanban-back);
+  border-radius: 15px;
+  padding: 14px 6px 32px 6px;
+  box-shadow: 0 2px 18px #1e212a08;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  border: 1.3px solid var(--border-card);
+  min-height: 450px;
+}
+.kanban-title {
+  text-align: center;
+  font-weight: bold;
+  color: var(--accent);
+  padding: 7px 0 12px 0;
+  letter-spacing:.04em;
+}
+.kanban-tasks {
+  min-height: 30px;
+}
+.kanban-task {
+  background: var(--bg-card);
+  color: var(--txt-main);
+  border-radius: 12px;
+  box-shadow: 0 2px 9px #22242f08;
+  padding: 15px 14px 10px 14px;
+  border: 1px solid var(--border-card);
+  margin-bottom:3px;
+  cursor: move;
+  position:relative;
+  transition: background .15s;
+  display:flex;flex-direction:column;gap:4px
+}
+.kanban-task[draggable="true"] {opacity:.96;}
+.kb-title-row{display:flex;align-items:center;gap:5px}
+.kb-task-prio{
+  border-radius:60px;
+  color:#fff;
+  padding:2.7px 13px 2.7px 12px;
+  font-size:.98em;
+  font-weight:bold;
+  letter-spacing:.02em;
+  margin-left:7px
+}
+.kb-task-prio.high{background:var(--priority-high);}
+.kb-task-prio.med{background:var(--priority-med);}
+.kb-task-prio.low{background:var(--priority-low);}
+.kb-desc{color:var(--txt-sub);font-size:.97em;padding-bottom:2px;}
+.kb-date{color:var(--accent);font-size:.96em}
+.kanban-add {margin: 0 auto 0 auto;display:flex;gap:3px;}
+.kanban-add input, .kanban-add select {padding:6px;font-size:1em;border-radius:8px;border:1.2px solid var(--border-card);}
+.kanban-add button {background:var(--button-bg);color:var(--button-txt);padding:7px 14px;border-radius:8px;border:none;cursor:pointer;}
+@media (max-width: 800px){.main-content{padding:20px 2vw}}
+@media (max-width: 650px){.sidebar{position:static;width:100vw;height:60px;flex-direction:row;padding:0 11vw}
+.logo{display:none}.main-content{margin:0 !important;}}
+  </style>
 </head>
-<body>
-    <div class="sidebar">
-        <div class="logo">AliW</div>
-        <div class="menu-item active" onclick="showSection('dashboard')">📊</div>
-        <div class="menu-item" onclick="showSection('projects')">📁</div>
-        <div class="menu-item" onclick="showSection('tasks')">✅</div>
-        <div class="menu-item" onclick="showSection('calendar')">📅</div>
-        <div class="menu-item" onclick="showSection('notes')">📝</div>
+<body data-theme="light">
+  <div class="header-app">
+    <h1>مساحة إدارة مهامي</h1>
+    <button class="theme-switch" onclick="toggleTheme()" id="themeToggle">🌙</button>
+  </div>
+  <div class="sidebar">
+    <div class="logo">AliW</div>
+    <div class="menu-nav">
+      <div class="menu-item active">📅 المهام (كانبان)</div>
+      <div class="menu-item">📁 المشاريع</div>
+      <div class="menu-item">📝 ملاحظات</div>
+      <div class="menu-item">⚙️ الإعدادات</div>
     </div>
-    <div class="main-content">
-        <!-- Dashboard -->
-        <div id="dashboard" class="section active">
-            <div class="header">لوحة الإحصاءات</div>
-            <div class="stat-row">
-                <div class="stat-card"><div class="stat-title">المشاريع</div><div class="stat-val" id="statProjects">0</div></div>
-                <div class="stat-card"><div class="stat-title">المهام</div><div class="stat-val" id="statTasks">0</div></div>
-                <div class="stat-card"><div class="stat-title">المكتملة</div><div class="stat-val" id="statDone">0</div></div>
-            </div>
-        </div>
-        <!-- Projects -->
-        <div id="projects" class="section">
-            <div class="header">المشاريع</div>
-            <div style="margin-bottom:19px;"><button class="btn" onclick="openProjectModal()">+ مشروع جديد</button></div>
-            <div class="proj-list" id="projList"></div>
-        </div>
-        <!-- Tasks -->
-        <div id="tasks" class="section">
-            <div class="header">المهام</div>
-            <div style="margin-bottom:19px;"><button class="btn" onclick="openTaskModal()">+ إضافة مهمة</button></div>
-            <div class="task-list" id="taskList"></div>
-        </div>
-        <!-- Calendar -->
-        <div id="calendar" class="section">
-            <div class="header">التقويم</div>
-            <div class="cal-wrap">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-                  <button class="btn sec" onclick="moveMonth(-1)">⟨</button>
-                  <span id="calendarMonthYear"></span>
-                  <button class="btn sec" onclick="moveMonth(1)">⟩</button>
-                </div>
-                <div class="calendar-grid" id="calendarDays"></div>
-                <div style="margin-top:14px"><ul id="calendarDayTasks"></ul></div>
-            </div>
-        </div>
-        <!-- Notes -->
-        <div id="notes" class="section">
-            <div class="header">دفتر الملاحظات</div>
-            <div style="margin-bottom:19px;"><button class="btn" onclick="openNoteModal()">+ إضافة ملاحظة</button></div>
-            <div class="note-grid" id="noteGrid"></div>
-        </div>
+  </div>
+  <div class="main-content">
+    <div style="font-size:1.09em;color:var(--txt-sub);margin-bottom:13px;">
+      لوحة كانبان لإدارة المهام والأولويات بنمط Google Calendar
     </div>
-    <button class="add-fab" id="addFab" title="إضافة جديد">＋</button>
-    <script>
-    let projects = JSON.parse(localStorage.getItem("aw_projects")||"[]");
-    let tasks = JSON.parse(localStorage.getItem("aw_tasks")||"[]");
-    let notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
-    let selectedProj = projects.length ? projects[0].id : null;
-    let trackers = {};
-
-    // التنقل بين الصفحات
-    function showSection(sec){
-        document.querySelectorAll('.menu-item').forEach((e,i)=>{
-            e.classList.toggle('active',["dashboard","projects","tasks","calendar","notes"].indexOf(sec)===i)
-        });
-        document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));
-        document.getElementById(sec).classList.add('active');
-        if(sec==="dashboard")renderDashboard();
-        if(sec==="projects")renderProjects();
-        if(sec==="tasks")renderTasks();
-        if(sec==="calendar")renderCalendar();
-        if(sec==="notes")renderNotes();
-        document.getElementById('addFab').style.display=(sec==="notes"||sec==="tasks"||sec==="projects")?"block":"none";
-    }
-    // Dashboard
-    function renderDashboard(){
-      document.getElementById("statProjects").textContent=projects.length;
-      document.getElementById("statTasks").textContent=tasks.length;
-      document.getElementById("statDone").textContent=tasks.filter(t=>t.done).length;
-    }
-    // Projects & Modal & أفكار
-    function renderProjects(){
-        let grid=document.getElementById("projList");
-        if(!projects.length){grid.innerHTML="<p class='empty-txt'>لا يوجد مشاريع.</p>";return;}
-        grid.innerHTML=projects.map(p=>{
-          let projColor = p.color||"#23395b";
-          let tracker = getTrackerIdeas(p.id);
-          return `
-        <div class="proj-card" style="--projcolor:${projColor}">
-          <div class="proj-label">${p.name}</div>
-          <div class="proj-title">${p.name}</div>
-          <div class="proj-info">${p.desc||""}&nbsp;</div>
-          <div style="margin-bottom:5px;font-size:.97em;color:${projColor}">${tasks.filter(t=>t.projectId==p.id).length} مهام</div>
-          <div class="proj-actions">
-              <button class="btn sec" onclick="editProjectPrompt(${p.id})">تحرير</button>
-              <button class="btn" style="background:#e33a4a;" onclick="delProject(${p.id})">حذف</button>
-          </div>
-          <div class="tracker-panel">
-              <div class="tracker-title">دفتر تتبع الأفكار والمهام</div>
-              <div class="tracker-input">
-                  <input id="ideaInp-${p.id}" placeholder="أدخل فكرة/مهمة"/>
-                  <button class="btn" onclick="addTrackerIdea(${p.id})" style="padding:0 13px;height:37px;">إضافة</button>
-              </div>
-              <table class="tracker-table">
-                  <tr><th>الفكرة</th><th>تاريخ الإضافة</th></tr>
-                  ${tracker.map(i=>`<tr><td>${i.text}</td><td>${i.date}</td></tr>`).join("")}
-                </table>
-                ${tracker.length==0?'<div class="empty-txt">لا يوجد أفكار لهذا المشروع</div>':''}
-          </div>
-        </div>`;
-        }).join("");
-    }
-    function getTrackerIdeas(pid){return JSON.parse(localStorage.getItem('tracker_'+pid)||"[]");}
-    function setTrackerIdeas(pid,arr){localStorage.setItem('tracker_'+pid,JSON.stringify(arr));}
-    function addTrackerIdea(pid){
-        let inp=document.getElementById("ideaInp-"+pid);
-        let txt=inp.value.trim();
-        if(!txt)return;
-        let arr=getTrackerIdeas(pid);
-        arr.push({text:txt,date:new Date().toLocaleString('ar-SA',{weekday:"long",day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"})});
-        setTrackerIdeas(pid,arr);
-        inp.value=""; renderProjects();
-    }
-
-    // Projects Modals
-    function openProjectModal(proj){
-        let bg=document.createElement('div');
-        bg.className='modal-bg';
-        let modal=document.createElement('div');
-        modal.className='modal-box';
-        modal.innerHTML=`
-            <div style="font-size:1.09em;font-weight:800;margin-bottom:11px">${proj?'تعديل':'إضافة'} مشروع</div>
-            <label>اسم المشروع</label> <input id="pName" value="${proj?.name||''}" maxlength="28"/>
-            <label>الوصف</label> <input id="pDesc" value="${proj?.desc||''}"/>
-            <label>لون المشروع</label> <input id="pColor" value="${proj?.color||'#23395b'}" type="color" style="width:70px"/>
-            <div class="modal-btn-bar">
-              <button onclick="${proj?'saveProjEdit('+proj.id+')':'saveProjAdd()'}" class="btn">حفظ</button>
-              <button onclick="closeModal()" class="btn sec">إلغاء</button>
-            </div>
-        `;
-        document.body.append(bg,modal); window.closeModal=()=>{modal.remove();bg.remove();}
-    }
-    function saveProjAdd(){
-        let name=document.getElementById("pName").value.trim();
-        if(!name)return alert("اسم المشروع إجباري");
-        let desc=document.getElementById("pDesc").value.trim();
-        let color=document.getElementById("pColor").value;
-        let id=Date.now();
-        projects.push({id,name,desc,color});
-        localStorage.setItem("aw_projects",JSON.stringify(projects));
-        renderProjects();renderDashboard();
-        closeModal();
-    }
-    function editProjectPrompt(id){openProjectModal(projects.find(p=>p.id==id));}
-    function saveProjEdit(id){
-        let name=document.getElementById("pName").value.trim();
-        if(!name)return alert("اسم المشروع إجباري");
-        let desc=document.getElementById("pDesc").value.trim();
-        let color=document.getElementById("pColor").value;
-        let i=projects.findIndex(p=>p.id==id);
-        projects[i]={...projects[i],name,desc,color};
-        localStorage.setItem("aw_projects",JSON.stringify(projects));
-        renderProjects();renderDashboard();closeModal();
-    }
-    function delProject(id){
-        if(!confirm("حذف المشروع؟"))return;
-        projects=projects.filter(p=>p.id!=id);
-        tasks=tasks.filter(t=>t.projectId!=id);
-        localStorage.setItem("aw_projects",JSON.stringify(projects));
-        localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-        localStorage.removeItem('tracker_'+id);
-        renderProjects();renderTasks();renderDashboard();
-    }
-
-    // Tasks & Modal
-    function renderTasks(){
-      let grid=document.getElementById("taskList");
-      if(!tasks.length){grid.innerHTML="<p class='empty-txt'>لا يوجد مهام.</p>";return;}
-      grid.innerHTML=tasks.map(t=>{
-        let proj=projects.find(p=>p.id==t.projectId);
-        return `<div class="task-card">
-            <div class="task-head">
-                <span class="task-proj-label" style="background:${proj?.color||'#23395b'}">${proj?.name||""}</span>
-                <span>
-                   <button class="btn sec" onclick="toggleTask(${t.id})">${t.done?'❎':'✔️'}</button>
-                   <button class="btn sec" onclick="editTaskModal(${t.id})">تحرير</button>
-                   <button class="btn" style="background:#e33a4a;" onclick="delTask(${t.id})">حذف</button>
-                </span>
-            </div>
-            <div class="task-title">${t.name}</div>
-            <div class="task-desc">${t.desc||""}</div>
-            <div class="task-meta">${t.date?`📅 ${t.date}`:""} ${t.repeat&&t.repeat!='بدون'?`| ⟳ ${t.repeat}`:''}
-            ${t.attach?`| <a href="${t.attach}" style="color:#23395b;text-decoration:underline;" target="_blank">المرفق</a>`:""}</div>
-            <ul style="margin:6px 0 0 0;padding:0;list-style:none;">
-              ${(t.notes||[]).map(n=>`<li class="note-li">${n.text}<small>${n.date}</small></li>`).join("")}
-            </ul>
-        </div>`;
-      }).join("");
-    }
-    // Task Modal
-    let tempNotes=[];
-    function openTaskModal(task){
-        tempNotes=task?.notes?task.notes.slice():[];
-        let bg=document.createElement('div');
-        bg.className='modal-bg';
-        let modal=document.createElement('div');
-        modal.className='modal-box';
-        modal.innerHTML=`
-            <div style="font-size:1.12em;font-weight:800;margin-bottom:10px">${task?"تحرير مهمة":"إضافة مهمة"}</div>
-            <label>اختيار المشروع</label>
-            <select id="taskProj">${projects.map(p=>`<option value="${p.id}" ${task?.projectId==p.id?'selected':''} style="background:${p.color}">${p.name}</option>`)}</select>
-            <label>اسم المهمة</label><input id="taskName" maxlength="38" value="${task?.name||""}"/>
-            <label>وصف المهمة</label><textarea id="taskDesc" rows="2">${task?.desc||""}</textarea>
-            <label>التاريخ</label><input id="taskDate" type="date" value="${task?.date||""}"/>
-            <label>التكرار</label>
-            <select id="taskRepeat">
-                <option${!task?.repeat||task.repeat=="بدون"?" selected":""}>بدون</option>
-                <option${task?.repeat=="يومي"?" selected":""}>يومي</option>
-                <option${task?.repeat=="أسبوعي"?" selected":""}>أسبوعي</option>
-                <option${task?.repeat=="شهري"?" selected":""}>شهري</option>
-            </select>
-            <label>مرفق/رابط</label><input id="taskAttach" type="text" placeholder="الصق رابط أو وصف مختصر" value="${task?.attach||""}" />
-            <label>ملاحظات للمهمة (اضغط Enter للتسجيل)</label>
-            <textarea id="taskNoteInput" rows="1" onkeyup="if(event.key=='Enter'){addTaskNote();}"></textarea>
-            <ul id="taskNotesList" style="margin:0;list-style:none;padding:0;">
-              ${(tempNotes||[]).map(n=>`<li class="note-li">${n.text}<small>${n.date}</small></li>`).join("")}
-            </ul>
-            <div class="modal-btn-bar">
-              <button onclick="${task?'saveTaskEdit('+task.id+')':'saveTaskAdd()'}" class="btn">${task?"حفظ":"إضافة"}</button>
-              <button onclick="closeModal()" class="btn sec">إلغاء</button>
-            </div>
-        `;
-        document.body.append(bg,modal);window.closeModal=()=>{modal.remove();bg.remove();}
-    }
-    function addTaskNote(){
-        let txt=document.getElementById('taskNoteInput').value.trim();
-        if(!txt)return;
-        let d=new Date();
-        let now=d.toLocaleString('ar-SA',{weekday:"long",day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
-        tempNotes.push({text:txt,date:now});
-        renderTaskNotes();
-        document.getElementById('taskNoteInput').value="";
-    }
-    function renderTaskNotes(){
-        let lst=document.getElementById('taskNotesList');
-        lst.innerHTML=(tempNotes||[]).map(n=>`<li class="note-li">
-          <span>${n.text}</span>
-          <small>${n.date}</small>
-        </li>`).join('');
-    }
-    function saveTaskAdd(){
-        let pId = +document.getElementById("taskProj").value;
-        let name = document.getElementById("taskName").value.trim();
-        let desc = document.getElementById("taskDesc").value.trim();
-        let date = document.getElementById("taskDate").value;
-        let repeat = document.getElementById("taskRepeat").value;
-        let attach = document.getElementById("taskAttach").value.trim();
-        if(!name)return alert("أدخل اسم المهمة");
-        let id=Date.now();
-        let notes=tempNotes.slice();
-        tasks.push({id,projectId:pId,name,desc,date,repeat,attach,notes,done:false});
-        localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-        tempNotes=[];
-        renderTasks();renderDashboard();
-        closeModal();
-    }
-    function editTaskModal(id){openTaskModal(tasks.find(t=>t.id==id));}
-    function saveTaskEdit(id){
-        let pId = +document.getElementById("taskProj").value;
-        let name = document.getElementById("taskName").value.trim();
-        let desc = document.getElementById("taskDesc").value.trim();
-        let date = document.getElementById("taskDate").value;
-        let repeat = document.getElementById("taskRepeat").value;
-        let attach = document.getElementById("taskAttach").value.trim();
-        let i=tasks.findIndex(t=>t.id==id);
-        let notes=tempNotes.slice();
-        tasks[i]={...tasks[i],projectId:pId,name,desc,date,repeat,attach,notes};
-        localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-        tempNotes=[];
-        renderTasks();renderDashboard();
-        closeModal();
-    }
-    function delTask(id){
-        if(!confirm("متأكد من حذف المهمة؟")) return;
-        tasks=tasks.filter(t=>t.id!=id);localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-        renderTasks(); renderDashboard();
-    }
-    function toggleTask(id){
-        let t=tasks.find(t=>t.id==id);t.done=!t.done;localStorage.setItem("aw_tasks",JSON.stringify(tasks));
-        renderTasks(); renderDashboard();
-    }
-    // Calendar
-    let calDate=new Date();
-    function moveMonth(val){calDate.setMonth(calDate.getMonth()+val);renderCalendar();}
-    function renderCalendar(){
-        let d=new Date(calDate);d.setDate(1);let month=d.getMonth(),year=d.getFullYear();
-        document.getElementById("calendarMonthYear").textContent = `${year} - ${month+1}`;
-        let days=[];for(let i=0;i<d.getDay();i++)days.push("");
-        let lastDay=new Date(year,month+1,0).getDate();
-        for(let i=1;i<=lastDay;i++)days.push(i);
-        let today=new Date();let tDay=today.getDate(),tMonth=today.getMonth(),tYear=today.getFullYear();
-        let html="";
-        days.forEach(val=>{
-            let isToday=val==tDay&&month==tMonth&&year==tYear;
-            html+=`<div class="calendar-cell${isToday?' today':''}">${val}</div>`
-        });
-        document.getElementById("calendarDays").innerHTML=html;
-        document.getElementById("calendarDayTasks").innerHTML="";
-    }
-
-    // ملاحظات
-    function renderNotes(){
-      let grid=document.getElementById("noteGrid");
-      if(!notes.length){grid.innerHTML="<p class='empty-txt'>لا يوجد ملاحظات.</p>";return;}
-      grid.innerHTML=notes.map(n=>`
-        <div class="note-card">
-          <div class="note-title">${n.title}</div>
-          <div style="color:#555;font-size:1em;">${n.text}</div>
-          <div style="font-size:0.91em;color:#bbb;margin-top:5px">تاريخ: ${n.date}</div>
-          <button class="btn sec" style="margin-top:8px" onclick="delNote(${n.id})">حذف</button>
-        </div>
-      `).join("");
-    }
-    function openNoteModal(){
-        let bg=document.createElement('div');
-        bg.className='modal-bg';
-        let modal=document.createElement('div');
-        modal.className='modal-box';
-        modal.innerHTML=`
-            <div style="font-size:1.09em;font-weight:800;margin-bottom:11px">إضافة ملاحظة</div>
-            <label>عنوان الملاحظة</label><input id="noteTitle"/><br>
-            <label>المحتوى</label><textarea id="noteText" rows="2"></textarea>
-            <div class="modal-btn-bar">
-            <button onclick="saveNoteAdd()" class="btn">إضافة</button>
-            <button onclick="closeModal()" class="btn sec">إلغاء</button>
-            </div>
-        `;
-        document.body.append(bg,modal);window.closeModal=()=>{modal.remove();bg.remove();}
-    }
-    function saveNoteAdd(){
-        let title=document.getElementById("noteTitle").value.trim();
-        if(!title)return alert("ادخل عنوان الملاحظة");
-        let text=document.getElementById("noteText").value.trim();
-        let id=Date.now(); notes.push({id,title,text,date:new Date().toISOString().slice(0,16)});
-        localStorage.setItem("aw_notes",JSON.stringify(notes));
-        renderNotes(); closeModal();
-    }
-    function delNote(id){
-        if(!confirm("حذف الملاحظة؟"))return;
-        notes=notes.filter(n=>n.id!=id);
-        localStorage.setItem("aw_notes",JSON.stringify(notes));
-        renderNotes();
-    }
-    window.onload=()=>{
-      renderDashboard(); renderProjects(); renderTasks(); renderCalendar(); renderNotes();
-    }
-    </script>
+    <div class="kanban-board" id="kanbanBoard"></div>
+    <div class="kanban-add">
+      <input type="text" id="taskTitle" placeholder="... نص المهمة" maxlength="100">
+      <select id="taskPrio">
+        <option value="high">عالية</option>
+        <option value="med" selected>متوسطة</option>
+        <option value="low">منخفضة</option>
+      </select>
+      <button onclick="addTask()">إضافة</button>
+    </div>
+    <div style="margin-top:20px;">
+      <button onclick="exportTasks()" class="theme-switch">تصدير</button>
+      <input type="file" style="display:none;" id="importInput" accept=".json" onchange="importTasksFile(event)">
+      <button onclick="document.getElementById('importInput').click()" class="theme-switch">استيراد</button>
+    </div>
+  </div>
+  <script>
+const taskStates=["new","progress","done","hold","cancel"];
+const stateLabels={
+  "new":"جديد",
+  "progress":"قيد الإنجاز",
+  "done":"مكتملة",
+  "hold":"معلقة",
+  "cancel":"ملغاة"
+};
+const prioLabels={high:"عالية",med:"متوسطة",low:"منخفضة"};
+const prioClasses={high:"high",med:"med",low:"low"};
+let tasks = JSON.parse(localStorage.getItem("kanban_tasks")||"[]");
+// تمكين الدارك/اللايت والاحتفاظ بالاختيار
+if(localStorage.getItem("theme_mode")){
+  document.body.dataset.theme = localStorage.getItem("theme_mode");
+  document.getElementById("themeToggle").textContent=
+    document.body.dataset.theme=="dark"?"☀️":"🌙";
+}
+function toggleTheme(){
+  let th=document.body.dataset.theme=="light"?"dark":"light";
+  document.body.dataset.theme=th;
+  document.getElementById("themeToggle").textContent=th=="dark"?"☀️":"🌙";
+  localStorage.setItem("theme_mode",th);
+}
+// رسم كانبان
+function renderKanban() {
+  let board = document.getElementById("kanbanBoard");
+  board.innerHTML = "";
+  taskStates.forEach(state=>{
+    let col=document.createElement("div");
+    col.className="kanban-col";
+    col.dataset.state=state;
+    col.innerHTML = `<div class="kanban-title">${stateLabels[state]}</div>
+      <div class="kanban-tasks" id="tasks-${state}" ondrop="drop(event,'${state}')" ondragover="allowDrop(event)"></div>`;
+    board.appendChild(col);
+  });
+  tasks.forEach((t,i)=>{
+    let card=document.createElement("div");
+    card.className="kanban-task";
+    card.draggable=true;
+    card.ondragstart=function(e){e.dataTransfer.setData("task-index",i);};
+    card.innerHTML=`
+      <div class="kb-title-row">
+        <span class="kb-task-prio ${prioClasses[t.prio]}">${prioLabels[t.prio]}</span>
+        <b>${t.title}</b>
+      </div>
+      <div class="kb-desc">${t.desc?t.desc:""}</div>
+      <div class="kb-date">${t.date?t.date:""}</div>
+      <div style="font-size:.93em;margin-top:6px">
+        <button onclick="editTask(${i})" class="theme-switch" style="font-size:.93em">🖊️</button>
+        <button onclick="delTask(${i})" class="theme-switch" style="color:#ef4444;font-size:.93em">حذف</button>
+      </div>
+    `;
+    document.getElementById("tasks-"+t.state).appendChild(card);
+  });
+}
+// إضافة مهمة جديدة
+function addTask(){
+  let title=document.getElementById("taskTitle").value.trim();
+  let prio=document.getElementById("taskPrio").value;
+  if(!title) return alert("رجاءً أدخل نص المهمة");
+  tasks.push({title,prio,state:"new",desc:"",date:new Date().toLocaleString("ar-EG")});
+  localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
+  document.getElementById("taskTitle").value="";
+  renderKanban();
+}
+// حذف مهمة
+function delTask(i){
+  if(!confirm("حذف المهمة؟"))return;
+  tasks.splice(i,1);
+  localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
+  renderKanban();
+}
+// تحرير
+function editTask(i){
+  let t=tasks[i];
+  let newTitle = prompt("عدل عنوان المهمة",t.title);
+  if(newTitle!=null&&newTitle.trim()){
+    t.title=newTitle;
+    localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
+    renderKanban();
+  }
+}
+// سحب إفلات
+function allowDrop(evt){evt.preventDefault();}
+function drop(evt, newState){
+  evt.preventDefault();
+  let idx=+evt.dataTransfer.getData("task-index");
+  tasks[idx].state=newState;
+  localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
+  renderKanban();
+}
+// تصدير/استيراد
+function exportTasks(){
+  let data=JSON.stringify(tasks,null,2);
+  let a=document.createElement("a");
+  a.href="data:application/json,"+ encodeURIComponent(data);
+  a.download="kanban_tasks.json";
+  a.click();
+}
+function importTasksFile(e){
+  let file = e.target.files[0];
+  if(!file)return;
+  let reader=new FileReader();
+  reader.onload = function(evt){
+    try{
+      let arr=JSON.parse(evt.target.result);
+      if(!Array.isArray(arr)||!arr[0].title)throw "ملف غير صحيح";
+      tasks=arr;
+      localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
+      renderKanban();
+      alert("تم استيراد المهام بنجاح");
+    }catch{alert("ملف غير صحيح أو غير مدعوم");}
+  };
+  reader.readAsText(file);
+}
+// ريندر تلقائي
+window.onload=renderKanban;
+  </script>
 </body>
 </html>
