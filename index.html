@@ -3,39 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام مهام بتصميم Google Calendar - داكن/فاتح</title>
-  <link href="https://fonts.googleapis.com/css?family=Tajawal:500,700,900&display=swap" rel="stylesheet">
+  <title>لوحة كانبان - Google Calendar Design</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tajawal:500,700,900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <style>
 :root {
-  --bg-main: #f6f7fb;
+  --bg-main: #f5f6fa;
   --bg-side: #fff;
   --bg-card: #fff;
-  --txt-main: #191b1f;
-  --txt-sub: #676a7c;
+  --txt-main: #181a20;
+  --txt-sub: #789;
   --accent: #2563eb;
-  --kanban-back: #edf2fa;
-  --border-card: #e7eaf2;
+  --kanban-back: #eef1f4;
+  --border-card: #e6e8ef;
   --button-bg: #2563eb;
   --button-txt: #fff;
   --priority-high: #ef4444;
   --priority-med: #f59e42;
   --priority-low: #60a5fa;
 }
-
 [data-theme="dark"] {
-  --bg-main: #22232a;
-  --bg-side: #181a20;
-  --bg-card: #26272c;
+  --bg-main: #23232e;
+  --bg-side: #1a1a25;
+  --bg-card: #232432;
   --txt-main: #fff;
-  --txt-sub: #b4b6be;
-  --accent: #40a9ff;
+  --txt-sub: #b0b5c9;
+  --accent: #46a6fa;
   --kanban-back: #282a36;
-  --border-card: #40424d;
+  --border-card: #353648;
   --button-bg: #2563eb;
   --button-txt: #fff;
-  --priority-high: #ef4444;
-  --priority-med: #fbbf24;
-  --priority-low: #60a5fa;
 }
 body {
   background: var(--bg-main);
@@ -44,180 +41,83 @@ body {
   margin: 0;
   transition: background .2s;
 }
-.header-app {
-  background: var(--bg-side);
-  color: var(--txt-main);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 19px 30px 14px 30px;
-  border-bottom: 1.4px solid var(--border-card);
-  position: sticky;
-  top: 0;
-  z-index: 20;
-}
-.header-app h1 {
-  font-weight: 900;
-  font-size: 1.54em;
-  margin: 0;
-  letter-spacing: 0.08em;
-}
-.theme-switch {
-  border: none;
-  border-radius: 8px;
-  background: var(--kanban-back);
-  font-size: 1.33em;
-  padding: 6px 17px;
-  color: var(--accent);
-  margin-right: 8px;
-  cursor: pointer;
-  transition: background .2s;
-}
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 70px;
-  height: 100vh;
-  background: var(--bg-side);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: -2px 0 14px #0001;
-  z-index: 100;
-  transition: background .2s;
-}
-.sidebar .logo {
-  font-weight: bold;
-  color: var(--accent);
-  font-size: 1.9em;
-  margin: 19px auto 32px auto;
-}
-.menu-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  width: 100%;
-  margin-top: 7vh;
-}
-.menu-item {
-  color: var(--txt-sub);
-  text-align: center;
-  padding: 16px 0;
-  border-radius: 13px;
-  font-size: 1.48em;
-  margin: 0 5px;
-  cursor: pointer;
-}
-.menu-item.active, .menu-item:hover {
-  background: var(--accent);
-  color: #fff;
-}
-.main-content {
-  margin-right: 90px;
-  padding:40px 4vw 70px 4vw;
-  min-height:90vh;
-  max-width:1200px;
-}
-.kanban-board {
-  display: flex;
-  gap: 2vw;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top:30px
-}
-.kanban-col {
-  flex: 1;
-  min-width: 210px;
-  background: var(--kanban-back);
-  border-radius: 15px;
-  padding: 14px 6px 32px 6px;
-  box-shadow: 0 2px 18px #1e212a08;
-  display: flex;
-  flex-direction: column;
-  gap: 17px;
-  border: 1.3px solid var(--border-card);
-  min-height: 450px;
-}
-.kanban-title {
-  text-align: center;
-  font-weight: bold;
-  color: var(--accent);
-  padding: 7px 0 12px 0;
-  letter-spacing:.04em;
-}
-.kanban-tasks {
-  min-height: 30px;
-}
-.kanban-task {
-  background: var(--bg-card);
-  color: var(--txt-main);
-  border-radius: 12px;
-  box-shadow: 0 2px 9px #22242f08;
-  padding: 15px 14px 10px 14px;
-  border: 1px solid var(--border-card);
-  margin-bottom:3px;
-  cursor: move;
-  position:relative;
-  transition: background .15s;
-  display:flex;flex-direction:column;gap:4px
-}
-.kanban-task[draggable="true"] {opacity:.96;}
+.header-app{
+  background:var(--bg-side);color:var(--txt-main);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 28px;border-bottom:1.3px solid var(--border-card);}
+.header-app h1{font-size:1.45em;font-weight:900;margin:0;letter-spacing:.05em;}
+.theme-switch{border:none;background:var(--kanban-back);font-size:1.3em;padding:6px 17px;color:var(--accent);
+  border-radius:9px;cursor:pointer;transition:background .2s;}
+.sidebar{
+  position:fixed;top:0;right:0;width:65px;height:100vh;background:var(--bg-side);padding-top:14px;
+  box-shadow:-1px 0 19px #22212514;display:flex;flex-direction:column;align-items:center;z-index:99;}
+.logo{font-weight:900;color:var(--accent);font-size:1.4em;margin-bottom:43px;}
+.menu-nav{display:flex;flex-direction:column;gap:15px;width:100%;}
+.menu-item{color:var(--txt-sub);padding:15px 0;text-align:center;cursor:pointer;transition:.17s;font-size:1.57em;}
+.menu-item.active,.menu-item:hover{background:var(--accent);color:#fff;}
+.menu-icon{font-size:1.18em !important;}
+.main-content{margin-right:80px;padding:35px 4vw 70px 4vw;max-width:1200px;}
+.kanban-board{display:flex;gap:2vw;justify-content:flex-start;align-items:flex-start;margin-top:20px;overflow-x:auto;}
+.kanban-col{flex:1;min-width:210px;background:var(--kanban-back);border-radius:14px;padding:12px 7px 32px 7px;box-shadow:0 2px 13px #1e212a08;display:flex;flex-direction:column;gap:11px;border:1.3px solid var(--border-card);min-height:390px;}
+.kanban-title{text-align:center;font-weight:900;color:var(--accent);padding:5px 0 9px 0;letter-spacing:.01em;margin-bottom:7px;}
+.kanban-tasks{min-height:25px;}
+.kanban-task{background:var(--bg-card);color:var(--txt-main);border-radius:11px;box-shadow:0 2px 9px #22242f08;padding:13px 13px 8px 10px;border:1px solid var(--border-card);margin-bottom:3px;cursor:move;transition:background .15s;display:flex;flex-direction:column;gap:2px;}
+.kanban-task[draggable="true"]{opacity:.96;}
 .kb-title-row{display:flex;align-items:center;gap:5px}
-.kb-task-prio{
-  border-radius:60px;
-  color:#fff;
-  padding:2.7px 13px 2.7px 12px;
-  font-size:.98em;
-  font-weight:bold;
-  letter-spacing:.02em;
-  margin-left:7px
-}
+.kb-task-prio{padding:2px 11px;border-radius:60px;color:#fff;font-size:.98em;font-weight:800;margin-left:8px}
 .kb-task-prio.high{background:var(--priority-high);}
 .kb-task-prio.med{background:var(--priority-med);}
 .kb-task-prio.low{background:var(--priority-low);}
-.kb-desc{color:var(--txt-sub);font-size:.97em;padding-bottom:2px;}
-.kb-date{color:var(--accent);font-size:.96em}
-.kanban-add {margin: 0 auto 0 auto;display:flex;gap:3px;}
-.kanban-add input, .kanban-add select {padding:6px;font-size:1em;border-radius:8px;border:1.2px solid var(--border-card);}
-.kanban-add button {background:var(--button-bg);color:var(--button-txt);padding:7px 14px;border-radius:8px;border:none;cursor:pointer;}
-@media (max-width: 800px){.main-content{padding:20px 2vw}}
-@media (max-width: 650px){.sidebar{position:static;width:100vw;height:60px;flex-direction:row;padding:0 11vw}
-.logo{display:none}.main-content{margin:0 !important;}}
+.kb-desc{color:var(--txt-sub);font-size:.98em;padding-bottom:1px;}
+.kb-date{color:var(--accent);font-size:.94em;}
+.kanban-add{display:flex;gap:5px;margin-top:30px;}
+.kanban-add input,.kanban-add select{padding:7px 4px;font-size:1.06em;border-radius:8px;border:1.2px solid var(--border-card);}
+.kanban-add button{background:var(--button-bg);color:var(--button-txt);padding:7px 16px;border-radius:8px;border:none;cursor:pointer;transition:background .17s;}
+.kanban-add button:hover{background:#14369c;}
+.kb-actions-row{display:flex;gap:2px;margin-top:5px;}
+.kb-actions-row button{background:var(--kanban-back);color:var(--accent);border:none;border-radius:7px;padding:2px 10px;cursor:pointer;}
+.kb-actions-row button.del{color:var(--priority-high);}
+.kb-actions-row button:active{background:var(--accent);color:#fff;}
+::-webkit-scrollbar{height:7px;width:5px;background:var(--bg-main);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:7px;}
+@media(max-width:800px){.main-content{padding:15px 2vw}}
+@media(max-width:650px){
+  .sidebar{position:fixed;width:100vw;height:65px;flex-direction:row;top:auto;bottom:0;left:0;right:0;}
+  .main-content{margin:0 !important;padding:11px 0 70px 0;}
+  .logo{display:none;}
+}
   </style>
 </head>
 <body data-theme="light">
   <div class="header-app">
-    <h1>مساحة إدارة مهامي</h1>
+    <h1><span style="color:var(--accent)">AliW</span> | لوحة إدارة مهامي</h1>
     <button class="theme-switch" onclick="toggleTheme()" id="themeToggle">🌙</button>
   </div>
   <div class="sidebar">
     <div class="logo">AliW</div>
     <div class="menu-nav">
-      <div class="menu-item active">📅 المهام (كانبان)</div>
-      <div class="menu-item">📁 المشاريع</div>
-      <div class="menu-item">📝 ملاحظات</div>
-      <div class="menu-item">⚙️ الإعدادات</div>
+      <div class="menu-item active"><span class="material-icons menu-icon">check_circle</span><div style="font-size:.72em;font-weight:bold">المهام<br>(كانبان)</div></div>
+      <div class="menu-item"><span class="material-icons menu-icon">folder_special</span><div style="font-size:.72em;">المشاريع</div></div>
+      <div class="menu-item"><span class="material-icons menu-icon">sticky_note_2</span><div style="font-size:.72em;">ملاحظات</div></div>
+      <div class="menu-item"><span class="material-icons menu-icon">settings</span><div style="font-size:.72em;">إعدادات</div></div>
     </div>
   </div>
   <div class="main-content">
-    <div style="font-size:1.09em;color:var(--txt-sub);margin-bottom:13px;">
-      لوحة كانبان لإدارة المهام والأولويات بنمط Google Calendar
-    </div>
+    <div style="font-size:1.07em;color:var(--txt-sub);margin-bottom:13px;">لوحة كانبان أنيقة - Google Calendar Style</div>
     <div class="kanban-board" id="kanbanBoard"></div>
-    <div class="kanban-add">
+    <form class="kanban-add" onsubmit="addTask();return false;">
       <input type="text" id="taskTitle" placeholder="... نص المهمة" maxlength="100">
       <select id="taskPrio">
-        <option value="high">عالية</option>
+        <option value="high">أولوية عالية</option>
         <option value="med" selected>متوسطة</option>
         <option value="low">منخفضة</option>
       </select>
-      <button onclick="addTask()">إضافة</button>
-    </div>
-    <div style="margin-top:20px;">
-      <button onclick="exportTasks()" class="theme-switch">تصدير</button>
+      <button type="submit">إضافة</button>
+    </form>
+    <div style="margin-top:23px;">
+      <button onclick="exportTasks()" class="theme-switch">تحميل النسخة الاحتياطية</button>
       <input type="file" style="display:none;" id="importInput" accept=".json" onchange="importTasksFile(event)">
-      <button onclick="document.getElementById('importInput').click()" class="theme-switch">استيراد</button>
+      <button onclick="document.getElementById('importInput').click()" class="theme-switch">استيراد ملف بيانات</button>
     </div>
   </div>
   <script>
@@ -232,7 +132,7 @@ const stateLabels={
 const prioLabels={high:"عالية",med:"متوسطة",low:"منخفضة"};
 const prioClasses={high:"high",med:"med",low:"low"};
 let tasks = JSON.parse(localStorage.getItem("kanban_tasks")||"[]");
-// تمكين الدارك/اللايت والاحتفاظ بالاختيار
+// تفعيل الثيم ولايت/دارك
 if(localStorage.getItem("theme_mode")){
   document.body.dataset.theme = localStorage.getItem("theme_mode");
   document.getElementById("themeToggle").textContent=
@@ -244,7 +144,7 @@ function toggleTheme(){
   document.getElementById("themeToggle").textContent=th=="dark"?"☀️":"🌙";
   localStorage.setItem("theme_mode",th);
 }
-// رسم كانبان
+// ----------- رسم لوحة الكانبان --------
 function renderKanban() {
   let board = document.getElementById("kanbanBoard");
   board.innerHTML = "";
@@ -268,15 +168,15 @@ function renderKanban() {
       </div>
       <div class="kb-desc">${t.desc?t.desc:""}</div>
       <div class="kb-date">${t.date?t.date:""}</div>
-      <div style="font-size:.93em;margin-top:6px">
-        <button onclick="editTask(${i})" class="theme-switch" style="font-size:.93em">🖊️</button>
-        <button onclick="delTask(${i})" class="theme-switch" style="color:#ef4444;font-size:.93em">حذف</button>
+      <div class="kb-actions-row">
+        <button onclick="editTask(${i})" title="تعديل"><span class="material-icons">edit</span></button>
+        <button onclick="delTask(${i})" class="del" title="حذف"><span class="material-icons">delete</span></button>
       </div>
     `;
     document.getElementById("tasks-"+t.state).appendChild(card);
   });
 }
-// إضافة مهمة جديدة
+// ----------- إضافة مهمة ---------
 function addTask(){
   let title=document.getElementById("taskTitle").value.trim();
   let prio=document.getElementById("taskPrio").value;
@@ -296,7 +196,7 @@ function delTask(i){
 // تحرير
 function editTask(i){
   let t=tasks[i];
-  let newTitle = prompt("عدل عنوان المهمة",t.title);
+  let newTitle = prompt("تعديل نص المهمة",t.title);
   if(newTitle!=null&&newTitle.trim()){
     t.title=newTitle;
     localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
@@ -312,7 +212,7 @@ function drop(evt, newState){
   localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
   renderKanban();
 }
-// تصدير/استيراد
+// تصدير واستيراد
 function exportTasks(){
   let data=JSON.stringify(tasks,null,2);
   let a=document.createElement("a");
@@ -331,12 +231,12 @@ function importTasksFile(e){
       tasks=arr;
       localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
       renderKanban();
-      alert("تم استيراد المهام بنجاح");
+      alert("تم الاستيراد بنجاح!");
     }catch{alert("ملف غير صحيح أو غير مدعوم");}
   };
   reader.readAsText(file);
 }
-// ريندر تلقائي
+// إعادة رسم عند التحميل
 window.onload=renderKanban;
   </script>
 </body>
