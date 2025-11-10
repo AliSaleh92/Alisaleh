@@ -16,24 +16,17 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:Tajawal,Arial,s
 .header-app{display:flex;align-items:center;justify-content:space-between;background:var(--bg-side);padding:20px 22px;font-weight:900;font-size:1.18em;}
 .theme-switch{font-size:1.13em;border:none;background:var(--card-space);padding:6px 16px;border-radius:10px;color:var(--accent);cursor:pointer;}
 .layout-row{display:flex;}
-.sidebar{width:198px;background:var(--bg-side);height:97vh;padding-top:17px;box-shadow:-1px 0 10px #2777c222;display:flex;flex-direction:column;gap:17px;align-items:flex-start;}
+.sidebar{width:205px;background:var(--bg-side);height:97vh;padding-top:17px;box-shadow:-1px 0 10px #2777c222;display:flex;flex-direction:column;gap:17px;align-items:flex-start;}
 .logo{font-weight:900;color:var(--accent);font-size:1.15em;margin-bottom:25px;}
-.menu-list{margin-bottom:20px;}
+.menu-list{margin-bottom:22px;width:100%;}
 .menu-btn{padding:12px 0;font-size:1.08em;color:var(--txt-sub);font-weight:900;border:none;width:100%;background:transparent;text-align:right;cursor:pointer;transition:.13s;}
 .menu-btn.active,.menu-btn:hover{color:var(--accent);}
-.menu-head{color:var(--txt-sub);font-size:.99em;font-weight:bold;padding:3px 0 3px 0;}
-.list-group{margin:0;padding:0;list-style:none;}
-.list-group li{padding:8.5px 8px;margin:2px 0;background:transparent;border-radius:7px;color:var(--txt-main);font-size:1.07em;cursor:pointer;display:flex;align-items:center;}
-.list-group li.active,.list-group li:hover{background:var(--card-space);color:var(--accent);}
-.project-dot{display:inline-block;width:12px;height:12px;border-radius:5px;margin-left:7px;}
-.btn-add-list{background:var(--accent);color:#fff;border:none;padding:3px 11px 3px 10px;border-radius:7px;cursor:pointer;}
-.sidebar input{padding:4px 6px;border-radius:7px;border:1px solid #233;}
 .main-content{flex:1;padding:45px 4vw 45px 7vw;}
 .section{display:none;}
 .section.active{display:block;}
 .section-title{font-family:inherit;color:var(--accent);font-weight:900;margin:0 0 17px 0;font-size:1.25em;}
 /* ===== المهام ===== */
-.tasks-panel{background:var(--bg-task);border-radius:17px;box-shadow:0 2px 10px #19248122;padding:0 0 23px 0;max-width:500px;margin:auto;}
+.tasks-panel{background:var(--bg-task);border-radius:17px;box-shadow:0 2px 10px #19248122;padding:0 0 22px 0;max-width:530px;margin:auto;}
 .add-task-bar{display:flex;align-items:center;gap:7px;background:var(--bg-task);padding:12px 21px 8px 21px;}
 .add-task-bar input[type="text"]{flex:1;padding:7px 11px;font-size:1em;border-radius:8px;border:1.2px solid #293848;background:var(--bg-side);color:var(--txt-main);}
 .add-task-bar button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:.97em;}
@@ -98,13 +91,6 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:Tajawal,Arial,s
       <button class="menu-btn active" id="tasksMenuBtn" onclick="setSection('tasks')">المهام</button>
       <button class="menu-btn" id="projectsMenuBtn" onclick="setSection('projects')">المشاريع</button>
     </div>
-    <div class="menu-head">المشاريع النشطة</div>
-    <ul class="list-group" id="projList"></ul>
-    <form onsubmit="addProjectToMenu();return false;" style="display:flex;gap:4px;">
-      <input type="text" id="newProjTitle" placeholder="قائمة جديدة" maxlength="18" style="width:85px;">
-      <button class="btn-add-list" type="submit">+</button>
-    </form>
-    <button class="archive-btn" onclick="showArchive()">الأرشيف</button>
   </div>
   <div class="main-content">
     <!-- المهام -->
@@ -196,56 +182,11 @@ function toggleTheme(){
 }
 document.body.dataset.theme = localStorage.getItem("theme_mode")||"dark";
 document.getElementById("themeToggle").textContent = document.body.dataset.theme=="dark"?"☀️":"🌙";
-/* ========== قواعد المشاريع ========== */
-let projects = JSON.parse(localStorage.getItem("projTasks_projects")||'[]');
+let projects = JSON.parse(localStorage.getItem("projTasks_projects")||'[]'); // Not used, for backward compat.
 let tasks = JSON.parse(localStorage.getItem("projTasks_tasks")||'[]');
-let projectsExtra = JSON.parse(localStorage.getItem("projTasks_extracard")||'[]');
-let selectedProj = projects[0]?.id || null;
-function saveProjects(){localStorage.setItem("projTasks_projects",JSON.stringify(projects));}
-function saveTasks(){localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));}
+let projectsExtra = JSON.parse(localStorage.getItem("projTasks_extracard")||'[]'); // SECTION CARDS = ONLY SOURCE
 function saveProjectsExtra(){localStorage.setItem("projTasks_extracard",JSON.stringify(projectsExtra));}
-function projColor(id){
-  let proj = projects.find(x=>x.id==id) || projectsExtra.find(x=>x.id==id);
-  return proj?.color || projColors[0];
-}
-/* =========== قائمة جانبية (قوائم المشاريع) ========= */
-function renderProjects(){
-  let ul=document.getElementById("projList");
-  if(!projects.length){
-    projects=[{id:Date.now(),title:"مهامي",def:true,color:projColors[0]}];
-    saveProjects();selectedProj = projects[0].id;
-  }
-  ul.innerHTML = projects.map(p=>
-    `<li ${p.id==selectedProj?'class="active"':''} onclick="selectProj(${p.id})">
-      <span class="project-dot" style="background:${p.color||projColors[0]}"></span>
-      ${p.title}${!p.def?`<button onclick="event.stopPropagation();delProject(${p.id})" style="color:#ef4444;background:transparent;border:none;cursor:pointer;font-size:1em;margin-right:4px;">×</button>`:""}
-    </li>`
-    ).join('');
-  // تحديث الخيارات في نموذج المهام (إضافة خيار بدون مشروع)
-  let sel=document.getElementById("addProjId");
-  if(sel){
-    sel.innerHTML = `<option value="">بدون مشروع</option>` +
-      projects.map(p=>`<option value="${p.id}" ${p.id==selectedProj?'selected':''} style="background:${p.color||projColors[0]};color:#fff">${p.title}</option>`).join('');
-  }
-}
-function addProjectToMenu(){
-  let t=document.getElementById("newProjTitle").value.trim();
-  if(!t)return;
-  projects.push({id:Date.now(),title:t,def:false,color:projColors[projects.length%projColors.length]});
-  saveProjects();
-  document.getElementById("newProjTitle").value="";
-  selectProj(projects[projects.length-1].id);
-}
-function selectProj(id){selectedProj=id;renderProjects();renderTaskList();}
-function delProject(id){
-  if(!confirm("حذف القائمة؟")) return;
-  projects=projects.filter(p=>p.id!=id);
-  tasks=tasks.filter(tsk=>tsk.projId!=id);
-  saveProjects();saveTasks();
-  selectedProj=projects[0]?.id||null;
-  renderProjects();renderTaskList();
-}
-/* =========== قسم المشاريع (بطاقات) ========== */
+function saveTasks(){localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));}
 function renderProjectsCards(){
   let board=document.getElementById("projectsBoard");
   if(!projectsExtra.length){
@@ -264,6 +205,7 @@ function renderProjectsCards(){
       </div>
     </div>
   `).join('');
+  renderProjectDropdown(); // Always update dropdown after any change
 }
 function addProjectCard(){
   let name=document.getElementById("projName").value.trim();
@@ -292,11 +234,18 @@ function editProjectCard(i){
   saveProjectsExtra();
   renderProjectsCards();
 }
-
-/* =========== المهام (تدعم بدون مشروع) ========== */
+function renderProjectDropdown(){
+  // يُستخدم فقط في نموذج المهام
+  let sel=document.getElementById("addProjId");
+  if(!sel) return;
+  sel.innerHTML = `<option value="">بدون مشروع</option>` +
+    projectsExtra.map(p=>`<option value="${p.id}" style="background:${p.color};color:#fff">${p.title}</option>`).join('');
+}
+/* =========== المهام (تدعم بدون مشروع OR من قائمة البطاقات) ========== */
 function toggleAdvRow(){
   let adv=document.getElementById("advRow");
   adv.style.display=(adv.style.display=="flex"?"none":"flex");
+  renderProjectDropdown();
 }
 function addTaskSimple(){
   let title=document.getElementById("taskInput").value.trim();
@@ -314,19 +263,19 @@ function addTaskSimple(){
 }
 function projLabel(id){
   if(!id){ return '<span class="task-proj-label noproject">بدون مشروع</span>'; }
-  let proj=projects.find(x=>x.id==id) || projectsExtra?.find(x=>x.id==id);
+  let proj=projectsExtra.find(x=>x.id==id);
   if(!proj){ return '<span class="task-proj-label noproject">بدون مشروع</span>'; }
-  return `<span class="task-proj-label" style="background:${proj.color||projColors[0]};color:#fff">${proj.title}</span>`;
+  return `<span class="task-proj-label" style="background:${proj.color||'#888'};color:#fff">${proj.title}</span>`;
 }
 function renderTaskList(){
   document.getElementById("archiveSection").style.display="none";
   let list=document.getElementById("tasksList");
-  let filtered=tasks.filter(t=>t.projId==selectedProj&&!t.done);
-  let scheduled=filtered.filter(t=>t.due).sort((a,b)=>a.due.localeCompare(b.due));
-  let unscheduled=filtered.filter(t=>!t.due);
-  let all=scheduled.concat(unscheduled);
-  if(!all.length) {list.innerHTML ='<div style="color:var(--txt-sub);padding:33px 0;text-align:center">لا يوجد مهام</div>'; return;}
-  list.innerHTML=all.map((t,i)=>{
+  let all=tasks.filter(t=>!t.done);
+  let scheduled=all.filter(t=>t.due).sort((a,b)=>a.due.localeCompare(b.due));
+  let unscheduled=all.filter(t=>!t.due);
+  let merged=scheduled.concat(unscheduled);
+  if(!merged.length) {list.innerHTML ='<div style="color:var(--txt-sub);padding:33px 0;text-align:center">لا يوجد مهام</div>'; return;}
+  list.innerHTML=merged.map((t,i)=>{
     let idx=tasks.indexOf(t);
     return `<div class="task-row">
       <div class="task-check${t.done?' checked':''}" onclick="toggleDone(${idx})"><span class="material-icons">${t.done?'check':'radio_button_unchecked'}</span></div>
@@ -413,9 +362,7 @@ function repeatLabel(r){
   return "";
 }
 /* ========== بدء ========== */
-if(!projects.length){projects=[{id:Date.now(),title:"مهامي",def:true,color:projColors[0]}];saveProjects();}
-if(!selectedProj)selectedProj=projects[0].id;
-renderProjects();selectProj(selectedProj);renderProjectsCards();
+renderProjectsCards();renderProjectDropdown();renderTaskList();
 </script>
 </body>
 </html>
