@@ -1,83 +1,337 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AliW | نظام إنتاجية متكامل</title>
-  <link href="https://fonts.googleapis.com/css?family=Tajawal:600,900&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Tajawal:600,900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <style>
-:root {
-  --bg-main: #f6f7fa;  --bg-card: #fff;  --txt-main: #232644;  --txt-sub: #5f6188;
-  --accent: #2563eb;  --kanban-back: #f2f7fa;
-  --priority-high: #e53935;  --priority-med: #fb8c00;  --priority-low: #2196f3;
-}
-[data-theme="dark"] {
-  --bg-main: #171823;  --bg-card: #222432;  --txt-main: #fff;  --txt-sub: #b8bcd0;
-  --accent: #43b3fa;  --kanban-back: #23272c;
-  --priority-high: #ef4444;  --priority-med: #ffc340;  --priority-low: #60a5fa;
-}
-body {background: var(--bg-main);color: var(--txt-main);
-  font-family: "Tajawal", Arial, sans-serif;margin: 0;transition:background .2s;}
-.header-app{display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);padding:21px 25px 17px 25px;
-  font-weight: 900;font-size: 1.32em;border-bottom: 1.5px solid #dde1e941;}
-.theme-switch {font-size:1.3em;border:none;background:var(--kanban-back);padding:6px 18px;border-radius:11px;color:var(--accent);cursor:pointer;margin-right:11px;}
-.sidebar{position:fixed;top:0;right:0;width:72px;height:100vh;background:var(--bg-card);padding-top:11px;
-  box-shadow:-1px 0 15px #23395b18;display:flex;flex-direction:column;align-items:center;z-index:200;}
-.logo{font-weight:900;color:var(--accent);font-size:1.42em;margin-bottom:44px;}
-.menu-nav{display:flex;flex-direction:column;gap:14px;width:100%;}
-.menu-item{color:var(--txt-sub);padding:15px 0;text-align:center;cursor:pointer;transition:.16s;font-size:1.41em;
-  display:flex;flex-direction:column;align-items:center;font-weight:bold;}
-.menu-item.active,.menu-item:hover{background:var(--accent);color:#fff;}
-.menu-icon{font-size:1.16em!important;}
-.main-content{margin-right:92px;padding:36px 4vw 55px 4vw;max-width:1200px;}
-.section{display:none;}
-.section.active{display:block;}
-.section-title{font-family:inherit;color:var(--accent);font-weight:900;margin:0 0 18px 0;font-size:1.4em;}
-/* Kanban */
-.kanban-board{display:flex;gap:2vw;padding-top:24px;overflow-x:auto;min-height:310px;}
-.kanban-col{flex:1;min-width:222px;background:var(--kanban-back);border-radius:15px;padding:12px 10px 30px 10px;
-  display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 14px #23395b11;}
-.kanban-title{font-weight:900;text-align:center;color:var(--accent);letter-spacing:.02em;margin-top:0;margin-bottom:11px;}
-.kanban-tasks{min-height:25px;}
-.kanban-task{background:var(--bg-card);color:var(--txt-main);border-radius:13px;border:1px solid #e3e6f89b;box-shadow:0 2px 7px #23395b10;
-  padding:13px 10px 8px 7px;display:flex;flex-direction:column;gap:3px;margin-bottom:3px;font-size:1.09em;}
-.kanban-task[draggable="true"]{opacity:.96;}
-.kb-title-row{display:flex;align-items:center;font-weight:bold;gap:5px;}
-.kb-task-prio{border-radius:55px;color:#fff;padding:0 11px 1.5px 11px;font-size:1.02em;font-weight:700;margin-left:6px}
-.kb-task-prio.high{background:var(--priority-high);}
-.kb-task-prio.med{background:var(--priority-med);}
-.kb-task-prio.low{background:var(--priority-low);}
-.kb-actions-row{display:flex;gap:3px;margin-top:3px;}
-.kb-actions-row button{font-size:1.00em;background:#eceff675;color:var(--accent);border:0;padding:2.5px 12px 2.5px 12px;border-radius:8px;cursor:pointer;}
-.kb-actions-row button.del{color:var(--priority-high);}
-.kb-actions-row button:active{background:var(--accent);color:#fff;}
-.kb-desc{color:var(--txt-sub);font-size:.98em;}
-.kb-date{color:var(--accent);font-size:0.97em;}
-.kanban-add{margin-top:35px;display:flex;gap:5px;}
-.kanban-add input,.kanban-add select{padding:6px 5px;font-size:1.07em;border-radius:8px;border:1.2px solid #dad4e2;}
-.kanban-add button{background:var(--accent);color:#fff;padding:7px 17px;border-radius:8px;border:none;cursor:pointer;}
-.kanban-add button:hover{background:#0e388b;}
-/* مشاريع */
-.projects-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px;}
-.project-card{background:var(--bg-card);border-radius:15px;box-shadow:0 2px 9px #1d338809;padding:16px 17px;}
-.project-title{color:var(--accent);font-weight:900;font-size:1.14em;}
-.project-info{color:var(--txt-sub);font-size:1em;margin:7px 0 10px 0;}
-/* ملاحظات */
-.notes-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px;}
-.note-card{background:var(--bg-card);border-radius:14px;box-shadow:0 2px 8px #2b457b14;padding:13px 15px;font-size:1.06em;}
-.note-title{font-weight:900;color:var(--accent);margin-bottom:6px;}
-/* إعدادات - بسيط */
-.settings-box{background:var(--bg-card);border-radius:14px;box-shadow:0 1px 7px #23395b12;padding:16px;width:99%;max-width:420px;}
-.settings-box label{font-weight:bold;margin-bottom:6px;display:block;}
-.settings-row{margin-bottom:14px;}
-.settings-btn{background:var(--accent);color:#fff;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;}
-@media(max-width:1000px){.main-content{padding:17px 2vw 45px 2vw;}}
-@media(max-width:650px){
-  .sidebar{position:fixed;width:100vw;height:64px;flex-direction:row;top:auto;bottom:0;left:0;right:0;}
-  .main-content{margin:0 !important;padding:11px 0 74px 0;}
-  .logo{display:none;}
-}
+    :root {
+      --bg-main: #f6f7fa;
+      --bg-side: #fff;
+      --bg-card: #fff;
+      --txt-main: #232644;
+      --txt-sub: #5f6188;
+      --accent: #2563eb;
+      --kanban-back: #f2f7fa;
+      --priority-high: #e53935;
+      --priority-med: #fb8c00;
+      --priority-low: #2196f3;
+    }
+    [data-theme="dark"] {
+      --bg-main: #171823;
+      --bg-side: #222;
+      --bg-card: #222432;
+      --txt-main: #fff;
+      --txt-sub: #b8bcd0;
+      --accent: #43b3fa;
+      --kanban-back: #23272c;
+      --priority-high: #ef4444;
+      --priority-med: #ffc340;
+      --priority-low: #60a5fa;
+    }
+    body {
+      background: var(--bg-main);
+      color: var(--txt-main);
+      font-family: "Tajawal", Arial, sans-serif;
+      margin: 0;
+      transition: background 0.2s;
+    }
+    .header-app {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-side);
+      padding: 21px 25px 17px 25px;
+      font-weight: 900;
+      font-size: 1.32em;
+      border-bottom: 1.5px solid #dde1e941;
+    }
+    .theme-switch {
+      font-size: 1.3em;
+      border: none;
+      background: var(--kanban-back);
+      padding: 6px 18px;
+      border-radius: 11px;
+      color: var(--accent);
+      cursor: pointer;
+      margin-right: 11px;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 72px;
+      height: 100vh;
+      background: var(--bg-side);
+      padding-top: 11px;
+      box-shadow: -1px 0 15px #23395b18;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 200;
+    }
+    .logo {
+      font-weight: 900;
+      color: var(--accent);
+      font-size: 1.42em;
+      margin-bottom: 44px;
+    }
+    .menu-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+    .menu-item {
+      color: var(--txt-sub);
+      padding: 15px 0;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.16s;
+      font-size: 1.41em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: bold;
+    }
+    .menu-item.active,
+    .menu-item:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    .menu-icon {
+      font-size: 1.16em !important;
+    }
+    .main-content {
+      margin-right: 92px;
+      padding: 36px 4vw 55px 4vw;
+      max-width: 1200px;
+    }
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    .section-title {
+      font-family: inherit;
+      color: var(--accent);
+      font-weight: 900;
+      margin: 0 0 18px 0;
+      font-size: 1.4em;
+    }
+    /* Kanban */
+    .kanban-board {
+      display: flex;
+      gap: 2vw;
+      padding-top: 24px;
+      overflow-x: auto;
+      min-height: 310px;
+    }
+    .kanban-col {
+      flex: 1;
+      min-width: 222px;
+      background: var(--kanban-back);
+      border-radius: 15px;
+      padding: 12px 10px 30px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 2px 14px #23395b11;
+    }
+    .kanban-title {
+      font-weight: 900;
+      text-align: center;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      margin-top: 0;
+      margin-bottom: 11px;
+    }
+    .kanban-tasks {
+      min-height: 25px;
+    }
+    .kanban-task {
+      background: var(--bg-card);
+      color: var(--txt-main);
+      border-radius: 13px;
+      border: 1px solid #e3e6f89b;
+      box-shadow: 0 2px 7px #23395b10;
+      padding: 13px 10px 8px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 3px;
+      font-size: 1.09em;
+    }
+    .kanban-task[draggable="true"] {
+      opacity: 0.96;
+    }
+    .kb-title-row {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      gap: 5px;
+    }
+    .kb-task-prio {
+      border-radius: 55px;
+      color: #fff;
+      padding: 0 11px 1.5px 11px;
+      font-size: 1.02em;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+    .kb-task-prio.high {
+      background: var(--priority-high);
+    }
+    .kb-task-prio.med {
+      background: var(--priority-med);
+    }
+    .kb-task-prio.low {
+      background: var(--priority-low);
+    }
+    .kb-actions-row {
+      display: flex;
+      gap: 3px;
+      margin-top: 3px;
+    }
+    .kb-actions-row button {
+      font-size: 1em;
+      background: #eceff675;
+      color: var(--accent);
+      border: 0;
+      padding: 2.5px 12px 2.5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .kb-actions-row button.del {
+      color: var(--priority-high);
+    }
+    .kb-actions-row button:active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .kb-desc {
+      color: var(--txt-sub);
+      font-size: 0.98em;
+    }
+    .kb-date {
+      color: var(--accent);
+      font-size: 0.97em;
+    }
+    .kanban-add {
+      margin-top: 35px;
+      display: flex;
+      gap: 5px;
+    }
+    .kanban-add input,
+    .kanban-add select {
+      padding: 6px 5px;
+      font-size: 1.07em;
+      border-radius: 8px;
+      border: 1.2px solid #dad4e2;
+    }
+    .kanban-add button {
+      background: var(--accent);
+      color: #fff;
+      padding: 7px 17px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .kanban-add button:hover {
+      background: #0e388b;
+    }
+    /* مشاريع */
+    .projects-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 15px;
+    }
+    .project-card {
+      background: var(--bg-card);
+      border-radius: 15px;
+      box-shadow: 0 2px 9px #1d338809;
+      padding: 16px 17px;
+    }
+    .project-title {
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 1.14em;
+    }
+    .project-info {
+      color: var(--txt-sub);
+      font-size: 1em;
+      margin: 7px 0 10px 0;
+    }
+    /* ملاحظات */
+    .notes-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 15px;
+    }
+    .note-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px #2b457b14;
+      padding: 13px 15px;
+      font-size: 1.06em;
+    }
+    .note-title {
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    /* إعدادات - بسيط */
+    .settings-box {
+      background: var(--bg-card);
+      border-radius: 14px;
+      box-shadow: 0 1px 7px #23395b12;
+      padding: 16px;
+      width: 99%;
+      max-width: 420px;
+    }
+    .settings-box label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .settings-row {
+      margin-bottom: 14px;
+    }
+    .settings-btn {
+      background: var(--accent);
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    @media (max-width: 1000px) {
+      .main-content {
+        padding: 17px 2vw 45px 2vw;
+      }
+    }
+    @media (max-width: 650px) {
+      .sidebar {
+        position: fixed;
+        width: 100vw;
+        height: 64px;
+        flex-direction: row;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+      .main-content {
+        margin: 0 !important;
+        padding: 11px 0 74px 0;
+      }
+      .logo {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body data-theme="light">
@@ -88,384 +342,331 @@ body {background: var(--bg-main);color: var(--txt-main);
   <div class="sidebar">
     <div class="logo">AliW</div>
     <div class="menu-nav">
-      <div class="menu-item active" onclick="showSection('kanban')"><span class="material-icons menu-icon">checklist</span><div style="font-size:.74em">المهام</div></div>
-      <div class="menu-item" onclick="showSection('projects')"><span class="material-icons menu-icon">folder</span><div style="font-size:.74em">المشاريع</div></div>
-      <div class="menu-item" onclick="showSection('notes')"><span class="material-icons menu-icon">sticky_note_2</span><div style="font-size:.74em">ملاحظات</div></div>
-      <div class="menu-item" onclick="showSection('settings')"><span class="material-icons menu-icon">settings</span><div style="font-size:.74em">الإعدادات</div></div>
+      <div class="menu-item active" onclick="showSection('kanban')">
+        <span class="material-icons menu-icon">checklist</span>
+        <div style="font-size: .74em">المهام</div>
+      </div>
+      <div class="menu-item" onclick="showSection('projects')">
+        <span class="material-icons menu-icon">folder</span>
+        <div style="font-size: .74em">المشاريع</div>
+      </div>
+      <div class="menu-item" onclick="showSection('notes')">
+        <span class="material-icons menu-icon">sticky_note_2</span>
+        <div style="font-size: .74em">ملاحظات</div>
+      </div>
+      <div class="menu-item" onclick="showSection('settings')">
+        <span class="material-icons menu-icon">settings</span>
+        <div style="font-size: .74em">الإعدادات</div>
+      </div>
     </div>
   </div>
   <div class="main-content">
     <!-- المهام -->
-    <div class="section active" id="kanban">
+    <div class="section active" id="kanban" tabindex="0">
       <div class="section-title">المهام – لوحة كانبان</div>
       <div class="kanban-board" id="kanbanBoard"></div>
       <form class="kanban-add" onsubmit="addTask();return false;">
-        <input type="text" id="taskTitle" placeholder="أدخل نص المهمة" maxlength="85">
-        <select id="taskPrio">
+        <input type="text" id="taskTitle" placeholder="أدخل نص المهمة" maxlength="85" aria-label="Task title" />
+        <select id="taskPrio" aria-label="Priority">
           <option value="high">أولوية عالية</option>
           <option value="med" selected>متوسطة</option>
           <option value="low">منخفضة</option>
         </select>
-        <button type="submit">إضافة</button>
+        <button type="submit" aria-label="Add task">إضافة</button>
       </form>
     </div>
     <!-- المشاريع -->
-    <div class="section" id="projects">
+    <div class="section" id="projects" tabindex="0">
       <div class="section-title">المشاريع</div>
-      <form style="margin-bottom:18px;display:flex;gap:5px;" onsubmit="addProject();return false;">
-        <input type="text" id="projTitle" placeholder="اسم المشروع" maxlength="40">
-        <button type="submit">إضافة مشروع</button>
+      <form style="margin-bottom: 18px; display: flex; gap: 5px" onsubmit="addProject();return false;">
+        <input
+          type="text"
+          id="projTitle"
+          maxlength="40"
+          placeholder="اسم المشروع"
+          aria-label="Project name"
+        />
+        <button type="submit" aria-label="Add project">إضافة مشروع</button>
       </form>
-      <div class="projects-list" id="projectsList"></div>
+      <div class="projects-list" id="projectsList" role="list" aria-live="polite"></div>
     </div>
     <!-- الملاحظات -->
-    <div class="section" id="notes">
+    <div class="section" id="notes" tabindex="0">
       <div class="section-title">دفتر الملاحظات</div>
-      <form style="margin-bottom:18px;display:flex;gap:5px;" onsubmit="addNote();return false;">
-        <input type="text" id="noteTitle" placeholder="عنوان" maxlength="33">
-        <input type="text" id="noteBody" placeholder="المحتوى" maxlength="88" style="width:30%">
-        <button type="submit">إضافة</button>
+      <form style="margin-bottom: 18px; display: flex; gap: 5px" onsubmit="addNote();return false;">
+        <input
+          id="noteTitle"
+          maxlength="33"
+          placeholder="عنوان"
+          aria-label="Note title"
+          type="text"
+        />
+        <input
+          id="noteBody"
+          maxlength="88"
+          placeholder="المحتوى"
+          style="width: 30%"
+          aria-label="Note content"
+          type="text"
+        />
+        <button type="submit" aria-label="Add note">إضافة</button>
       </form>
-      <div class="notes-list" id="notesList"></div>
+      <div class="notes-list" id="notesList" role="list" aria-live="polite"></div>
     </div>
     <!-- الإعدادات -->
-    <div class="section" id="settings">
+    <div class="section" id="settings" tabindex="0">
       <div class="section-title">الإعدادات</div>
-      <div class="settings-box">
+      <div class="settings-box" role="region" aria-labelledby="settings-title">
         <div class="settings-row">
-          <label>الثيم:</label>
-          <button onclick="toggleTheme()" class="settings-btn" id="themeToggle2">تبديل داكن/فاتح</button>
+          <label for="themeToggle2">الثيم:</label>
+          <button onclick="toggleTheme()" class="settings-btn" id="themeToggle2" aria-pressed="false"
+            >تبديل داكن/فاتح</button
+          >
         </div>
         <div class="settings-row">
           <label>تصدير واستيراد (نسخة احتياطية)</label>
-          <button onclick="exportAllData()" class="settings-btn">تصدير كل البيانات</button>
-          <input type="file" style="display:none;" id="importInput" accept=".json" onchange="importAllDataFile(event)">
-          <button onclick="document.getElementById('importInput').click()" class="settings-btn">استيراد ملف</button>
+          <button onclick="exportAllData()" class="settings-btn" aria-label="Export Backup Data">
+            تصدير كل البيانات
+          </button>
+          <input
+            type="file"
+            style="display: none"
+            id="importInput"
+            accept=".json"
+            onchange="importAllDataFile(event)"
+            aria-label="Import data file"
+          />
+          <button onclick="document.getElementById('importInput').click()" class="settings-btn" aria-label="Import Backup Data">
+            استيراد ملف البيانات
+          </button>
         </div>
       </div>
     </div>
   </div>
-<script>
-/* ----------------- الثيم وتبديل الأقسام ------------------ */
-let currentSec = "kanban";
-function showSection(sec){
-  document.querySelectorAll('.menu-item').forEach((el,i)=>{
-    el.classList.toggle('active',["kanban","projects","notes","settings"].indexOf(sec)===i);
-  });
-  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
-  document.getElementById(sec).classList.add('active');
-  if(sec==="kanban") renderKanban();
-  if(sec==="projects") renderProjects();
-  if(sec==="notes") renderNotes();
-}
-function toggleTheme(){
-  let th=document.body.dataset.theme=="light"?"dark":"light";
-  document.body.dataset.theme=th;
-  document.getElementById("themeToggle").textContent=th=="dark"?"☀️":"🌙";
-  let btn2 = document.getElementById("themeToggle2");
-  if(btn2) btn2.textContent = th=="dark"?"تفغيل النهار":"تفعيل الوضع الداكن";
-  localStorage.setItem("theme_mode",th);
-}
-if(localStorage.getItem("theme_mode")){
-  document.body.dataset.theme = localStorage.getItem("theme_mode");
-  document.getElementById("themeToggle").textContent=
-    document.body.dataset.theme=="dark"?"☀️":"🌙";
-}
-/* ------------------- الكانبان: مهام ------------------------- */
-const taskStates=["new","progress","done","hold","cancel"];
-const stateLabels={
-  "new":"جديدة","progress":"قيد الإنجاز","done":"مكتملة","hold":"معلقة","cancel":"ملغاة"
-};
-const prioLabels={high:"عالية",med:"متوسطة",low:"منخفضة"};
-const prioClasses={high:"high",med:"med",low:"low"};
-let tasks = JSON.parse(localStorage.getItem("kanban_tasks")||"[]");
-function renderKanban() {
-  let board = document.getElementById("kanbanBoard");
-  board.innerHTML = "";
-  taskStates.forEach(state=>{
-    let col=document.createElement("div");
-    col.className="kanban-col";
-    col.dataset.state=state;
-    col.innerHTML = `<div class="kanban-title">${stateLabels[state]}</div>
-      <div class="kanban-tasks" id="tasks-${state}" ondrop="drop(event,'${state}')" ondragover="allowDrop(event)"></div>`;
-    board.appendChild(col);
-  });
-  tasks.forEach((t,i)=>{
-    let card=document.createElement("div");
-    card.className="kanban-task";
-    card.draggable=true;
-    card.ondragstart=function(e){e.dataTransfer.setData("task-index",i);};
-    card.innerHTML=`
-      <div class="kb-title-row">
-        <span class="kb-task-prio ${prioClasses[t.prio]}">${prioLabels[t.prio]}</span>
-        <b>${t.title}</b>
-      </div>
-      <div class="kb-desc">${t.desc?t.desc:""}</div>
-      <div class="kb-date">${t.date?t.date:""}</div>
-      <div class="kb-actions-row">
-        <button onclick="editTask(${i})">تعديل</button>
-        <button onclick="delTask(${i})" class="del">حذف</button>
-      </div>
-    `;
-    document.getElementById("tasks-"+t.state).appendChild(card);
-  });
-}
-function addTask(){
-  let title=document.getElementById("taskTitle").value.trim();
-  let prio=document.getElementById("taskPrio").value;
-  if(!title) return alert("رجاءً أدخل نص المهمة");
-  tasks.push({title,prio,state:"new",desc:"",date:new Date().toLocaleString("ar-EG")});
-  localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
-  document.getElementById("taskTitle").value="";
-  renderKanban();
-}
-function delTask(i){if(confirm("حذف المهمة؟")){tasks.splice(i,1);localStorage.setItem("kanban_tasks",JSON.stringify(tasks));renderKanban();}}
-function editTask(i){
-  let t=tasks[i];
-  let newTitle = prompt("تعديل نص المهمة",t.title);
-  if(newTitle!=null&&newTitle.trim()){
-    t.title=newTitle;
-    localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
-    renderKanban();
-  }
-}
-function allowDrop(evt){evt.preventDefault();}
-function drop(evt,newState){evt.preventDefault();let idx=+evt.dataTransfer.getData("task-index");tasks[idx].state=newState;
-  localStorage.setItem("kanban_tasks",JSON.stringify(tasks));renderKanban();}
-window.onload=()=>{renderKanban();renderProjects();renderNotes();};
-/* ------------------ المشاريع --------------------- */
-let projects = JSON.parse(localStorage.getItem("aw_projects")||"[]");
-function renderProjects(){
-  let grid=document.getElementById("projectsList");
-  if(!projects.length){grid.innerHTML="<div style='color:var(--txt-sub);padding:31px 0;text-align:center'>لا يوجد مشاريع بعد.</div>";return;}
-  grid.innerHTML=projects.map((p,i)=>`
+  <script>
+    /* ----------------- الثيم وتبديل الأقسام ------------------ */
+    let currentSec = "kanban";
+    function showSection(sec) {
+      document.querySelectorAll(".menu-item").forEach((el, i) => {
+        el.classList.toggle(
+          "active",
+          ["kanban", "projects", "notes", "settings"].indexOf(sec) === i
+        );
+      });
+      document.querySelectorAll(".section").forEach((el) =>
+        el.classList.remove("active")
+      );
+      document.getElementById(sec).classList.add("active");
+      if (sec === "kanban") renderKanban();
+      if (sec === "projects") renderProjects();
+      if (sec === "notes") renderNotes();
+    }
+    function toggleTheme() {
+      let th = document.body.dataset.theme == "light" ? "dark" : "light";
+      document.body.dataset.theme = th;
+      document.getElementById("themeToggle").textContent =
+        th == "dark" ? "☀️" : "🌙";
+      let btn2 = document.getElementById("themeToggle2");
+      if (btn2) btn2.textContent = th == "dark" ? "تفغيل النهار" : "تفعيل الوضع الداكن";
+      localStorage.setItem("theme_mode", th);
+    }
+    if (localStorage.getItem("theme_mode")) {
+      document.body.dataset.theme = localStorage.getItem("theme_mode");
+      document.getElementById("themeToggle").textContent =
+        document.body.dataset.theme == "dark" ? "☀️" : "🌙";
+    }
+    /* ------------------- الكانبان: مهام ------------------------- */
+    const taskStates = ["new", "progress", "done", "hold", "cancel"];
+    const stateLabels = {
+      new: "جديدة",
+      progress: "قيد الإنجاز",
+      done: "مكتملة",
+      hold: "معلقة",
+      cancel: "ملغاة",
+    };
+    const prioLabels = { high: "عالية", med: "متوسطة", low: "منخفضة" };
+    const prioClasses = { high: "high", med: "med", low: "low" };
+    let tasks = JSON.parse(localStorage.getItem("kanban_tasks") || "[]");
+    function renderKanban() {
+      let board = document.getElementById("kanbanBoard");
+      board.innerHTML = "";
+      taskStates.forEach((state) => {
+        let col = document.createElement("div");
+        col.className = "kanban-col";
+        col.dataset.state = state;
+        col.innerHTML = `<div class="kanban-title">${stateLabels[state]}</div>
+        <div class="kanban-tasks" id="tasks-${state}" ondrop="drop(event,'${state}')" ondragover="allowDrop(event)"></div>`;
+        board.appendChild(col);
+      });
+      tasks.forEach((t, i) => {
+        let card = document.createElement("div");
+        card.className = "kanban-task";
+        card.draggable = true;
+        card.ondragstart = function (e) {
+          e.dataTransfer.setData("task-index", i);
+        };
+        card.innerHTML = `<div class="kb-title-row">
+          <span class="kb-task-prio ${prioClasses[t.prio]}">${prioLabels[t.prio]}</span>
+          <b>${t.title}</b>
+          </div>
+          <div class="kb-desc">${t.desc ? t.desc : ""}</div>
+          <div class="kb-date">${t.date ? t.date : ""}</div>
+          <div class="kb-actions-row">
+            <button onclick="editTask(${i})">تعديل</button>
+            <button onclick="delTask(${i})" class="del">حذف</button>
+          </div>`;
+        document.getElementById("tasks-" + t.state).appendChild(card);
+      });
+    }
+    function addTask() {
+      let title = document.getElementById("taskTitle").value.trim();
+      let prio = document.getElementById("taskPrio").value;
+      if (!title) return alert("رجاءً أدخل نص المهمة");
+      tasks.push({ title, prio, state: "new", desc: "", date: new Date().toLocaleString("ar-EG") });
+      localStorage.setItem("kanban_tasks", JSON.stringify(tasks));
+      document.getElementById("taskTitle").value = "";
+      renderKanban();
+    }
+    function delTask(i) {
+      if (confirm("حذف المهمة؟")) {
+        tasks.splice(i, 1);
+        localStorage.setItem("kanban_tasks", JSON.stringify(tasks));
+        renderKanban();
+      }
+    }
+    function editTask(i) {
+      let t = tasks[i];
+      let newTitle = prompt("تعديل نص المهمة", t.title);
+      if (newTitle != null && newTitle.trim()) {
+        t.title = newTitle;
+        localStorage.setItem("kanban_tasks", JSON.stringify(tasks));
+        renderKanban();
+      }
+    }
+    function allowDrop(evt) {
+      evt.preventDefault();
+    }
+    function drop(evt, newState) {
+      evt.preventDefault();
+      let idx = +evt.dataTransfer.getData("task-index");
+      tasks[idx].state = newState;
+      localStorage.setItem("kanban_tasks", JSON.stringify(tasks));
+      renderKanban();
+    }
+    window.onload = () => {
+      renderKanban();
+      renderProjects();
+      renderNotes();
+    };
+    /* ------------------ المشاريع --------------------- */
+    let projects = JSON.parse(localStorage.getItem("aw_projects") || "[]");
+    function renderProjects() {
+      let grid = document.getElementById("projectsList");
+      if (!projects.length) {
+        grid.innerHTML = '<div style="color:var(--txt-sub);padding:31px 0;text-align:center">لا يوجد مشاريع بعد.</div>';
+        return;
+      }
+      grid.innerHTML = projects
+        .map(
+          (p, i) => `
     <div class="project-card">
       <div class="project-title">${p.name}</div>
-      <div class="project-info">${p.desc?p.desc:"-"}</div>
+      <div class="project-info">${p.desc ? p.desc : "-"}</div>
       <div style="margin-top:7px">
         <button onclick="delProject(${i})" style="background:#e53935;color:#fff;padding:4px 18px;border-radius:8px;border:0;">حذف</button>
       </div>
     </div>
-  `).join("");
-}
-function addProject(){
-  let t=document.getElementById("projTitle").value.trim();
-  if(!t) return alert("ادخل اسم المشروع");
-  projects.push({name:t,desc:""});
-  localStorage.setItem("aw_projects",JSON.stringify(projects));
-  document.getElementById("projTitle").value="";
-  renderProjects();
-}
-function delProject(i){
-  if(!confirm("حذف المشروع؟"))return;
-  projects.splice(i,1);
-  localStorage.setItem("aw_projects",JSON.stringify(projects));
-  renderProjects();
-}
-/* ------------------ الملاحظات --------------------- */
-let notes = JSON.parse(localStorage.getItem("aw_notes")||"[]");
-function renderNotes(){
-  let grid=document.getElementById("notesList");
-  if(!notes.length){grid.innerHTML="<div style='color:var(--txt-sub);padding:31px 0;text-align:center'>لا توجد ملاحظات بعد.</div>";return;}
-  grid.innerHTML=notes.map((n,i)=>`
+  `
+        )
+        .join("");
+    }
+    function addProject() {
+      let t = document.getElementById("projTitle").value.trim();
+      if (!t) return alert("ادخل اسم المشروع");
+      projects.push({ name: t, desc: "" });
+      localStorage.setItem("aw_projects", JSON.stringify(projects));
+      document.getElementById("projTitle").value = "";
+      renderProjects();
+    }
+    function delProject(i) {
+      if (!confirm("حذف المشروع؟")) return;
+      projects.splice(i, 1);
+      localStorage.setItem("aw_projects", JSON.stringify(projects));
+      renderProjects();
+    }
+    /* ------------------ الملاحظات --------------------- */
+    let notes = JSON.parse(localStorage.getItem("aw_notes") || "[]");
+    function renderNotes() {
+      let grid = document.getElementById("notesList");
+      if (!notes.length) {
+        grid.innerHTML = '<div style="color:var(--txt-sub);padding:31px 0;text-align:center">لا توجد ملاحظات بعد.</div>';
+        return;
+      }
+      grid.innerHTML = notes
+        .map(
+          (n, i) => `
     <div class="note-card">
       <div class="note-title">${n.title}</div>
       <div style="margin-bottom:7px">${n.body}</div>
       <button onclick="delNote(${i})" style="background:#e53935;color:#fff;padding:2.5px 16px;border-radius:8px;border:0;">حذف</button>
     </div>
-  `).join("");
-}
-function addNote(){
-  let t=document.getElementById("noteTitle").value.trim();
-  let b=document.getElementById("noteBody").value.trim();
-  if(!t||!b) return alert("العنوان والمحتوى مطلوبان");
-  notes.push({title:t,body:b});
-  localStorage.setItem("aw_notes",JSON.stringify(notes));
-  document.getElementById("noteTitle").value="";
-  document.getElementById("noteBody").value="";
-  renderNotes();
-}
-function delNote(i){
-  if(!confirm("حذف الملاحظة؟"))return;
-  notes.splice(i,1);
-  localStorage.setItem("aw_notes",JSON.stringify(notes));
-  renderNotes();
-}
-/* ---------- إعدادات: تصدير/استيراد شامل --------- */
-function exportAllData(){
-  const allData = {
-    kanban_tasks: tasks,
-    aw_projects: projects,
-    aw_notes: notes
-  };
-  let data=JSON.stringify(allData,null,2);
-  let a=document.createElement("a");
-  a.href="data:application/json,"+ encodeURIComponent(data);
-  a.download="aliw_backup.json";
-  a.click();
-}
-function importAllDataFile(e){
-  let file = e.target.files[0];
-  if(!file)return;
-  let reader=new FileReader();
-  reader.onload = function(evt){
-    try{
-      let obj=JSON.parse(evt.target.result);
-      if(!obj.kanban_tasks||!obj.aw_projects||!obj.aw_notes)throw "ملف غير صحيح";
-      tasks=obj.kanban_tasks;projects=obj.aw_projects;notes=obj.aw_notes;
-      localStorage.setItem("kanban_tasks",JSON.stringify(tasks));
-      localStorage.setItem("aw_projects",JSON.stringify(projects));
-      localStorage.setItem("aw_notes",JSON.stringify(notes));
-      renderKanban();renderProjects();renderNotes();
-      alert("تم استيراد البيانات بنجاح!");
-    }catch{alert("ملف غير صحيح أو غير مدعوم");}
-  };
-  reader.readAsText(file);
-}
-<script>
-/* أكمل لك في الدفعة القادمة: (برمجة القوائم، المهام، التكرار/التاريخ، الحفظ، وكل المنطق JS!) */
-<script>
-/* ------ البيانات المحلية --------*/
-let projects = JSON.parse(localStorage.getItem("projTasks_projects")||'[]');
-let tasks = JSON.parse(localStorage.getItem("projTasks_tasks")||'[]');
-let selectedProj = projects[0]?.id || null;
-document.body.dataset.theme = localStorage.getItem("theme_mode") || "light";
-document.getElementById("themeToggle").textContent = document.body.dataset.theme=="dark"?"☀️":"🌙";
-/* --------- القوائم (المشاريع) -------- */
-function saveProjects(){localStorage.setItem("projTasks_projects",JSON.stringify(projects));}
-function saveTasks(){localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));}
-function renderProjects(){
-  let ul=document.getElementById("projList");
-  if(!projects.length){
-    projects=[{id:Date.now(),title:"مهامي",def:true}];
-    saveProjects();selectedProj = projects[0].id;
-  }
-  ul.innerHTML = projects.map(p=>`<li ${p.id==selectedProj?'class="active"':''} onclick="selectProj(${p.id})"><span class="material-icons">list_alt</span>${p.title}${!p.def?`<button onclick="event.stopPropagation();delProject(${p.id})" style="color:#e53935;background:transparent;border:none;cursor:pointer;font-size:1em;margin-right:6px;">×</button>`:""}</li>`).join('');
-}
-function selectProj(id){selectedProj=id;renderProjects();renderTaskList();}
-function addProject(){
-  let t=document.getElementById("newProjTitle").value.trim();
-  if(!t)return;
-  projects.push({id:Date.now(),title:t,def:false});
-  saveProjects();
-  document.getElementById("newProjTitle").value="";
-  selectProj(projects[projects.length-1].id);
-}
-function delProject(id){
-  if(!confirm("حذف القائمة؟")) return;
-  projects=projects.filter(p=>p.id!=id);
-  tasks=tasks.filter(tsk=>tsk.projId!=id);
-  saveProjects();saveTasks();
-  selectedProj=projects[0]?.id||null;
-  renderProjects();renderTaskList();
-}
-/* --------- المهام (Google style) -------- */
-function renderTaskList(){
-  let list=document.getElementById("tasksList");
-  let proj=projects.find(p=>p.id==selectedProj);
-  document.getElementById("currentProjectTitle").textContent=(proj?.title)||"";
-  let filtered=tasks.filter(t=>t.projId==selectedProj);
-  if(!filtered.length) {list.innerHTML ='<div style="color:var(--txt-sub);padding:32px 0;text-align:center">لا يوجد مهام</div>'; return;}
-  list.innerHTML=filtered.map((t,idx)=>{
-    let i = tasks.findIndex(x=>x===t);
-    return `<div class="task-row">
-      <div class="task-check${t.done?' checked':''}" onclick="toggleDone(${i})">
-        <span class="material-icons">${t.done?'check':'radio_button_unchecked'}</span>
-      </div>
-      <div class="task-info">
-        <div class="task-title${t.done?' done':''}">${t.title}</div>
-        <div class="task-meta">
-          ${t.due?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">event</span> ${t.due}</span>`:""}
-          ${t.repeat&&!t.done?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">repeat</span> ${repeatLabel(t.repeat)}</span>`:""}
-          <span class="task-prio ${t.prio}">${prioLabel(t.prio)}</span>
-        </div>
-        <div class="task-actions">
-          <button onclick="editTask(${i})">تعديل</button>
-          <button onclick="delTask(${i})" class="del">حذف</button>
-        </div>
-      </div>
-    </div>`
-  }).join('');
-}
-function openAddRow(){
-  let form=document.getElementById("addTaskForm");
-  form.innerHTML=`
-    <input type="text" id="taskInput" placeholder="نص المهمة..." maxlength="88" required autofocus>
-    <input type="date" id="taskDue">
-    <select id="taskPrio">
-      <option value="high">أولوية عالية</option>
-      <option value="med" selected>متوسطة</option>
-      <option value="low">منخفضة</option>
-    </select>
-    <select id="taskRepeat">
-      <option value="">تكرار</option>
-      <option value="day">يومي</option>
-      <option value="week">أسبوعي</option>
-      <option value="month">شهري</option>
-      <option value="year">سنوي</option>
-    </select>
-    <button>إضافة</button>
-    <button type="button" onclick="closeAddRow()" style="background:#eee;color:#555;border:1px solid #eee">إلغاء</button>
-  `;
-  form.style.display="flex";
-  document.getElementById("taskInput").focus();
-}
-function closeAddRow(){
-  document.getElementById("addTaskForm").style.display="none";
-}
-function addTask(){
-  let title=document.getElementById("taskInput").value.trim();
-  let prio=document.getElementById("taskPrio").value;
-  let due=document.getElementById("taskDue").value;
-  let repeat=document.getElementById("taskRepeat").value;
-  if(!title)return;
-  tasks.push({id:Date.now(),projId:selectedProj,title,done:false,prio,due,repeat});
-  saveTasks();
-  closeAddRow();
-  renderTaskList();
-}
-function editTask(i){
-  let t=tasks[i];
-  let newTitle=prompt("تعديل نص المهمة:",t.title);
-  if(newTitle!=null&&newTitle.trim()){
-    t.title=newTitle.trim();
-    saveTasks();
-    renderTaskList();
-  }
-}
-function delTask(i){
-  if(!confirm("حذف المهمة؟"))return;
-  tasks.splice(i,1);
-  saveTasks();
-  renderTaskList();
-}
-function toggleDone(i){
-  tasks[i].done=!tasks[i].done;
-  saveTasks();
-  renderTaskList();
-}
-function prioLabel(p){
-  if(p=="high")return"هام";
-  if(p=="med")return"متوسط";
-  return"منخفض";
-}
-function repeatLabel(r){
-  if(r=="day")return"يومي";
-  if(r=="week")return"أسبوعي";
-  if(r=="month")return"شهري";
-  if(r=="year")return"سنوي";
-  return "";
-}
-/* ------------ الثيم وتفعيل أولي -------- */
-function toggleTheme(){
-  let th=document.body.dataset.theme=="light"?"dark":"light";
-  document.body.dataset.theme=th;
-  document.getElementById("themeToggle").textContent=th=="dark"?"☀️":"🌙";
-  localStorage.setItem("theme_mode",th);
-}
-/* ------ بدء ----- */
-if(!projects.length){projects=[{id:Date.now(),title:"مهامي",def:true}];saveProjects();}
-if(!selectedProj)selectedProj=projects[0].id;
-renderProjects();selectProj(selectedProj);
-</script>
-
+  `
+        )
+        .join("");
+    }
+    function addNote() {
+      let t = document.getElementById("noteTitle").value.trim();
+      let b = document.getElementById("noteBody").value.trim();
+      if (!t || !b) return alert("العنوان والمحتوى مطلوبان");
+      notes.push({ title: t, body: b });
+      localStorage.setItem("aw_notes", JSON.stringify(notes));
+      document.getElementById("noteTitle").value = "";
+      document.getElementById("noteBody").value = "";
+      renderNotes();
+    }
+    function delNote(i) {
+      if (!confirm("حذف الملاحظة؟")) return;
+      notes.splice(i, 1);
+      localStorage.setItem("aw_notes", JSON.stringify(notes));
+      renderNotes();
+    }
+    /* ---------- إعدادات: تصدير/استيراد شامل --------- */
+    function exportAllData() {
+      const allData = {
+        kanban_tasks: tasks,
+        aw_projects: projects,
+        aw_notes: notes,
+      };
+      let data = JSON.stringify(allData, null, 2);
+      let a = document.createElement("a");
+      a.href = "data:application/json," + encodeURIComponent(data);
+      a.download = "aliw_backup.json";
+      a.click();
+    }
+    function importAllDataFile(e) {
+      let file = e.target.files[0];
+      if (!file) return;
+      let reader = new FileReader();
+      reader.onload = function (evt) {
+        try {
+          let obj = JSON.parse(evt.target.result);
+          if (!obj.kanban_tasks || !obj.aw_projects || !obj.aw_notes) throw "ملف غير صحيح";
+          tasks = obj.kanban_tasks;
+          projects = obj.aw_projects;
+          notes = obj.aw_notes;
+          localStorage.setItem("kanban_tasks", JSON.stringify(tasks));
+          localStorage.setItem("aw_projects", JSON.stringify(projects));
+          localStorage.setItem("aw_notes", JSON.stringify(notes));
+          renderKanban();
+          renderProjects();
+          renderNotes();
+          alert("تم استيراد البيانات بنجاح!");
+        } catch {
+          alert("ملف غير صحيح أو غير مدعوم");
+        }
+      };
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
