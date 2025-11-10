@@ -322,6 +322,150 @@ function importAllDataFile(e){
   };
   reader.readAsText(file);
 }
+<script>
+/* أكمل لك في الدفعة القادمة: (برمجة القوائم، المهام، التكرار/التاريخ، الحفظ، وكل المنطق JS!) */
+<script>
+/* ------ البيانات المحلية --------*/
+let projects = JSON.parse(localStorage.getItem("projTasks_projects")||'[]');
+let tasks = JSON.parse(localStorage.getItem("projTasks_tasks")||'[]');
+let selectedProj = projects[0]?.id || null;
+document.body.dataset.theme = localStorage.getItem("theme_mode") || "light";
+document.getElementById("themeToggle").textContent = document.body.dataset.theme=="dark"?"☀️":"🌙";
+/* --------- القوائم (المشاريع) -------- */
+function saveProjects(){localStorage.setItem("projTasks_projects",JSON.stringify(projects));}
+function saveTasks(){localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));}
+function renderProjects(){
+  let ul=document.getElementById("projList");
+  if(!projects.length){
+    projects=[{id:Date.now(),title:"مهامي",def:true}];
+    saveProjects();selectedProj = projects[0].id;
+  }
+  ul.innerHTML = projects.map(p=>`<li ${p.id==selectedProj?'class="active"':''} onclick="selectProj(${p.id})"><span class="material-icons">list_alt</span>${p.title}${!p.def?`<button onclick="event.stopPropagation();delProject(${p.id})" style="color:#e53935;background:transparent;border:none;cursor:pointer;font-size:1em;margin-right:6px;">×</button>`:""}</li>`).join('');
+}
+function selectProj(id){selectedProj=id;renderProjects();renderTaskList();}
+function addProject(){
+  let t=document.getElementById("newProjTitle").value.trim();
+  if(!t)return;
+  projects.push({id:Date.now(),title:t,def:false});
+  saveProjects();
+  document.getElementById("newProjTitle").value="";
+  selectProj(projects[projects.length-1].id);
+}
+function delProject(id){
+  if(!confirm("حذف القائمة؟")) return;
+  projects=projects.filter(p=>p.id!=id);
+  tasks=tasks.filter(tsk=>tsk.projId!=id);
+  saveProjects();saveTasks();
+  selectedProj=projects[0]?.id||null;
+  renderProjects();renderTaskList();
+}
+/* --------- المهام (Google style) -------- */
+function renderTaskList(){
+  let list=document.getElementById("tasksList");
+  let proj=projects.find(p=>p.id==selectedProj);
+  document.getElementById("currentProjectTitle").textContent=(proj?.title)||"";
+  let filtered=tasks.filter(t=>t.projId==selectedProj);
+  if(!filtered.length) {list.innerHTML ='<div style="color:var(--txt-sub);padding:32px 0;text-align:center">لا يوجد مهام</div>'; return;}
+  list.innerHTML=filtered.map((t,idx)=>{
+    let i = tasks.findIndex(x=>x===t);
+    return `<div class="task-row">
+      <div class="task-check${t.done?' checked':''}" onclick="toggleDone(${i})">
+        <span class="material-icons">${t.done?'check':'radio_button_unchecked'}</span>
+      </div>
+      <div class="task-info">
+        <div class="task-title${t.done?' done':''}">${t.title}</div>
+        <div class="task-meta">
+          ${t.due?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">event</span> ${t.due}</span>`:""}
+          ${t.repeat&&!t.done?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">repeat</span> ${repeatLabel(t.repeat)}</span>`:""}
+          <span class="task-prio ${t.prio}">${prioLabel(t.prio)}</span>
+        </div>
+        <div class="task-actions">
+          <button onclick="editTask(${i})">تعديل</button>
+          <button onclick="delTask(${i})" class="del">حذف</button>
+        </div>
+      </div>
+    </div>`
+  }).join('');
+}
+function openAddRow(){
+  let form=document.getElementById("addTaskForm");
+  form.innerHTML=`
+    <input type="text" id="taskInput" placeholder="نص المهمة..." maxlength="88" required autofocus>
+    <input type="date" id="taskDue">
+    <select id="taskPrio">
+      <option value="high">أولوية عالية</option>
+      <option value="med" selected>متوسطة</option>
+      <option value="low">منخفضة</option>
+    </select>
+    <select id="taskRepeat">
+      <option value="">تكرار</option>
+      <option value="day">يومي</option>
+      <option value="week">أسبوعي</option>
+      <option value="month">شهري</option>
+      <option value="year">سنوي</option>
+    </select>
+    <button>إضافة</button>
+    <button type="button" onclick="closeAddRow()" style="background:#eee;color:#555;border:1px solid #eee">إلغاء</button>
+  `;
+  form.style.display="flex";
+  document.getElementById("taskInput").focus();
+}
+function closeAddRow(){
+  document.getElementById("addTaskForm").style.display="none";
+}
+function addTask(){
+  let title=document.getElementById("taskInput").value.trim();
+  let prio=document.getElementById("taskPrio").value;
+  let due=document.getElementById("taskDue").value;
+  let repeat=document.getElementById("taskRepeat").value;
+  if(!title)return;
+  tasks.push({id:Date.now(),projId:selectedProj,title,done:false,prio,due,repeat});
+  saveTasks();
+  closeAddRow();
+  renderTaskList();
+}
+function editTask(i){
+  let t=tasks[i];
+  let newTitle=prompt("تعديل نص المهمة:",t.title);
+  if(newTitle!=null&&newTitle.trim()){
+    t.title=newTitle.trim();
+    saveTasks();
+    renderTaskList();
+  }
+}
+function delTask(i){
+  if(!confirm("حذف المهمة؟"))return;
+  tasks.splice(i,1);
+  saveTasks();
+  renderTaskList();
+}
+function toggleDone(i){
+  tasks[i].done=!tasks[i].done;
+  saveTasks();
+  renderTaskList();
+}
+function prioLabel(p){
+  if(p=="high")return"هام";
+  if(p=="med")return"متوسط";
+  return"منخفض";
+}
+function repeatLabel(r){
+  if(r=="day")return"يومي";
+  if(r=="week")return"أسبوعي";
+  if(r=="month")return"شهري";
+  if(r=="year")return"سنوي";
+  return "";
+}
+/* ------------ الثيم وتفعيل أولي -------- */
+function toggleTheme(){
+  let th=document.body.dataset.theme=="light"?"dark":"light";
+  document.body.dataset.theme=th;
+  document.getElementById("themeToggle").textContent=th=="dark"?"☀️":"🌙";
+  localStorage.setItem("theme_mode",th);
+}
+/* ------ بدء ----- */
+if(!projects.length){projects=[{id:Date.now(),title:"مهامي",def:true}];saveProjects();}
+if(!selectedProj)selectedProj=projects[0].id;
+renderProjects();selectProj(selectedProj);
 </script>
-</body>
-</html>
+
