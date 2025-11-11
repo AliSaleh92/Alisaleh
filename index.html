@@ -3,81 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تقويم مواعيدي فقط</title>
-  <!-- FullCalendar CSS & JS -->
+  <title>AliW | قائمة مهامي ومشاريعي وجدولي</title>
+  <link href="https://fonts.googleapis.com/css?family=Tajawal:600,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- FullCalendar (التقويم) -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
   <style>
-    body {
-      font-family: 'Tajawal', Arial, sans-serif;
-      background: #191a25;
-      color: #fff;
-      margin: 0;
-      direction: rtl;
-    }
-    #scheduleCalendar {
-      max-width: 1100px;
-      margin: 38px auto;
-      background: #232437;
-      padding: 38px 10px 34px 10px;
-      border-radius: 26px;
-      box-shadow: 0 7px 32px #121a2828;
-    }
-    .fc, .fc-header-toolbar, .fc-toolbar-title, .fc-button, .fc-daygrid-day, .fc-event, .fc-col-header-cell, .fc-timegrid-event {
-      font-family: 'Tajawal', Arial, sans-serif !important;
-    }
-    .fc-event {
-      font-size: 1.05em;
-    }
+:root {
+  --bg-main:#181922;--bg-side:#232435;--bg-task:#232332;--txt-main:#fff;--txt-sub:#aaa;
+  --accent:#43b3fa;--card-space:#202030;--prio-high:#ef4444;--prio-med:#fbbf24;--prio-low:#42a5f5;
+  --project-colors:#43b3fa,#ef4444,#fb8c00,#7d21ce,#01bc82,#f74d89,#f28021,#3d74ff,#8f36c9,#41d6c3;
+}
+body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial,sans-serif;margin:0;}
+.header-app{display:flex;align-items:center;justify-content:space-between;background:var(--bg-side);padding:20px 22px;font-weight:900;font-size:1.18em;}
+.theme-switch{font-size:1.13em;border:none;background:var(--card-space);padding:6px 16px;border-radius:10px;color:var(--accent);cursor:pointer;}
+.layout-row{display:flex;}
+.sidebar{width:215px;background:var(--bg-side);height:97vh;padding-top:17px;box-shadow:-1px 0 12px #191a2220;display:flex;flex-direction:column;gap:17px;align-items:flex-start;}
+.logo{font-weight:900;color:var(--accent);font-size:1.17em;margin-bottom:28px;}
+.menu-list{margin-bottom:22px;width:100%;}
+.menu-btn{padding:12px 0;font-size:1.08em;color:var(--txt-sub);font-weight:900;border:none;width:100%;background:transparent;text-align:right;cursor:pointer;transition:.13s;}
+.menu-btn.active,.menu-btn:hover{color:var(--accent);}
+.main-content{flex:1;padding:45px 4vw 45px 7vw;}
+.section{display:none;}
+.section.active{display:block;}
+.section-title{color:var(--accent);font-weight:900;margin:0 0 17px 0;font-size:1.25em;}
+/* ... نفس بقية CSS أقسام مهام/مشاريع بالردود السابقة ... */
+#scheduleCalendar {
+  max-width: 1100px;
+  background: #232437;
+  padding: 38px 12px 30px 12px;
+  margin: 37px auto 0 auto;
+  border-radius: 22px;
+  box-shadow: 0 7px 32px #121a2828;
+}
+.fc, .fc-header-toolbar, .fc-toolbar-title, .fc-button,
+.fc-daygrid-day, .fc-event, .fc-col-header-cell, .fc-timegrid-event {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+}
+.fc-event { font-size: 1.05em; }
+#customModal{display:none;position:fixed;top:0;right:0;left:0;bottom:0;z-index:1200;background:rgba(25,27,40,.56);align-items:center;justify-content:center;}
+#customModal .modal-box{background:var(--bg-task);padding:33px 25px 25px 25px;border-radius:15px;min-width:250px;max-width:97vw;box-shadow:0 8px 38px #11226c99;display:flex;flex-direction:column;gap:13px;align-items:stretch;}
+#customModal input[type="text"] {width:100%;padding:10px 9px;border-radius:8px;border:1.2px solid #48508a;font-size:1.07em;background:#22283a;color:#fff;}
+#customModal button {font-family:'Tajawal',Arial,sans-serif;border:none;background:var(--accent);margin:0 0 0 7px;color:#fff;border-radius:8px;padding:6px 18px;font-size:1em;cursor:pointer;}
+#customModal button.cancelBtn{background:#353b55;color:#fff;}
+#customModal .modalBtnArea{display:flex;justify-content:flex-end;gap:9px;}
   </style>
 </head>
-<body>
-  <h2 style="text-align:center;color:#43b3fa;font-weight:900;margin-top:40px;">جدول مواعيدي فقط 📆</h2>
-  <div id="scheduleCalendar"></div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('scheduleCalendar');
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek',
-        slotMinTime: '06:00:00',
-        slotMaxTime: '23:00:00',
-        locale: 'ar',
-        firstDay: 6, // الأسبوع يبدأ بالسبت
-        selectable: true,
-        editable: true,
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'timeGridWeek,dayGridMonth'
-        },
-        buttonText: {
-          today:    'اليوم',
-          month:    'شهر',
-          week:     'أسبوع',
-          day:      'يوم',
-          list:     'قائمة'
-        },
-        // إضافة موعد بالضغط والسحب
-        select: function(info) {
-          let title = prompt('عنوان الموعد:');
-          if (title) {
-            calendar.addEvent({
-              title: title,
-              start: info.start,
-              end: info.end
-            });
-          }
-          calendar.unselect();
-        },
-        // حذف موعد عند الضغط
-        eventClick: function(info) {
-          if (confirm('هل تريد حذف هذا الموعد؟')) {
-            info.event.remove();
-          }
-        }
-      });
-      calendar.render();
-    });
-  </script>
+<body data-theme="dark">
+<!-- المودال -->
+<div id="customModal">
+  <div class="modal-box">
+    <span id="modalTitle" style="font-weight:900;font-size:1.15em;color:var(--accent);"></span>
+    <input id="modalInput" type="text" autocomplete="off" maxlength="100">
+    <div class="modalBtnArea">
+      <button class="cancelBtn" onclick="closeModal()">إلغاء</button>
+      <button id="modalOkBtn">موافق</button>
+    </div>
+  </div>
+</div>
+<div class="header-app">
+  <span>AliW | قائمة مهامي ومشاريعي وجدولي</span>
+  <button class="theme-switch" onclick="toggleTheme()" id="themeToggle">🌙</button>
+</div>
+<div class="layout-row">
+  <div class="sidebar">
+    <div class="logo">AliW</div>
+    <div class="menu-list">
+      <button class="menu-btn active" id="tasksMenuBtn" onclick="setSection('tasks')">المهام</button>
+      <button class="menu-btn" id="projectsMenuBtn" onclick="setSection('projects')">المشاريع</button>
+      <button class="menu-btn" id="calMenuBtn" onclick="setSection('cal')">التقويم</button>
+    </div>
+  </div>
+  <div class="main-content">
+    <!-- المهام -->
+    <div class="section active" id="tasksSection">
+      <!-- ... مكان كود المهام ... -->
+      <!-- بإمكانك نسخ كل كود المهام كامل من النسخة السابقة هنا -->
+    </div>
+    <!-- المشاريع -->
+    <div class="section" id="projectsSection">
+      <!-- ... مكان كود المشاريع ... -->
+      <!-- بإمكانك نسخ كل كود المشاريع كامل من النسخة السابقة هنا -->
+    </div>
+    <!-- التقويم -->
+    <div class="section" id="calSection" style="display:none;">
+      <div id="scheduleCalendar"></div>
+    </div>
+  </div>
+</div>
+<script>
+/* مودال حديث */
+let modalCallback = null;
+function showModal(title, value, okCallback) {
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalInput").value = value || "";
+  document.getElementById("customModal").style.display = "flex";
+  modalCallback = okCallback;
+  setTimeout(()=>{document.getElementById("modalInput").focus();},60)
+}
+function closeModal(){
+  document.getElementById("customModal").style.display = "none";
+  modalCallback=null;
+}
+document.getElementById("modalOkBtn").onclick = function() {
+  if(modalCallback) modalCallback(document.getElementById("modalInput").value);
+  closeModal();
+};
+document.getElementById("customModal").onclick = function(e){
+  if(e.target==this) closeModal();
+}
+document.getElementById("modalInput").onkeydown = function(e){
+  if(e.key==="Enter"){document.getElementById("modalOkBtn").click();}
+}
+
+/* اقسام المهام/المشاريع: استوردها كما أرسلتُها لك أو ضع أي سكربت انتاجي كامل سابق هنا */
+/* ... جميع دوال المهام ... */
+/* ... جميع دوال المشاريع ... */
+/* انزل إلى قسم setSection والتقويم */
+
+function setSection(sec){
+  document.getElementById('tasksSection').classList.remove('active');
+  document.getElementById('projectsSection').classList.remove('active');
+  document.getElementById('calSection').classList.remove('active');
+  document.getElementById('tasksMenuBtn').classList.remove('active');
+  document.getElementById('projectsMenuBtn').classList.remove('active');
+  document.getElementById('calMenuBtn').classList.remove('active');
+  if(sec=="tasks"){
+    document.getElementById('tasksSection').classList.add('active');
+    document.getElementById('tasksMenuBtn').classList.add('active');
+    if(typeof renderTaskList==="function") renderTaskList();
+    return;
+  }
+  if(sec=="projects"){
+    document.getElementById('projectsSection').classList.add('active');
+    document.getElementById('projectsMenuBtn').classList.add('active');
+    if(typeof renderProjectsCards==="function") renderProjectsCards();
+    return;
+  }
+  // قسم التقويم
+  document.getElementById('calSection').classList.add('active');
+  document.getElementById('calMenuBtn').classList.add('active');
+  if(!window.calendarInited){
+    initCalendar();
+    window.calendarInited=true;
+  }
+}
+function initCalendar() {
+  var calendarEl = document.getElementById('scheduleCalendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'timeGridWeek',
+    slotMinTime: '06:00:00',
+    slotMaxTime: '23:00:00',
+    locale: 'ar',
+    firstDay: 6,
+    selectable: true,
+    editable: true,
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'timeGridWeek,dayGridMonth'
+    },
+    buttonText: {
+      today:    'اليوم',
+      month:    'شهر',
+      week:     'أسبوع',
+      day:      'يوم',
+      list:     'قائمة'
+    },
+    select: function(info) {
+      let title = prompt('عنوان الموعد:');
+      if (title) {
+        calendar.addEvent({
+          title: title,
+          start: info.start,
+          end: info.end
+        });
+      }
+      calendar.unselect();
+    },
+    eventClick: function(info) {
+      if (confirm('هل تريد حذف هذا الموعد؟')) {
+        info.event.remove();
+      }
+    }
+  });
+  calendar.render();
+}
+document.body.dataset.theme = localStorage.getItem("theme_mode")||"dark";
+document.getElementById("themeToggle").textContent = document.body.dataset.theme=="dark"?"☀️":"🌙";
+function toggleTheme(){
+  let th=document.body.dataset.theme=="dark"?"light":"dark";
+  document.body.dataset.theme=th;
+  document.getElementById("themeToggle").textContent=th=="dark"?"☀️":"🌙";
+  localStorage.setItem("theme_mode",th);
+}
+
+/* هنا نهاية الصفحة: ضع استدعاءات مهامك ومشاريعك فقط لا غير */
+if(typeof renderProjectsCards==="function") renderProjectsCards();
+if(typeof renderProjectDropdown==="function") renderProjectDropdown();
+if(typeof renderTaskList==="function") renderTaskList();
+</script>
 </body>
 </html>
