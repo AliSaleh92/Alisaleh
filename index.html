@@ -1,355 +1,484 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AliW | قائمة مهامي ومشاريعي</title>
-<link href="https://fonts.googleapis.com/css?family=Tajawal:600,900&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Tajawal:600,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-:root{
+:root {
   --bg-main:#181922;--bg-side:#232435;--bg-task:#232332;--txt-main:#fff;--txt-sub:#aaa;
   --accent:#43b3fa;--card-space:#202030;--prio-high:#ef4444;--prio-med:#fbbf24;--prio-low:#42a5f5;
+  --project-colors:#43b3fa,#ef4444,#fb8c00,#7d21ce,#01bc82,#f74d89,#f28021,#3d74ff,#8f36c9,#41d6c3;
 }
-*{box-sizing:border-box}
-body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial,sans-serif;margin:0}
-.header-app{display:flex;align-items:center;justify-content:space-between;background:var(--bg-side);padding:20px 22px;font-weight:900;font-size:1.18em}
-.theme-switch{font-size:1.13em;border:none;background:var(--card-space);padding:6px 16px;border-radius:10px;color:var(--accent);cursor:pointer}
-.layout-row{display:flex}
-.sidebar{width:205px;background:var(--bg-side);height:97vh;padding-top:17px;box-shadow:-1px 0 12px #191a2220;display:flex;flex-direction:column;gap:17px;align-items:flex-start}
-.logo{font-weight:900;color:var(--accent);font-size:1.17em;margin:0 0 8px 0;padding:0 18px}
-.menu-list{margin-bottom:22px;width:100%;padding:0 18px}
-.menu-btn{padding:12px 0;font-size:1.08em;color:var(--txt-sub);font-weight:900;border:none;width:100%;background:transparent;text-align:right;cursor:pointer;transition:.13s;font-family:'Tajawal',Arial,sans-serif}
-.menu-btn.active,.menu-btn:hover{color:var(--accent)}
-.main-content{flex:1;padding:45px 4vw 45px 7vw}
-.section{display:none}
-.section.active{display:block}
-.section-title{color:var(--accent);font-weight:900;margin:0 0 17px 0;font-size:1.25em}
-
-/* المهام */
-.tasks-panel{background:var(--bg-task);border-radius:17px;box-shadow:0 2px 12px #1c257922;padding:0 0 24px 0;max-width:720px;margin:10px 0}
-.add-task-bar{display:flex;align-items:center;gap:7px;background:var(--bg-task);padding:14px 18px 10px 18px}
-.add-task-bar input[type="text"]{flex:1;padding:9px 10px;font-size:1.02em;border-radius:8px;border:1.2px solid #293848;background:var(--bg-side);color:var(--txt-main)}
-.add-task-bar select{padding:8px;border-radius:8px;border:1.2px solid #293848;background:var(--bg-side);color:var(--txt-main)}
-.add-task-bar button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.98em}
-.tasks-list{padding:0 18px}
-.task-row{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid #4446}
-.task-row:last-child{border-bottom:none}
-.task-check{width:25px;height:25px;background:#232435;border-radius:50%;border:1.3px solid #2787ef33;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.1s}
-.task-check.checked{background:var(--accent);border-color:var(--accent)}
-.task-check .material-icons{font-size:1.19em}
-.task-title{font-size:1.06em;font-weight:900;margin-bottom:4px;word-break:break-word}
-.task-title.done{text-decoration:line-through;color:#788b95}
-.task-meta{color:var(--txt-sub);font-size:.95em;display:flex;gap:7px;align-items:center;margin-bottom:2px;flex-wrap:wrap}
-.task-proj-label{display:inline-block;font-size:.90em;font-weight:800;padding:0 7px;border-radius:8px;margin-left:4px;background:#3a4258}
-.task-actions{margin-right:auto}
-.task-actions button{background:#272a3a;color:var(--accent);border:none;padding:2.5px 10px;border-radius:8px;cursor:pointer;font-size:.9em;margin-left:5px;font-family:'Tajawal',Arial,sans-serif}
-.task-actions button.del{color:var(--prio-high)}
-.badge{border:1px solid #39465a;border-radius:8px;padding:0 8px}
-
-/* المشاريع */
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.project-card{background:var(--bg-task);border:1px solid #2a3142;border-radius:14px;padding:14px}
-.project-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.project-dot{width:12px;height:12px;border-radius:50%}
-
-/* المودال */
-#customModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#0008;z-index:50}
-#customModal.show{display:flex}
-.modal-box{background:var(--bg-task);border:1px solid #2a3142;border-radius:14px;padding:16px;min-width:280px;max-width:90vw}
-#modalInput{width:100%;margin:10px 0 14px;border-radius:8px;border:1px solid #2a3142;background:var(--bg-side);color:#fff;padding:10px}
-.modalBtnArea{display:flex;gap:8px;justify-content:flex-end}
-.modalBtnArea button{border:none;border-radius:8px;padding:8px 12px;cursor:pointer}
-.cancelBtn{background:#333;color:#ddd}
-#modalOkBtn{background:var(--accent);color:#fff}
-
-/* ثيم فاتح بسيط */
-body[data-theme="light"]{--bg-main:#f4f6fb;--bg-side:#fff;--bg-task:#ffffff;--txt-main:#111;--txt-sub:#555;--card-space:#f1f3f8}
+body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial,sans-serif;margin:0;}
+.header-app{display:flex;align-items:center;justify-content:space-between;background:var(--bg-side);padding:20px 22px;font-weight:900;font-size:1.18em;}
+.theme-switch{font-size:1.13em;border:none;background:var(--card-space);padding:6px 16px;border-radius:10px;color:var(--accent);cursor:pointer;}
+.layout-row{display:flex;}
+.sidebar{width:205px;background:var(--bg-side);height:97vh;padding-top:17px;box-shadow:-1px 0 12px #191a2220;display:flex;flex-direction:column;gap:17px;align-items:flex-start;}
+.logo{font-weight:900;color:var(--accent);font-size:1.17em;margin-bottom:28px;padding:0 15px;}
+.menu-list{margin-bottom:22px;width:100%;}
+.menu-btn{padding:12px 15px;font-size:1.08em;color:var(--txt-sub);font-weight:900;border:none;width:100%;background:transparent;text-align:right;cursor:pointer;transition:.13s;font-family:'Tajawal',Arial,sans-serif;}
+.menu-btn.active,.menu-btn:hover{color:var(--accent);}
+.main-content{flex:1;padding:45px 4vw 45px 7vw;overflow-y:auto;}
+.section{display:none;}
+.section.active{display:block;}
+.section-title{color:var(--accent);font-weight:900;margin:0 0 17px 0;font-size:1.25em;}
+.tasks-panel {background: var(--bg-task);border-radius: 17px;box-shadow: 0 2px 12px #1c257922;padding: 0 0 24px 0;max-width: 480px;margin: 38px auto 0 auto;}
+.tasks-list {padding: 0 23px;}
+.add-task-bar {display: flex;align-items: center;gap: 7px;background: var(--bg-task);padding: 14px 18px 10px 18px;}
+.add-task-bar input[type="text"]{flex:1;padding:9px 10px;font-size:1.09em;border-radius:8px;border:1.2px solid #293848;background:var(--bg-side);color:var(--txt-main);}
+.add-task-bar button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.98em;}
+.add-task-bar .opt-btn{background:transparent;color:var(--accent);border:none;font-size:1.25em;cursor:pointer;}
+.adv-row{display:none;gap:6px;padding-top:9px;margin-bottom:6px;padding:0 23px;}
+.adv-row select,.adv-row input{border-radius:7px;padding:5px 7px;font-size:.98em;border:1px solid #355;flex:1;}
+.task-row {display: flex;align-items: flex-start;gap: 13px;padding: 17px 0 14px 0;border-bottom: 1px solid #444b;}
+.task-row:last-child {border-bottom:none;}
+.task-check {width: 25px; height: 25px; background: #232435;border-radius: 50%; border: 1.3px solid #2787ef33;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.1s;}
+.task-check.checked{background:var(--accent);border-color:var(--accent);}
+.task-check .material-icons {font-size:1.19em;}
+.task-title {font-size:1.12em;font-weight:900;margin-bottom:5px;word-break:break-word;}
+.task-title.done{ text-decoration: line-through; color: #788b95; }
+.task-meta {color: var(--txt-sub); font-size: .98em; display: flex;gap: 7px; align-items: center; margin-bottom: 3px;}
+.task-actions button {background: #272a3a; color: var(--accent); border: none;padding: 2.5px 11px 2.5px 12px; border-radius: 8px; cursor: pointer;font-size: .96em; margin-left: 5px; font-family: 'Tajawal', Arial, sans-serif}
+.task-actions button.del {color: var(--prio-high);}
+.task-actions button:active{background:var(--accent);color:#fff;}
+.task-proj-label{display:inline-block;font-size:.97em;font-weight:800;padding:0 7px;border-radius:8px;margin-left:4px;}
+.task-proj-label.noproject{background:#888!important;color:#fff;}
+.archive-btn{background:var(--accent);color:#fff;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;margin-top:15px;font-family:'Tajawal',Arial,sans-serif;}
+.projects-board{max-width:900px;margin:22px auto 0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;align-items:start;}
+.project-card{background:var(--bg-task);border-radius:16px;box-shadow:0 2px 18px 1px #173a7335;padding:18px 15px 14px 19px;display:flex;flex-direction:column;align-items:flex-start;gap:9px;cursor:pointer;transition:.14s;position:relative;}
+.project-card.active{box-shadow:0 0px 0px 3px var(--accent);}
+.project-head{font-size:1.07em;font-weight:900;margin-bottom:4px;}
+.project-label{display:inline-block;padding:2.2px 13px 4px 12px;border-radius:13px;font-size:1.07em;color:#fff;}
+.project-desc{color:var(--txt-sub);padding-bottom:3px;}
+.project-actions{margin-top:5px;}
+.project-actions button{background:#232739;color:#52c2fc;border:none;padding:3px 15px 4px 15px;border-radius:7px;cursor:pointer;font-size:.97em;margin-left:3px;}
+.project-actions button.del{color:#ef4444;}
+.add-proj-board{max-width:420px;margin:auto;padding:14px 13px 13px 13px;background:var(--bg-task);border-radius:14px;box-shadow:0 2px 8px #173a7320;display:flex;flex-direction:column;gap:7px;}
+.add-proj-form label{font-weight:bold;}
+.add-proj-form input,.add-proj-form textarea,.add-proj-form select{border-radius:7px;border:1.1px solid #305;padding:8px 8px;font-size:1em;margin-bottom:7px;background:var(--bg-side);color:var(--txt-main);}
+.add-proj-form{display:flex;flex-direction:column;gap:7px;}
+.add-proj-form button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 0;font-size:1.12em;cursor:pointer;width:fit-content;min-width:140px;font-family:'Tajawal',Arial,sans-serif;}
+.tracker-box {margin-top: -2px;background: var(--bg-task);border-radius: 0 0 16px 16px;box-shadow: 0 7px 33px #151f321a;padding: 18px 18px 16px 18px;font-family:'Tajawal',Arial,sans-serif;max-width: 98vw;border-top: 2px solid #314463;margin-bottom: 10px;}
+.tracker-header {display:flex; align-items:center; justify-content:space-between; padding-bottom:8px; border-bottom:1.5px solid #26334c; margin-bottom:11px;}
+.tracker-header .track-title { font-size: 1.13em; font-weight: 900; color: var(--accent);}
+.tracker-header .tracker-filter { background: #23283f; color: #52c2fc;border:none;border-radius:7px;font-size:.99em; font-family:'Tajawal',Arial,sans-serif;padding:7px 15px;}
+.tracker-table {width:100%; border-spacing:0; border-collapse:separate; margin-bottom:5px; font-family:'Tajawal',Arial,sans-serif;}
+.tracker-table th, .tracker-table td {padding:11px 9px;text-align:center;font-size:1.08em;}
+.tracker-table th {background: #222432;color: #7ed6ff;font-weight: 900;font-size:1.02em;}
+.tracker-table tr {border-radius:11px !important;transition: background 0.13s;}
+.tracker-table tr:nth-child(even) {background: #252945;}
+.tracker-table input, .tracker-table select, .tracker-table textarea {border-radius:7px; border:1.1px solid #355; padding:6px 13px; background:#232435; color:#fff; font-family:'Tajawal',Arial,sans-serif;}
+.tracker-table .status-label {border-radius: 13px;font-size:.98em;font-weight:900;padding:5px 19px 7px 19px;display:inline-block;margin-top:7px;}
+.tracker-table .status-moallaqa{background:#cfd9e2;color:#38384b;}
+.tracker-table .status-motawaqqa{background:#236ce4;color:#fff;}
+.tracker-table .status-tam{background:#23b267;color:#fff;}
+.tracker-table .status-qeid{background:#b283ea;color:#fff;}
+.tracker-table .status-a3tila{background:#ef4444;color:#fff;}
+.tracker-table .status-molghaa{background:#676c7a;color:#fff;}
+.tracker-table .delbtn{background:#262c44;color:#ef4444;border:none;border-radius:8px;padding:5px 13px;font-size:.97em;cursor:pointer;font-family:'Tajawal',Arial,sans-serif;}
+.tracker-table .delbtn:hover{background:#ef4444;color:#fff;}
+.tracker-op-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 0;font-size:1.09em;cursor:pointer;width:fit-content;min-width:80px;font-family:'Tajawal',Arial,sans-serif;}
+.tracker-add-inp, input[type="text"], textarea {text-align: right;}
+#customModal {display:none;position:fixed;top:0;right:0;left:0;bottom:0;z-index:1200;background:rgba(25,27,40,.56);align-items:center;justify-content:center;}
+#customModal .modal-box {background:var(--bg-task);padding:33px 25px 25px 25px;border-radius:15px;min-width:250px;max-width:97vw;box-shadow:0 8px 38px #11226c99;display:flex;flex-direction:column;gap:13px;align-items:stretch;}
+#customModal input[type="text"] {width:100%;padding:10px 9px;border-radius:8px;border:1.2px solid #48508a;font-size:1.07em;background:#22283a;color:#fff;}
+#customModal button {font-family:'Tajawal',Arial,sans-serif;border:none;background:var(--accent);margin:0 0 0 7px;color:#fff;border-radius:8px;padding:6px 18px;font-size:1em;cursor:pointer;}
+#customModal button.cancelBtn{background:#353b55;color:#fff;}
+#customModal .modalBtnArea{display:flex;justify-content:flex-end;gap:9px;}
 </style>
 </head>
 <body data-theme="dark">
-  <!-- Modal -->
-  <div id="customModal">
-    <div class="modal-box">
-      <span id="modalTitle" style="font-weight:900;font-size:1.05em;color:var(--accent)"></span>
-      <input id="modalInput" type="text" autocomplete="off" maxlength="100" />
-      <div class="modalBtnArea">
-        <button class="cancelBtn" onclick="closeModal()">إلغاء</button>
-        <button id="modalOkBtn">موافق</button>
-      </div>
+
+<div id="customModal">
+  <div class="modal-box">
+    <span id="modalTitle" style="font-weight:900;font-size:1.15em;color:var(--accent);"></span>
+    <input id="modalInput" type="text" autocomplete="off" maxlength="100">
+    <div class="modalBtnArea">
+      <button class="cancelBtn" onclick="closeModal()">إلغاء</button>
+      <button id="modalOkBtn">موافق</button>
     </div>
   </div>
+</div>
 
-  <div class="header-app">
-    <span>AliW | قائمة مهامي ومشاريعي</span>
-    <button class="theme-switch" onclick="toggleTheme()" id="themeToggle">🌙</button>
+<div class="header-app">
+  <span>AliW | قائمة مهامي ومشاريعي</span>
+  <button class="theme-switch" onclick="toggleTheme()" id="themeToggle">🌙</button>
+</div>
+
+<div class="layout-row">
+  <div class="sidebar">
+    <div class="logo">AliW</div>
+    <div class="menu-list">
+      <button class="menu-btn active" id="tasksMenuBtn" onclick="setSection('tasks')">المهام</button>
+      <button class="menu-btn" id="projectsMenuBtn" onclick="setSection('projects')">المشاريع</button>
+    </div>
   </div>
-
-  <div class="layout-row">
-    <aside class="sidebar">
-      <div class="logo">AliW</div>
-      <div class="menu-list">
-        <button class="menu-btn active" id="tasksMenuBtn"    onclick="setSection('tasks')">المهام</button>
-        <button class="menu-btn"         id="projectsMenuBtn" onclick="setSection('projects')">المشاريع</button>
-        <!-- زر التقويم ينشأ تلقائياً إن تم إنشاء قسم التقويم -->
+  
+  <div class="main-content">
+    <div class="section active" id="tasksSection">
+      <div class="section-title">مهامي</div>
+      <div class="tasks-panel">
+        <div class="add-task-bar">
+          <input type="text" id="taskInput" placeholder="أضف مهمة جديدة..." maxlength="80">
+          <button onclick="addTaskSimple()">إضافة</button>
+          <button class="opt-btn" onclick="toggleAdvRow()"><span class="material-icons">expand_more</span></button>
+        </div>
+        <div class="adv-row" id="advRow">
+          <select id="addProjId"></select>
+          <input type="date" id="taskDue">
+          <select id="taskPrio">
+            <option value="high">هام</option>
+            <option value="med" selected>متوسطة</option>
+            <option value="low">منخفضة</option>
+          </select>
+          <select id="taskRepeat">
+            <option value="">تكرار</option>
+            <option value="day">يومي</option>
+            <option value="week">أسبوعي</option>
+            <option value="month">شهري</option>
+            <option value="year">سنوي</option>
+          </select>
+        </div>
+        <div class="tasks-list" id="tasksList"></div>
       </div>
-    </aside>
+      <button class="archive-btn" onclick="showArchive()">عرض المهام المنجزة</button>
+      <div class="archive-section" id="archiveSection" style="display:none">
+        <div style="color:var(--accent);font-weight:900;margin:15px 0 10px 0;">الأرشيف</div>
+        <div class="archive-list" id="archiveList"></div>
+        <button class="archive-btn" onclick="closeArchive()" style="background:var(--txt-sub);margin-top:10px;">إغلاق</button>
+      </div>
+    </div>
 
-    <main class="main-content">
-      <!-- المهام -->
-      <section class="section active" id="tasksSection">
-        <h3 class="section-title">المهام</h3>
-        <div class="tasks-panel">
-          <div class="add-task-bar">
-            <input id="newTaskTitle" type="text" placeholder="أضف مهمة..." />
-            <select id="newTaskProject"></select>
-            <button onclick="addTask()">إضافة</button>
-          </div>
-          <div class="tasks-list" id="tasksList"></div>
-        </div>
-      </section>
-
-      <!-- المشاريع -->
-      <section class="section" id="projectsSection">
-        <h3 class="section-title">المشاريع</h3>
-        <div style="margin:10px 0 14px;display:flex;gap:8px">
-          <input id="newProjectName" type="text" placeholder="اسم مشروع جديد..." style="flex:1;padding:10px;border-radius:8px;border:1px solid #2a3142;background:var(--bg-side);color:var(--txt-main)" />
-          <button onclick="addProject()" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer">إضافة مشروع</button>
-        </div>
-        <div class="projects-grid" id="projectsGrid"></div>
-      </section>
-
-      <!-- (اختياري) التقويم -->
-      <section class="section" id="calendarSection" style="display:none">
-        <h3 class="section-title">التقويم</h3>
-        <div id="calendarBox" class="projects-grid"></div>
-      </section>
-    </main>
+    <div class="section" id="projectsSection">
+      <div class="section-title">المشاريع</div>
+      <div class="add-proj-board">
+        <form class="add-proj-form" id="projAddForm" onsubmit="addProjectCard();return false;">
+          <label>اسم المشروع</label>
+          <input type="text" id="projName" maxlength="28" required>
+          <label>وصف المشروع</label>
+          <textarea id="projDesc" maxlength="100" rows="2" required></textarea>
+          <label>لون المشروع</label>
+          <select id="projColor">
+            <option value="#43b3fa">أزرق</option>
+            <option value="#ef4444">أحمر</option>
+            <option value="#fb8c00">برتقالي</option>
+            <option value="#7d21ce">بنفسجي</option>
+            <option value="#01bc82">أخضر</option>
+            <option value="#f74d89">وردي</option>
+            <option value="#f28021">ذهبي</option>
+            <option value="#3d74ff">سماوي</option>
+            <option value="#8f36c9">بنفسجي غامق</option>
+            <option value="#41d6c3">تركواز</option>
+          </select>
+          <button type="submit">إضافة المشروع</button>
+        </form>
+      </div>
+      <div class="projects-board" id="projectsBoard"></div>
+      <div id="projectTrackers"></div>
+    </div>
   </div>
+</div>
 
 <script>
-/* ===================== بيانات بسيطة محلية ===================== */
-const LS_KEYS = { tasks:'aliw_tasks', projects:'aliw_projects' };
-
-function load(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }catch{ return fallback; } }
-function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
-
-let projects = load(LS_KEYS.projects, [
-  {id: uid(), name:'عام', color:'#3d74ff'},
-]);
-let tasks = load(LS_KEYS.tasks, [
-  {id: uid(), title:'مثال: أول مهمة', projectId: projects[0]?.id, done:false, due:null, prio:'med'}
-]);
-
-/* ===================== أدوات عامة ===================== */
-function uid(){ return Math.random().toString(36).slice(2,10); }
-
-function byId(id){ return document.getElementById(id); }
-
-function toggleTheme(){
-  const isDark = document.body.getAttribute('data-theme')==='dark';
-  document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  byId('themeToggle').textContent = isDark ? '☀️' : '🌙';
+let modalCallback = null;
+function showModal(title, value, okCallback) {
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalInput").value = value || "";
+  document.getElementById("customModal").style.display = "flex";
+  modalCallback = okCallback;
+  setTimeout(()=>{document.getElementById("modalInput").focus();},60)
+}
+function closeModal(){
+  document.getElementById("customModal").style.display = "none";
+  modalCallback=null;
+}
+document.getElementById("modalOkBtn").onclick = function() {
+  if(modalCallback) modalCallback(document.getElementById("modalInput").value);
+  closeModal();
+};
+document.getElementById("customModal").onclick = function(e){
+  if(e.target==this) closeModal();
+}
+document.getElementById("modalInput").onkeydown = function(e){
+  if(e.key==="Enter"){document.getElementById("modalOkBtn").click();}
 }
 
-/* مودال بسيط (احتياطي لو احتجته لاحقاً) */
-function openModal(title, placeholder, onOk){
-  byId('modalTitle').textContent = title || '';
-  const input = byId('modalInput');
-  input.value = '';
-  input.placeholder = placeholder || '';
-  byId('customModal').classList.add('show');
-  const ok = byId('modalOkBtn');
-  ok.onclick = ()=>{ onOk && onOk(input.value.trim()); closeModal(); };
-  setTimeout(()=>input.focus(),50);
-}
-function closeModal(){ byId('customModal').classList.remove('show'); }
+let tasks = JSON.parse(localStorage.getItem("projTasks_tasks")||'[]');
+let projectsExtra = JSON.parse(localStorage.getItem("projTasks_extracard")||'[]');
+let openProjectId = null;
 
-/* ===================== التنقل بين الأقسام ===================== */
-function setSection(sec){
-  // Safely remove active
-  const sections = ['tasksSection','projectsSection','calendarSection'];
-  sections.forEach(id => { const el = byId(id); if(el) el.classList.remove('active'); });
-  const menuIds = ['tasksMenuBtn','projectsMenuBtn','calendarMenuBtn'];
-  menuIds.forEach(id => { const el = byId(id); if(el) el.classList.remove('active'); });
-
-  // Add active + render
-  if(sec==='tasks'){
-    byId('tasksSection').classList.add('active');
-    byId('tasksMenuBtn').classList.add('active');
-    renderTaskList();
-    return;
-  }
-  if(sec==='projects'){
-    byId('projectsSection').classList.add('active');
-    byId('projectsMenuBtn').classList.add('active');
-    renderProjectsCards();
-    return;
-  }
-  if(sec==='calendar'){
-    const cal = byId('calendarSection');
-    if(cal){ cal.classList.add('active'); }
-    const btn = byId('calendarMenuBtn');
-    if(btn){ btn.classList.add('active'); }
-    renderCalendar();
-    return;
-  }
-}
-
-/* أنشئ زر التقويم تلقائياً إن وُجد قسم التقويم */
-(function ensureCalendarBtn(){
-  if(byId('calendarSection') && !byId('calendarMenuBtn')){
-    const b = document.createElement('button');
-    b.className = 'menu-btn';
-    b.id = 'calendarMenuBtn';
-    b.textContent = 'التقويم';
-    b.onclick = ()=>setSection('calendar');
-    document.querySelector('.menu-list').appendChild(b);
-  }
-})();
-
-/* ===================== المشاريع ===================== */
-function addProject(){
-  const name = byId('newProjectName').value.trim();
-  if(!name) return;
-  const color = pickColor(projects.length);
-  const p = {id: uid(), name, color};
-  projects.push(p);
-  save(LS_KEYS.projects, projects);
-  byId('newProjectName').value = '';
-  renderProjectsCards();
-  rebuildProjectSelect();
-}
-function deleteProject(id){
-  // لا نحذف المشروع الوحيد الأخير
-  if(projects.length<=1){ alert('لا يمكن حذف آخر مشروع'); return; }
-  // انقل مهام هذا المشروع إلى أول مشروع
-  const fallbackId = projects.find(p=>p.id!==id)?.id;
-  tasks = tasks.map(t => t.projectId===id ? {...t, projectId:fallbackId} : t);
-  projects = projects.filter(p => p.id!==id);
-  save(LS_KEYS.projects, projects);
-  save(LS_KEYS.tasks, tasks);
-  renderProjectsCards();
-  rebuildProjectSelect();
-}
-function pickColor(i){
-  const palette = ['#43b3fa','#ef4444','#fb8c00','#7d21ce','#01bc82','#f74d89','#f28021','#3d74ff','#8f36c9','#41d6c3'];
-  return palette[i % palette.length];
-}
 function renderProjectsCards(){
-  const grid = byId('projectsGrid');
-  grid.innerHTML = '';
-  projects.forEach(p=>{
-    const card = document.createElement('div');
-    card.className='project-card';
-    card.innerHTML = `
-      <div class="project-head">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="project-dot" style="background:${p.color}"></span>
-          <strong>${escapeHtml(p.name)}</strong>
-        </div>
-        <button class="badge" onclick="deleteProject('${p.id}')">حذف</button>
+  const board=document.getElementById("projectsBoard");
+  if(!projectsExtra.length){
+    board.innerHTML="<div style='color:var(--txt-sub);padding:35px 0;text-align:center'>لا يوجد مشاريع بعد.</div>";
+    document.getElementById("projectTrackers").innerHTML="";
+    return;
+  }
+  board.innerHTML=projectsExtra.map((p,i)=>
+    `<div class="project-card${openProjectId===p.id?' active':''}" onclick="toggleProjectTracker(${p.id})">
+      <div class="project-head"><span class="project-label" style="background:${p.color};">${p.title}</span></div>
+      <div class="project-desc">${p.desc}</div>
+      <div class="project-actions">
+        <button onclick="event.stopPropagation();editProjectCard(${i})">تعديل</button>
+        <button onclick="event.stopPropagation();delProjectCard(${i})" class="del">حذف</button>
       </div>
-      <div style="color:var(--txt-sub);font-size:.93em">عدد المهام: ${tasks.filter(t=>t.projectId===p.id).length}</div>
-    `;
-    grid.appendChild(card);
+    </div>`
+  ).join("");
+  renderProjectTrackers();
+}
+function toggleProjectTracker(projId){
+  openProjectId = (openProjectId===projId ? null : projId);
+  renderProjectsCards();
+}
+function renderProjectTrackers(){
+  let box = document.getElementById("projectTrackers");
+  if(!openProjectId){box.innerHTML="";return;}
+  let curProj = projectsExtra.find(p=>p.id===openProjectId);
+  if(!curProj){box.innerHTML="";return;}
+  let tracker = JSON.parse(localStorage.getItem("projTrack_"+openProjectId) || "[]");
+  let filt = localStorage.getItem("projTrackFilt_"+openProjectId)||"";
+  let trackStatusOpts = [
+    {val:"معلقة",lbl:"معلقة",cls:"status-moallaqa"},
+    {val:"متوقعة",lbl:"متوقعة",cls:"status-motawaqqa"},
+    {val:"تم الإنجاز",lbl:"تم الإنجاز",cls:"status-tam"},
+    {val:"عاطلة",lbl:"عاطلة",cls:"status-a3tila"},
+    {val:"قيد الإنجاز",lbl:"قيد الإنجاز",cls:"status-qeid"},
+    {val:"ملغاة",lbl:"ملغاة",cls:"status-molghaa"}
+  ];
+  let filtered = (filt&&filt!=="") ? tracker.filter(e=>e.status===filt) : tracker;
+  box.innerHTML = `
+    <div class="tracker-box">
+      <div class="tracker-header">
+        <span class="track-title">دفتر تتبع المهام</span>
+        <span>
+          <label>فلترة:</label>
+          <select class="tracker-filter" onchange="setProjFilter(${openProjectId},this.value)">
+            <option value="">الكل</option>
+            ${trackStatusOpts.map(opt=>`<option value="${opt.val}" ${filt===opt.val?'selected':''}>${opt.lbl}</option>`).join('')}
+          </select>
+        </span>
+      </div>
+      <table class="tracker-table">
+        <tr>
+          <th>المهمة</th>
+          <th>الحالة</th>
+          <th>ملاحظات</th>
+          <th>تاريخ</th>
+          <th></th>
+        </tr>
+        ${filtered.map((row,idx)=>`
+        <tr>
+          <td>${row.title}</td>
+          <td>
+            <select onchange="trackStatusChange(${openProjectId},${idx},this.value)">
+              ${trackStatusOpts.map(opt=>`<option value="${opt.val}" ${opt.val===row.status?'selected':''}>${opt.lbl}</option>`).join('')}
+            </select>
+            <span class="status-label ${trackStatusOpts.find(o=>o.val==row.status)?.cls||'status-moallaqa'}">${row.status}</span>
+          </td>
+          <td>${row.note||""}</td>
+          <td>${row.date||""}</td>
+          <td><button class="delbtn" onclick="deleteTrackRow(${openProjectId},${idx});">حذف</button></td>
+        </tr>
+        `).join("")}
+        <tr>
+          <td><input type="text" id="trackNewTitle" placeholder="مهمة جديدة..."></td>
+          <td><select id="trackNewStatus">${trackStatusOpts.map(opt=>`<option value="${opt.val}">${opt.lbl}</option>`).join('')}</select></td>
+          <td><input type="text" id="trackNewNote" placeholder="ملاحظات..."></td>
+          <td>-</td>
+          <td><button class="tracker-op-btn" onclick="addTrackRow(${openProjectId});">إضافة</button></td>
+        </tr>
+      </table>
+    </div>`;
+}
+function setProjFilter(pid,val){
+  localStorage.setItem("projTrackFilt_"+pid,val);
+  renderProjectTrackers();
+}
+function addTrackRow(pid){
+  let track=JSON.parse(localStorage.getItem("projTrack_"+pid) || "[]");
+  let title = document.getElementById("trackNewTitle").value.trim();
+  let status = document.getElementById("trackNewStatus").value;
+  let note = document.getElementById("trackNewNote").value.trim();
+  if(!title)return;
+  let date=new Date().toISOString().slice(0,10);
+  track.push({title,status,note,date});
+  localStorage.setItem("projTrack_"+pid,JSON.stringify(track));
+  renderProjectTrackers();
+}
+function deleteTrackRow(pid,idx){
+  let track=JSON.parse(localStorage.getItem("projTrack_"+pid) || "[]");
+  track.splice(idx,1);
+  localStorage.setItem("projTrack_"+pid,JSON.stringify(track));
+  renderProjectTrackers();
+}
+function trackStatusChange(pid,idx,newVal){
+  let track=JSON.parse(localStorage.getItem("projTrack_"+pid) || "[]");
+  track[idx].status=newVal;
+  localStorage.setItem("projTrack_"+pid,JSON.stringify(track));
+  renderProjectTrackers();
+}
+function addProjectCard(){
+  let name=document.getElementById("projName").value.trim();
+  let desc=document.getElementById("projDesc").value.trim();
+  let color=document.getElementById("projColor").value;
+  if(!name||!desc)return alert("ادخل اسم المشروع + وصفه");
+  projectsExtra.push({id:Date.now(),title:name,desc,color});
+  localStorage.setItem("projTasks_extracard",JSON.stringify(projectsExtra));
+  document.getElementById("projName").value="";
+  document.getElementById("projDesc").value="";
+  document.getElementById("projColor").value="#43b3fa";
+  renderProjectsCards();
+}
+function delProjectCard(i){
+  if(!confirm("حذف المشروع نهائيًا؟"))return;
+  let id = projectsExtra[i].id;
+  projectsExtra.splice(i,1);
+  localStorage.setItem("projTasks_extracard",JSON.stringify(projectsExtra));
+  localStorage.removeItem("projTrack_"+id);
+  localStorage.removeItem("projTrackFilt_"+id);
+  openProjectId = null;
+  renderProjectsCards();
+}
+function editProjectCard(i){
+  let proj=projectsExtra[i];
+  showModal("تعديل اسم المشروع:", proj.title, (newTitle)=>{
+    if(newTitle!=null && newTitle.trim()){
+      projectsExtra[i]={...proj,title:newTitle};
+      localStorage.setItem("projTasks_extracard",JSON.stringify(projectsExtra));
+      renderProjectsCards();
+    }
   });
-  rebuildProjectSelect();
+}
+function renderProjectDropdown(){
+  let sel=document.getElementById("addProjId");
+  if(!sel) return;
+  sel.innerHTML = `<option value="">بدون مشروع</option>` +
+    projectsExtra.map(p=>`<option value="${p.id}">${p.title}</option>`).join('');
 }
 
-/* ===================== المهام ===================== */
-function rebuildProjectSelect(){
-  const sel = byId('newTaskProject');
-  if(!sel) return;
-  sel.innerHTML = '';
-  projects.forEach(p=>{
-    const opt = document.createElement('option');
-    opt.value = p.id; opt.textContent = p.name;
-    sel.appendChild(opt);
-  });
-}
-function addTask(){
-  const title = byId('newTaskTitle').value.trim();
-  if(!title) return;
-  const projectId = byId('newTaskProject').value || projects[0]?.id;
-  tasks.push({id:uid(), title, projectId, done:false, due:null, prio:'med'});
-  save(LS_KEYS.tasks, tasks);
-  byId('newTaskTitle').value = '';
-  renderTaskList();
-}
-function toggleTask(id){
-  tasks = tasks.map(t => t.id===id ? {...t, done:!t.done} : t);
-  save(LS_KEYS.tasks, tasks);
-  renderTaskList();
-}
-function deleteTask(id){
-  tasks = tasks.filter(t => t.id!==id);
-  save(LS_KEYS.tasks, tasks);
-  renderTaskList();
-}
 function renderTaskList(){
-  const list = byId('tasksList');
-  list.innerHTML = '';
-  // ترتيب: غير المنتهية أولاً
-  const sorted = [...tasks].sort((a,b)=> (a.done===b.done?0 : a.done?1:-1));
-  sorted.forEach(t=>{
-    const proj = projects.find(p=>p.id===t.projectId) || projects[0];
-    const row = document.createElement('div');
-    row.className='task-row';
-    row.innerHTML = `
-      <div class="task-check ${t.done?'checked':''}" onclick="toggleTask('${t.id}')">
-        <span class="material-icons">${t.done?'check':'done'}</span>
-      </div>
-      <div style="flex:1">
-        <div class="task-title ${t.done?'done':''}">${escapeHtml(t.title)}</div>
+  document.getElementById("archiveSection").style.display="none";
+  let list=document.getElementById("tasksList");
+  let all=tasks.filter(t=>!t.done);
+  let scheduled=all.filter(t=>t.due).sort((a,b)=>a.due.localeCompare(b.due));
+  let unscheduled=all.filter(t=>!t.due);
+  let merged=scheduled.concat(unscheduled);
+  if(!merged.length) {list.innerHTML ='<div style="color:var(--txt-sub);padding:33px 0;text-align:center">لا يوجد مهام</div>'; return;}
+  list.innerHTML=merged.map((t,i)=>{
+    let idx=tasks.indexOf(t);
+    return `<div class="task-row">
+      <div class="task-check${t.done?' checked':''}" onclick="toggleDone(${idx})"><span class="material-icons">${t.done?'check':'radio_button_unchecked'}</span></div>
+      <div style="flex:1;">
+        <div class="task-title${t.done?' done':''}">${t.title}</div>
         <div class="task-meta">
-          <span class="task-proj-label" style="background:${proj?.color || '#3a4258'}">${escapeHtml(proj?.name || 'بدون')}</span>
-          ${t.due?`<span class="badge">تاريخ: ${fmtDate(t.due)}</span>`:''}
+          ${t.due?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">event</span> ${t.due}</span>`:""}
+          ${t.repeat&&!t.done?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">repeat</span> ${t.repeat}</span>`:""}
         </div>
         <div class="task-actions">
-          <button class="del" onclick="deleteTask('${t.id}')">حذف</button>
+          <button onclick="editTask(${idx})">تعديل</button>
+          <button onclick="delTask(${idx})" class="del">حذف</button>
         </div>
       </div>
-    `;
-    list.appendChild(row);
-  });
+    </div>`
+  }).join('');
 }
-
-/* ===================== تقويم (عرض بسيط) ===================== */
-function renderCalendar(){
-  const box = byId('calendarBox');
-  if(!box) return;
-  box.innerHTML = '';
-  // نعرض الأيام 1..7 كأعمدة مع المهام غير المنتهية كعينات
-  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-  days.forEach((d,i)=>{
-    const col = document.createElement('div');
-    col.className='project-card';
-    col.innerHTML = `<div class="project-head"><strong>${d}</strong></div>`;
-    const ul = document.createElement('div');
-    ul.style.fontSize='.92em';
-    tasks.filter(t=>!t.done).slice(0,3).forEach(t=>{
-      const p = projects.find(p=>p.id===t.projectId);
-      const line = document.createElement('div');
-      line.style.margin='8px 0';
-      line.innerHTML = `<span class="project-dot" style="background:${p?.color || '#888'};display:inline-block;margin-left:6px"></span>${escapeHtml(t.title)}`;
-      ul.appendChild(line);
-    });
-    col.appendChild(ul);
-    box.appendChild(col);
-  });
-}
-
-/* ===================== أدوات مساعدة ===================== */
-function fmtDate(iso){ try{ const d=new Date(iso); return d.toLocaleDateString('en-CA'); }catch{ return iso||''; } }
-function escapeHtml(s){ return (s??'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-/* ===================== إقلاع ===================== */
-(function init(){
-  renderProjectsCards();
-  rebuildProjectSelect();
+function addTaskSimple(){
+  let title=document.getElementById("taskInput").value.trim();
+  if(!title)return;
+  tasks.push({id:Date.now(),title,done:false,due:"",repeat:""});
+  localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));
+  document.getElementById("taskInput").value="";
   renderTaskList();
-})();
+}
+function editTask(i){
+  let t=tasks[i];
+  showModal("تعديل نص المهمة:",t.title,(newTitle)=>{
+    if(newTitle!=null&&newTitle.trim()){
+      t.title=newTitle.trim();
+      localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));
+      renderTaskList();
+    }
+  });
+}
+function delTask(i){
+  if(!confirm("حذف المهمة؟"))return;
+  tasks.splice(i,1);
+  localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));
+  renderTaskList();
+}
+function toggleDone(i){
+  tasks[i].done=!tasks[i].done;
+  localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));
+  renderTaskList();
+}
+function showArchive(){
+  let arch=tasks.filter(t=>t.done);
+  let arcCont=document.getElementById("archiveList");
+  document.getElementById("archiveSection").style.display="block";
+  if(!arch.length){
+    arcCont.innerHTML='<div style="color:var(--txt-sub);padding:14px 0;text-align:center">لا يوجد مهام منجزة</div>';return;
+  }
+  arcCont.innerHTML=arch.map((t)=>{
+    let idx=tasks.indexOf(t);
+    return `<div class="task-row">
+      <div style="flex:1;">
+        <div class="task-title done">${t.title}</div>
+        <div class="task-actions">
+          <button onclick="unarchiveTask(${idx})" style="background:var(--accent);color:#fff;">استرجاع</button>
+          <button onclick="delTask(${idx})" class="del">حذف نهائي</button>
+        </div>
+      </div>
+    </div>`
+  }).join('');
+}
+function closeArchive(){
+  document.getElementById("archiveSection").style.display="none";
+  renderTaskList();
+}
+function unarchiveTask(i){
+  tasks[i].done=false;
+  localStorage.setItem("projTasks_tasks",JSON.stringify(tasks));
+  showArchive();
+}
+
+function toggleAdvRow(){
+  let adv=document.getElementById("advRow");
+  adv.style.display=(adv.style.display=="flex"?"none":"flex");
+  renderProjectDropdown();
+}
+
+function setSection(sec) {
+  document.getElementById('tasksSection').classList.remove('active');
+  document.getElementById('projectsSection').classList.remove('active');
+  document.getElementById('tasksMenuBtn').classList.remove('active');
+  document.getElementById('projectsMenuBtn').classList.remove('active');
+
+  if (sec == "tasks") {
+    document.getElementById('tasksSection').classList.add('active');
+    document.getElementById('tasksMenuBtn').classList.add('active');
+    renderTaskList();
+  } else if (sec == "projects") {
+    document.getElementById('projectsSection').classList.add('active');
+    document.getElementById('projectsMenuBtn').classList.add('active');
+    renderProjectsCards();
+  }
+}
+
+function toggleTheme(){
+  let th=document.body.dataset.theme=="dark"?"light":"dark";
+  document.body.dataset.theme=th;
+  document.getElementById("themeToggle").textContent=th=="dark"?"☀️":"🌙";
+  localStorage.setItem("theme_mode",th);
+}
+
+document.body.dataset.theme = localStorage.getItem("theme_mode")||"dark";
+document.getElementById("themeToggle").textContent = document.body.dataset.theme=="dark"?"☀️":"🌙";
+renderProjectsCards();
+renderProjectDropdown();
+renderTaskList();
 </script>
 </body>
 </html>
