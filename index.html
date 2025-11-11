@@ -148,7 +148,7 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
 </head>
 <body data-theme="dark">
 
-<!-- مودال التعديل -->
+<!-- نافذة التعديل -->
 <div id="customModal">
   <div class="modal-box">
     <span id="modalTitle" style="font-weight:900;font-size:1.17em;color:var(--accent);"></span>
@@ -159,7 +159,6 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
     </div>
   </div>
 </div>
-
 <div class="header-app">
   <span>AliW | قائمة مهامي ومشاريعي</span>
   <button class="theme-switch" onclick="toggleTheme()" id="themeToggle">🌙</button>
@@ -173,18 +172,80 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
     </div>
   </div>
   <div class="main-content">
-    <!-- المهام ... -->
-    <!-- نفس باقي الكود الأساسي بدون تغيير ... -->
+    <!-- المهام -->
+    <div class="section active" id="tasksSection">
+      <div class="section-title">مهامي (Google Tasks)</div>
+      <div class="tasks-panel">
+        <div class="add-task-bar">
+          <input type="text" id="taskInput" placeholder="أضف مهمة جديدة..." maxlength="80">
+          <button onclick="addTaskSimple()">إضافة</button>
+          <button class="opt-btn" title="خيارات متقدمة" onclick="toggleAdvRow()"><span class="material-icons">expand_more</span></button>
+        </div>
+        <div class="adv-row" id="advRow">
+          <select id="addProjId"></select>
+          <input type="date" id="taskDue">
+          <select id="taskPrio">
+            <option value="high">هام</option>
+            <option value="med" selected>متوسطة</option>
+            <option value="low">منخفضة</option>
+          </select>
+          <select id="taskRepeat">
+            <option value="">تكرار</option>
+            <option value="day">يومي</option>
+            <option value="week">أسبوعي</option>
+            <option value="month">شهري</option>
+            <option value="year">سنوي</option>
+          </select>
+        </div>
+        <div class="tasks-list" id="tasksList"></div>
+      </div>
+      <button class="archive-btn" onclick="showArchive()">عرض المهام المنجزة</button>
+      <div class="archive-section" id="archiveSection" style="display:none">
+        <div class="archive-title">الأرشيف
+          <button onclick="closeArchive()" style="float:left;background:var(--accent);color:white;border:0;padding:4px 15px 4px 15px;border-radius:7px;cursor:pointer;font-size:.93em;">إغلاق</button>
+        </div>
+        <div class="archive-list" id="archiveList"></div>
+      </div>
+    </div>
+    <!-- المشاريع -->
+    <div class="section" id="projectsSection">
+      <div class="section-title">كل المشاريع (بطاقات)</div>
+      <div class="add-proj-board">
+        <form class="add-proj-form" id="projAddForm" onsubmit="addProjectCard();return false;">
+          <label for="projName">اسم المشروع</label>
+          <input type="text" id="projName" maxlength="28" required>
+          <label for="projDesc">وصف المشروع</label>
+          <textarea id="projDesc" maxlength="100" rows="2" required></textarea>
+          <label for="projColor">لون المشروع</label>
+          <select id="projColor">
+            <option value="#43b3fa" style="background:#43b3fa;color:#fff;">أزرق</option>
+            <option value="#ef4444" style="background:#ef4444;color:#fff;">أحمر</option>
+            <option value="#fb8c00" style="background:#fb8c00;color:#fff;">برتقالي</option>
+            <option value="#7d21ce" style="background:#7d21ce;color:#fff;">بنفسجي</option>
+            <option value="#01bc82" style="background:#01bc82;color:#fff;">أخضر</option>
+            <option value="#f74d89" style="background:#f74d89;color:#fff;">وردي</option>
+            <option value="#f28021" style="background:#f28021;color:#fff;">ذهبي</option>
+            <option value="#3d74ff" style="background:#3d74ff;color:#fff;">سماوي</option>
+            <option value="#8f36c9" style="background:#8f36c9;color:#fff;">بنفسجي غامق</option>
+            <option value="#41d6c3" style="background:#41d6c3;color:#222;">تركواز</option>
+          </select>
+          <button type="submit">إضافة المشروع</button>
+        </form>
+      </div>
+      <div class="projects-board" id="projectsBoard"></div>
+      <div id="projectTrackers"></div>
+    </div>
   </div>
 </div>
 <script>
+/* -------- نافذة منبثقة عصرية -------- */
 let modalCallback = null;
 function showModal(title, value, okCallback) {
   document.getElementById("modalTitle").innerText = title;
   document.getElementById("modalInput").value = value || "";
   document.getElementById("customModal").style.display = "flex";
   modalCallback = okCallback;
-  setTimeout(()=>{document.getElementById("modalInput").focus();},60)
+  setTimeout(()=>{document.getElementById("modalInput").focus();},50)
 }
 function closeModal(){
   document.getElementById("customModal").style.display = "none";
@@ -200,8 +261,11 @@ document.getElementById("customModal").onclick = function(e){
 document.getElementById("modalInput").onkeydown = function(e){
   if(e.key==="Enter"){document.getElementById("modalOkBtn").click();}
 }
+/* ----------------------------------- */
 
-/* استبدل دوال التعديل إلى هذا الشكل: */
+/* ... بقية السكربت بنفس منطقك السابق ودوالك ...  
+   اهم شي استخدم دالة editTask و editProjectCard زي هنا: */
+
 function editTask(i){
   let t=tasks[i];
   showModal("تعديل نص المهمة:",t.title,(newTitle)=>{
@@ -224,7 +288,9 @@ function editProjectCard(i){
     }
   });
 }
-/* ..... باقي الكود كما كان عندك .... */
+
+/* ... لا تترك أي دالة تستخدم prompt أو confirm كواجهة للمستخدم بل فقط المودال أو alert للحذف فقط ... */
+/* ... وانسخ اكمال أكوادك بنفس منطق ملفك السابق ... */
 </script>
 </body>
 </html>
