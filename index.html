@@ -230,84 +230,6 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
     </div>
   </div>
 </div>
-<!-- التقويم -->
-<div class="section" id="calendarSection" style="display:none;">
-  <div class="section-title">التقويم (مواعيد ومهام)</div>
-  <div class="calendar-board">
-    <div id="calendarHeader"></div>
-    <div id="calendarGrid"></div>
-  </div>
-  <button onclick="showEventModal()">إضافة موعد جديد</button>
-</div>
-
-<!-- مودال إضافة/تعديل أحداث تقويم -->
-<div id="calendarModal" style="display:none;">
-  <div class="modal-box">
-    <span id="calModalTitle" style="font-weight:900;font-size:1.15em;color:var(--accent);"></span>
-    <input id="calEventTitle" type="text" placeholder="العنوان" maxlength="80">
-    <input id="calEventDate" type="date">
-    <input id="calEventFrom" type="time">
-    <input id="calEventTo" type="time">
-    <div class="modalBtnArea">
-      <button class="cancelBtn" onclick="closeEventModal()">إلغاء</button>
-      <button id="calModalOkBtn">حفظ</button>
-    </div>
-  </div>
-</div>
-/* التقويم */
-.calendar-board {
-  background: var(--bg-task);
-  border-radius: 16px;
-  box-shadow: 0 2px 14px #151c2a22;
-  margin: 23px auto 0 auto;
-  padding: 16px 15px 13px 17px;
-  max-width: 950px;
-}
-#calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7,1fr);
-  gap: 7px;
-  min-height: 300px;
-  margin-top: 9px;
-  direction: rtl;
-}
-.calendar-day {
-  background: #20273e;
-  border-radius: 8px;
-  min-height: 110px;
-  padding: 8px 10px 7px 6px;
-  position: relative;
-  color: var(--txt-main);
-  vertical-align: top;
-  font-size: 1.05em;
-}
-.calendar-day.today {
-  border: 2px solid var(--accent);
-}
-.cal-date-num {font-weight:900;font-size:1.07em;color:var(--accent);}
-.cal-appt {
-  background: var(--accent);
-  color: #fff;
-  border-radius:7px;
-  font-size:.99em;
-  margin:6px 0 2px 0;
-  padding: 3px 7px;
-  display: block;
-  cursor:pointer;
-  word-break: break-word;
-}
-.cal-task {
-  background: #444b;
-  color: #fff;
-  border-radius:6px;
-  font-size:.96em;
-  margin:2px 0 2px 0;
-  padding: 2px 6px;
-  display: block;
-  cursor: pointer;
-  word-break: break-word;
-  border-right: 4px solid var(--accent);
-}
 <script>
 /* مودال عصري */
 let modalCallback = null;
@@ -628,20 +550,32 @@ function toggleAdvRow(){
   adv.style.display=(adv.style.display=="flex"?"none":"flex");
   renderProjectDropdown();
 }
-function setSection(sec){
+function setSection(sec) {
   document.getElementById('tasksSection').classList.remove('active');
   document.getElementById('projectsSection').classList.remove('active');
+  document.getElementById('calendarSection')?.classList.remove('active');
   document.getElementById('tasksMenuBtn').classList.remove('active');
   document.getElementById('projectsMenuBtn').classList.remove('active');
-  if(sec=="tasks"){
+  document.getElementById('calendarMenuBtn')?.classList.remove('active'); // زر التقويم
+
+  if (sec == "tasks") {
     document.getElementById('tasksSection').classList.add('active');
     document.getElementById('tasksMenuBtn').classList.add('active');
     renderTaskList();
     return;
   }
-  document.getElementById('projectsSection').classList.add('active');
-  document.getElementById('projectsMenuBtn').classList.add('active');
-  renderProjectsCards();
+  if (sec == "projects") {
+    document.getElementById('projectsSection').classList.add('active');
+    document.getElementById('projectsMenuBtn').classList.add('active');
+    renderProjectsCards();
+    return;
+  }
+  if (sec == "calendar") {
+    document.getElementById('calendarSection').classList.add('active');
+    document.getElementById('calendarMenuBtn').classList.add('active');
+    renderCalendar();
+    return;
+  }
 }
 function toggleTheme(){
   let th=document.body.dataset.theme=="dark"?"light":"dark";
@@ -663,29 +597,26 @@ function renderCalendar(month, year) {
 
   let firstDay = new Date(y, m, 1).getDay();
   let daysInMonth = new Date(y, m+1, 0).getDate();
-  let days = [];
   let weekDays = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 
   // ترويسة الأيام
-  let calHeader = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;font-weight:900;color:#61c9ff;background:#181922;border-radius:9px;margin-bottom:4px;">'
-    + weekDays.map(d=>'<div style="padding:6px 0;text-align:center">'+d+'</div>').join('')
-    + '</div>';
+  let calHeader = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;font-weight:900;color:#61c9ff;background:#181922;border-radius:9px;margin-bottom:4px;">' +
+    weekDays.map(d=>'<div style="padding:6px 0;text-align:center">'+d+'</div>').join('') +
+    '</div>';
   document.getElementById("calendarHeader").innerHTML = calHeader;
 
   let grid = '';
   let dt = 1;
   let todayStr = today.toISOString().slice(0,10);
-
-  // الأوقات: استدعاء المهام من كل المشاريع لهذا الشهر
   let monthTasks = tasks.concat([]).filter(t => t.due && t.due.startsWith(`${y}-${String(m+1).padStart(2,"0")}`) && !t.done);
 
   for (let i=0; i<6; i++) {
     for (let j=0; j<7; j++) {
       let cell = '';
       let dayNum = (i===0 && j<((firstDay+6)%7)) ? '' : (dt <= daysInMonth ? dt : '');
-      // إذا التاريخ صحيح
+      let dateStr = '';
       if (dayNum) {
-        let dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+        dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
         cell += `<div class="cal-date-num">${dayNum}</div>`;
         // المواعيد من الأحداث
         calendarEvents.filter(ev=>ev.date===dateStr)
@@ -704,42 +635,7 @@ function renderCalendar(month, year) {
   document.getElementById("calendarGrid").innerHTML = grid;
 }
 
-// عرض التقويم حين فتح القسم
-function setSection(sec) {
-  document.getElementById('tasksSection').classList.remove('active');
-  document.getElementById('projectsSection').classList.remove('active');
-  document.getElementById('calendarSection').style.display = "none";
-  document.getElementById('tasksMenuBtn').classList.remove('active');
-  document.getElementById('projectsMenuBtn').classList.remove('active');
-  document.getElementById('calendarMenuBtn')?.classList?.remove('active');
-  if(sec=="tasks"){
-    document.getElementById('tasksSection').classList.add('active');
-    document.getElementById('tasksMenuBtn').classList.add('active');
-    renderTaskList();
-    return;
-  }
-  if(sec=="projects"){
-    document.getElementById('projectsSection').classList.add('active');
-    document.getElementById('projectsMenuBtn').classList.add('active');
-    renderProjectsCards();
-    return;
-  }
-  if(sec=="calendar"){
-    document.getElementById('calendarSection').style.display = "block";
-    document.getElementById('calendarMenuBtn').classList.add('active');
-    renderCalendar();
-  }
-}
-
-// زر القائمة الجانبية الجديد لـ التقويم
-const calendarMenuBtn = document.createElement("button");
-calendarMenuBtn.className = "menu-btn";
-calendarMenuBtn.id = "calendarMenuBtn";
-calendarMenuBtn.innerText = "التقويم";
-calendarMenuBtn.onclick = ()=>setSection('calendar');
-document.querySelector(".menu-list").appendChild(calendarMenuBtn);
-
-// === واجهة الأحداث ===
+// باقي كود التقويم:
 function showEventModal(evIdx=-1) {
   document.getElementById("calendarModal").style.display = "flex";
   if(evIdx === -1) {
@@ -782,8 +678,20 @@ function showEventModal(evIdx=-1) {
 function editAppt(idx){ showEventModal(idx); }
 function closeEventModal(){ document.getElementById("calendarModal").style.display = "none"; }
 
-// إعادة التقويم عند إضافة/تعديل مهمة بتاريخ جديد
-// من الأفضل وضع نداء renderCalendar() بعد كل عملية تحديث للمهام
+// زر القائمة الجانبية الجديد لـ التقويم
+const calendarMenuBtn = document.createElement("button");
+calendarMenuBtn.className = "menu-btn";
+calendarMenuBtn.id = "calendarMenuBtn";
+calendarMenuBtn.innerText = "التقويم";
+calendarMenuBtn.onclick = ()=>setSection('calendar');
+document.querySelector(".menu-list").appendChild(calendarMenuBtn);
+
+// تحديث واجهة التقويم عند فتح القسم
+const oldSetSection = setSection;
+setSection = function(sec){
+  oldSetSection(sec);
+  if(sec=="calendar"){ renderCalendar(); }
+}
 </script>
 </body>
 </html>
