@@ -11,6 +11,7 @@
   --bg-main:#181922;--bg-side:#232435;--bg-task:#232332;--txt-main:#fff;--txt-sub:#aaa;
   --accent:#43b3fa;--card-space:#202030;--prio-high:#ef4444;--prio-med:#fbbf24;--prio-low:#42a5f5;
   --project-colors:#43b3fa,#ef4444,#fb8c00,#7d21ce,#01bc82,#f74d89,#f28021,#3d74ff,#8f36c9,#41d6c3;
+  --track-filt-bg: #22283a;--track-row-alt: #1e202c;
 }
 body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial,sans-serif;margin:0;}
 .header-app{display:flex;align-items:center;justify-content:space-between;background:var(--bg-side);padding:20px 22px;font-weight:900;font-size:1.18em;font-family:'Tajawal',Arial,sans-serif;}
@@ -34,9 +35,7 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
   max-width: 480px;
   margin: 38px auto 0 auto;
 }
-.tasks-list {
-  padding: 0 23px;
-}
+.tasks-list {padding: 0 23px;}
 .add-task-bar {
   display: flex;
   align-items: center;
@@ -83,7 +82,7 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
 .task-proj-label.noproject{background:#888!important;color:#fff;}
 /* ================= المشاريع والدفتر ================== */
 .projects-board{max-width:900px;margin:22px auto 0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;align-items:start;}
-.project-card{background:var(--bg-task);border-radius:16px;box-shadow:0 2px 18px 1px #173a7335;padding:18px 15px 14px 19px;display:flex;flex-direction:column;align-items:flex-start;gap:9px;cursor:pointer;transition:.14s;}
+.project-card{background:var(--bg-task);border-radius:16px;box-shadow:0 2px 18px 1px #173a7335;padding:18px 15px 14px 19px;display:flex;flex-direction:column;align-items:flex-start;gap:9px;cursor:pointer;transition:.14s;position:relative;}
 .project-card.active{box-shadow:0 0px 0px 3px var(--accent);}
 .project-head{font-size:1.07em;font-weight:900;margin-bottom:4px;}
 .project-label{display:inline-block;padding:2.2px 13px 4px 12px;border-radius:13px;font-size:1.07em;color:#fff;}
@@ -266,9 +265,9 @@ function renderProjectsCards(){
     `<div class="project-card${openProjectId===p.id?' active':''}" onclick="toggleProjectTracker(${p.id})">
       <div class="project-head"><span class="project-label" style="background:${p.color};">${p.title}</span></div>
       <div class="project-desc">${p.desc}</div>
-      <div class="project-actions" onclick="event.stopPropagation();">
-        <button onclick="editProjectCard(${i})">تعديل</button>
-        <button onclick="delProjectCard(${i})" class="del">حذف</button>
+      <div class="project-actions">
+        <button onclick="event.stopPropagation();editProjectCard(${i})">تعديل</button>
+        <button onclick="event.stopPropagation();delProjectCard(${i})" class="del">حذف</button>
       </div>
     </div>`
   ).join("");
@@ -322,7 +321,7 @@ function renderProjectTrackers(){
           <td><span>${row.note||""}</span></td>
           <td><span>${row.date||""}</span></td>
           <td>
-            <button class="delbtn" onclick="deleteTrackRow(${openProjectId},${idx})">حذف</button>
+            <button class="delbtn" onclick="deleteTrackRow(${openProjectId},${idx});event.stopPropagation();">حذف</button>
           </td>
         </tr>
         `).join("")}
@@ -338,7 +337,7 @@ function renderProjectTrackers(){
           <td><input type="text" id="trackNewNote" placeholder="ملاحظات..."></td>
           <td>-</td>
           <td>
-            <button class="tracker-op-btn" onclick="addTrackRow(${openProjectId})">إضافة</button>
+            <button class="tracker-op-btn" onclick="addTrackRow(${openProjectId});event.stopPropagation();">إضافة</button>
           </td>
         </tr>
         </tbody>
@@ -453,4 +452,84 @@ function renderTaskList(){
   if(!merged.length) {list.innerHTML ='<div style="color:var(--txt-sub);padding:33px 0;text-align:center">لا يوجد مهام</div>'; return;}
   list.innerHTML=merged.map((t,i)=>{
     let idx=tasks.indexOf(t);
-    return `<div class="task-row
+    return `<div class="task-row">
+      <div class="task-check${t.done?' checked':''}" onclick="toggleDone(${idx})"><span class="material-icons">${t.done?'check':'radio_button_unchecked'}</span></div>
+      <div class="task-info">
+        <div class="task-title${t.done?' done':''}">${t.title} ${projLabel(t.projId)}</div>
+        <div class="task-meta">
+          ${t.due?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">event</span> ${t.due}</span>`:""}
+          ${t.repeat&&!t.done?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">repeat</span> ${t.repeat}</span>`:""}
+          <span class="task-prio ${t.prio}">${prioLabel(t.prio)}</span>
+        </div>
+        <div class="task-actions">
+          <button onclick="editTask(${idx})">تعديل</button>
+          <button onclick="delTask(${idx})" class="del">حذف</button>
+        </div>
+      </div>
+    </div>`
+  }).join('');
+}
+function editTask(i){
+  let t=tasks[i];
+  let newTitle=prompt("تعديل نص المهمة:",t.title);
+  if(newTitle!=null&&newTitle.trim()){
+    t.title=newTitle.trim();
+    saveTasks();
+    renderTaskList();
+  }
+}
+function delTask(i){
+  if(!confirm("حذف المهمة؟"))return;
+  tasks.splice(i,1);
+  saveTasks();
+  renderTaskList();
+}
+function toggleDone(i){
+  tasks[i].done=!tasks[i].done;
+  saveTasks();
+  renderTaskList();
+}
+function showArchive(){
+  document.getElementById("archiveSection").style.display="block";
+  let arch=tasks.filter(t=>t.done);
+  let arcCont=document.getElementById("archiveList");
+  if(!arch.length){
+    arcCont.innerHTML='<div style="color:var(--txt-sub);padding:14px 0;text-align:center">لا يوجد مهام منجزة</div>';return;
+  }
+  arcCont.innerHTML=arch.map((t,i)=>{
+    let idx=tasks.indexOf(t);
+    return `<div class="task-row archive-row">
+      <div class="task-info">
+        <div class="task-title done">${t.title} ${projLabel(t.projId)}</div>
+        <div class="task-meta">
+          ${t.due?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">event</span> ${t.due}</span>`:""}
+          ${t.repeat?`<span><span class="material-icons" style="font-size:1em;vertical-align:middle">repeat</span> ${t.repeat}</span>`:""}
+          <span class="task-prio ${t.prio}">${prioLabel(t.prio)}</span>
+        </div>
+        <div class="archive-actions">
+          <button onclick="unarchiveTask(${idx})" style="background:var(--accent);color:#fff;padding:3px 11px 3px 11px;border:0;border-radius:7px;">استرجاع</button>
+          <button onclick="delTask(${idx})" class="del" style="margin-left:7px;">حذف نهائي</button>
+        </div>
+      </div>
+    </div>`
+  }).join('');
+}
+function closeArchive(){
+  document.getElementById("archiveSection").style.display="none";
+  renderTaskList();
+}
+function unarchiveTask(i){
+  tasks[i].done=false;
+  saveTasks();
+  showArchive();
+}
+function prioLabel(p){
+  if(p=="high")return"هام";
+  if(p=="med")return"متوسط";
+  return"منخفض";
+}
+/* ========== بدء ========== */
+renderProjectsCards();renderProjectDropdown();renderTaskList();
+</script>
+</body>
+</html>
