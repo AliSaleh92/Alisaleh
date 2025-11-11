@@ -685,13 +685,6 @@ calendarMenuBtn.id = "calendarMenuBtn";
 calendarMenuBtn.innerText = "التقويم";
 calendarMenuBtn.onclick = ()=>setSection('calendar');
 document.querySelector(".menu-list").appendChild(calendarMenuBtn);
-
-// تحديث واجهة التقويم عند فتح القسم
-const oldSetSection = setSection;
-setSection = function(sec){
-  oldSetSection(sec);
-  if(sec=="calendar"){ renderCalendar(); }
-}
 </script>
 </body>
 </html>
