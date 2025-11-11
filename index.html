@@ -31,7 +31,7 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
 .add-task-bar button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.98em;}
 .add-task-bar .opt-btn{background:transparent;color:var(--accent);border:none;font-size:1.25em;cursor:pointer;}
 .adv-row{display:none;gap:6px;padding-top:9px;margin-bottom:6px;padding:0 23px;}
-.adv-row select,.adv-row input{border-radius:7px;padding:5px 7px;font-size:.98em;border:1px solid #355;flex:1;background:var(--bg-side);color:var(--txt-main);}
+.adv-row input{border-radius:7px;padding:5px 7px;font-size:.98em;border:1px solid #355;flex:1;background:var(--bg-side);color:var(--txt-main);}
 .task-row {display: flex;align-items: flex-start;gap: 13px;padding: 17px 0 14px 0;border-bottom: 1px solid #444b;}
 .task-row:last-child {border-bottom:none;}
 .task-check {width: 25px; height: 25px; background: #232435;border-radius: 50%; border: 1.3px solid #2787ef33;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.1s;}
@@ -50,6 +50,7 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
 .project-head{font-size:1.07em;font-weight:900;margin-bottom:4px;}
 .project-label{display:inline-block;padding:2.2px 13px 4px 12px;border-radius:13px;font-size:1.07em;color:#fff;}
 .project-desc{color:var(--txt-sub);padding-bottom:3px;}
+.project-actions{margin-top:5px;}
 .project-actions button{background:#232739;color:#52c2fc;border:none;padding:3px 15px 4px 15px;border-radius:7px;cursor:pointer;font-size:.97em;margin-left:3px;}
 .project-actions button.del{color:#ef4444;}
 .add-proj-board{max-width:420px;margin:auto;padding:14px 13px 13px 13px;background:var(--bg-task);border-radius:14px;box-shadow:0 2px 8px #173a7320;display:flex;flex-direction:column;gap:7px;}
@@ -57,6 +58,26 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
 .add-proj-form input,.add-proj-form textarea,.add-proj-form select{border-radius:7px;border:1.1px solid #305;padding:8px;font-size:1em;margin-bottom:7px;background:var(--bg-side);color:var(--txt-main);}
 .add-proj-form{display:flex;flex-direction:column;gap:7px;}
 .add-proj-form button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 0;font-size:1.12em;cursor:pointer;width:fit-content;min-width:140px;font-family:'Tajawal',Arial,sans-serif;}
+.tracker-box {margin-top: 15px;background: var(--bg-task);border-radius: 16px;box-shadow: 0 7px 33px #151f321a;padding: 18px;font-family:'Tajawal',Arial,sans-serif;max-width: 100%;border-top: 2px solid #314463;margin-bottom: 10px;}
+.tracker-header {display:flex; align-items:center; justify-content:space-between; padding-bottom:8px; border-bottom:1.5px solid #26334c; margin-bottom:11px;}
+.tracker-header .track-title { font-size: 1.13em; font-weight: 900; color: var(--accent);}
+.tracker-header .tracker-filter { background: #23283f; color: #52c2fc;border:none;border-radius:7px;font-size:.99em; font-family:'Tajawal',Arial,sans-serif;padding:7px 15px;}
+.tracker-table {width:100%; border-spacing:0; border-collapse:separate; margin-bottom:5px; font-family:'Tajawal',Arial,sans-serif;}
+.tracker-table th, .tracker-table td {padding:11px 9px;text-align:center;font-size:1.08em;}
+.tracker-table th {background: #222432;color: #7ed6ff;font-weight: 900;font-size:1.02em;}
+.tracker-table tr {transition: background 0.13s;}
+.tracker-table tr:nth-child(even) {background: #252945;}
+.tracker-table input, .tracker-table select{border-radius:7px; border:1.1px solid #355; padding:6px 13px; background:#232435; color:#fff; font-family:'Tajawal',Arial,sans-serif;}
+.tracker-table .status-label {border-radius: 13px;font-size:.98em;font-weight:900;padding:5px 19px 7px 19px;display:inline-block;margin-top:7px;}
+.tracker-table .status-moallaqa{background:#cfd9e2;color:#38384b;}
+.tracker-table .status-motawaqqa{background:#236ce4;color:#fff;}
+.tracker-table .status-tam{background:#23b267;color:#fff;}
+.tracker-table .status-qeid{background:#b283ea;color:#fff;}
+.tracker-table .status-a3tila{background:#ef4444;color:#fff;}
+.tracker-table .status-molghaa{background:#676c7a;color:#fff;}
+.tracker-table .delbtn{background:#262c44;color:#ef4444;border:none;border-radius:8px;padding:5px 13px;font-size:.97em;cursor:pointer;font-family:'Tajawal',Arial,sans-serif;}
+.tracker-table .delbtn:hover{background:#ef4444;color:#fff;}
+.tracker-op-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 0;font-size:1.09em;cursor:pointer;width:fit-content;min-width:80px;font-family:'Tajawal',Arial,sans-serif;}
 #customModal {display:none;position:fixed;top:0;right:0;left:0;bottom:0;z-index:1200;background:rgba(25,27,40,.56);align-items:center;justify-content:center;}
 #customModal .modal-box {background:var(--bg-task);padding:33px 25px 25px 25px;border-radius:15px;min-width:350px;max-width:97vw;box-shadow:0 8px 38px #11226c99;display:flex;flex-direction:column;gap:13px;}
 #customModal input[type="text"],#customModal input[type="time"],#customModal input[type="date"] {width:100%;padding:10px 9px;border-radius:8px;border:1.2px solid #48508a;font-size:1.07em;background:#22283a;color:#fff;}
@@ -153,6 +174,7 @@ body{background:var(--bg-main);color:var(--txt-main);font-family:'Tajawal',Arial
         </form>
       </div>
       <div class="projects-board" id="projectsBoard"></div>
+      <div id="projectTrackers"></div>
     </div>
 
     <div class="section" id="calendarSection">
@@ -189,6 +211,7 @@ let projectsExtra = JSON.parse(localStorage.getItem("projTasks_extracard")||'[]'
 let calendarEvents = JSON.parse(localStorage.getItem("calendar_events")||'[]');
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
+let openProjectId = null;
 
 function showModal(title, content, okCallback) {
   document.getElementById("modalTitle").innerText = title;
@@ -212,18 +235,113 @@ function renderProjectsCards(){
   const board=document.getElementById("projectsBoard");
   if(!projectsExtra.length){
     board.innerHTML="<div style='color:var(--txt-sub);padding:35px 0;text-align:center'>لا يوجد مشاريع بعد.</div>";
+    document.getElementById("projectTrackers").innerHTML="";
     return;
   }
   board.innerHTML=projectsExtra.map((p,i)=>
-    `<div class="project-card">
+    `<div class="project-card${openProjectId===p.id?' active':''}" onclick="toggleProjectTracker(${p.id})">
       <div class="project-head"><span class="project-label" style="background:${p.color};">${p.title}</span></div>
       <div class="project-desc">${p.desc}</div>
       <div class="project-actions">
-        <button onclick="editProjectCard(${i})">تعديل</button>
-        <button onclick="delProjectCard(${i})" class="del">حذف</button>
+        <button onclick="event.stopPropagation();editProjectCard(${i})">تعديل</button>
+        <button onclick="event.stopPropagation();delProjectCard(${i})" class="del">حذف</button>
       </div>
     </div>`
   ).join("");
+  renderProjectTrackers();
+}
+
+function toggleProjectTracker(projId){
+  openProjectId = (openProjectId===projId ? null : projId);
+  renderProjectsCards();
+}
+
+function renderProjectTrackers(){
+  let box = document.getElementById("projectTrackers");
+  if(!openProjectId){box.innerHTML="";return;}
+  let curProj = projectsExtra.find(p=>p.id===openProjectId);
+  if(!curProj){box.innerHTML="";return;}
+  let tracker = JSON.parse(localStorage.getItem("projTrack_"+openProjectId) || "[]");
+  let filt = localStorage.getItem("projTrackFilt_"+openProjectId)||"";
+  let trackStatusOpts = [
+    {val:"معلقة",lbl:"معلقة",cls:"status-moallaqa"},
+    {val:"متوقعة",lbl:"متوقعة",cls:"status-motawaqqa"},
+    {val:"تم الإنجاز",lbl:"تم الإنجاز",cls:"status-tam"},
+    {val:"عاطلة",lbl:"عاطلة",cls:"status-a3tila"},
+    {val:"قيد الإنجاز",lbl:"قيد الإنجاز",cls:"status-qeid"},
+    {val:"ملغاة",lbl:"ملغاة",cls:"status-molghaa"}
+  ];
+  let filtered = (filt&&filt!=="") ? tracker.filter(e=>e.status===filt) : tracker;
+  box.innerHTML = `
+    <div class="tracker-box">
+      <div class="tracker-header">
+        <span class="track-title">دفتر تتبع مهام المشروع</span>
+        <span>
+          <label>فلترة:</label>
+          <select class="tracker-filter" onchange="setProjFilter(${openProjectId},this.value)">
+            <option value="">الكل</option>
+            ${trackStatusOpts.map(opt=>`<option value="${opt.val}" ${filt===opt.val?'selected':''}>${opt.lbl}</option>`).join('')}
+          </select>
+        </span>
+      </div>
+      <table class="tracker-table">
+        <tr>
+          <th>المهمة</th>
+          <th>الحالة</th>
+          <th>ملاحظات</th>
+          <th>تاريخ</th>
+          <th></th>
+        </tr>
+        ${filtered.map((row,idx)=>`
+        <tr>
+          <td>${row.title}</td>
+          <td>
+            <select onchange="trackStatusChange(${openProjectId},${idx},this.value)">
+              ${trackStatusOpts.map(opt=>`<option value="${opt.val}" ${opt.val===row.status?'selected':''}>${opt.lbl}</option>`).join('')}
+            </select>
+            <span class="status-label ${trackStatusOpts.find(o=>o.val==row.status)?.cls||'status-moallaqa'}">${row.status}</span>
+          </td>
+          <td>${row.note||""}</td>
+          <td>${row.date||""}</td>
+          <td><button class="delbtn" onclick="deleteTrackRow(${openProjectId},${idx});">حذف</button></td>
+        </tr>
+        `).join("")}
+        <tr>
+          <td><input type="text" id="trackNewTitle" placeholder="مهمة جديدة..."></td>
+          <td><select id="trackNewStatus">${trackStatusOpts.map(opt=>`<option value="${opt.val}">${opt.lbl}</option>`).join('')}</select></td>
+          <td><input type="text" id="trackNewNote" placeholder="ملاحظات..."></td>
+          <td>-</td>
+          <td><button class="tracker-op-btn" onclick="addTrackRow(${openProjectId});">إضافة</button></td>
+        </tr>
+      </table>
+    </div>`;
+}
+function setProjFilter(pid,val){
+  localStorage.setItem("projTrackFilt_"+pid,val);
+  renderProjectTrackers();
+}
+function addTrackRow(pid){
+  let track=JSON.parse(localStorage.getItem("projTrack_"+pid) || "[]");
+  let title = document.getElementById("trackNewTitle").value.trim();
+  let status = document.getElementById("trackNewStatus").value;
+  let note = document.getElementById("trackNewNote").value.trim();
+  if(!title)return;
+  let date=new Date().toISOString().slice(0,10);
+  track.push({title,status,note,date});
+  localStorage.setItem("projTrack_"+pid,JSON.stringify(track));
+  renderProjectTrackers();
+}
+function deleteTrackRow(pid,idx){
+  let track=JSON.parse(localStorage.getItem("projTrack_"+pid) || "[]");
+  track.splice(idx,1);
+  localStorage.setItem("projTrack_"+pid,JSON.stringify(track));
+  renderProjectTrackers();
+}
+function trackStatusChange(pid,idx,newVal){
+  let track=JSON.parse(localStorage.getItem("projTrack_"+pid) || "[]");
+  track[idx].status=newVal;
+  localStorage.setItem("projTrack_"+pid,JSON.stringify(track));
+  renderProjectTrackers();
 }
 
 function addProjectCard(){
@@ -239,8 +357,12 @@ function addProjectCard(){
 }
 function delProjectCard(i){
   if(!confirm("حذف المشروع؟"))return;
+  let id = projectsExtra[i].id;
   projectsExtra.splice(i,1);
   localStorage.setItem("projTasks_extracard",JSON.stringify(projectsExtra));
+  localStorage.removeItem("projTrack_"+id);
+  localStorage.removeItem("projTrackFilt_"+id);
+  openProjectId = null;
   renderProjectsCards();
 }
 function editProjectCard(i){
@@ -260,7 +382,7 @@ function renderTaskList(){
   let list=document.getElementById("tasksList");
   let all=tasks.filter(t=>!t.done);
   if(!all.length) {list.innerHTML ='<div style="color:var(--txt-sub);padding:33px 0;text-align:center">لا يوجد مهام</div>'; return;}
-  list.innerHTML=all.map((t,i)=>{
+  list.innerHTML=all.map((t)=>{
     let idx=tasks.indexOf(t);
     return `<div class="task-row">
       <div class="task-check${t.done?' checked':''}" onclick="toggleDone(${idx})"><span class="material-icons">${t.done?'check':'radio_button_unchecked'}</span></div>
@@ -432,7 +554,7 @@ function showDayEvents(dateStr){
     return;
   }
   let content = `<div style="text-align:right;">مواعيد يوم ${dateStr}:</div>`;
-  content += dayEvents.map((e,i)=>`
+  content += dayEvents.map((e)=>`
     <div style="background:var(--bg-side);padding:10px;margin:5px 0;border-radius:8px;">
       <strong>${e.title}</strong> ${e.time?`- ${e.time}`:''}
       <button onclick="deleteEvent(${calendarEvents.indexOf(e)})" style="background:#ef4444;color:#fff;border:none;padding:3px 10px;border-radius:5px;cursor:pointer;float:left;">حذف</button>
